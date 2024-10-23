@@ -1,0 +1,10 @@
+# Binius [A SNARK protocol over towers of binary fields, implemented in Rust]
+
+_Binius_ is a state-of-the-art noninteractive succinct proof protocol. Explicated theoretically in a sequence of recent works [[1]](https://eprint.iacr.org/2023/1784) [[2]](https://eprint.iacr.org/2024/504),
+Binius operates natively over _towers of binary fields_, mathematical objects which:
+1. efficiently arithmetize natural problems of interest, like standard hash functions, and
+2. admit extremely efficient implementations in both software and hardware.
+
+Binius implements that protocol in production-grade, end-to-end Rust code, available on GitLab at [`IrreducibleOSS / binius`](https://gitlab.com/IrreducibleOSS/binius/).
+That codebase contains not just Binius's core prover and verifier logic, but moreover examples exhibiting that system's end-to-end behavior on tasks of essential interest,
+like Merkle–Patricia-inclusion proving.

@@ -1,15 +1,36 @@
 import { defineConfig } from 'vocs'
 
 export default defineConfig({
-  title: 'Docs',
+  title: 'binius.xyz',
   sidebar: [
     {
-      text: 'Getting Started',
-      link: '/getting-started',
+      text: 'Introduction',
+      link: '/introduction',
     },
     {
-      text: 'Example',
-      link: '/example',
+      text: 'Arithmetization',
+      collapsed: false,
+      items: [
+        {
+          text: 'Arithmetization Techniques',
+          link: '/arithmetization/',
+        },
+        {
+          text: 'Multi-Multiset Matching',
+          link: '/arithmetization/matching',
+        },
+      ],
     },
+    {
+      text: 'Cryptography',
+      collapsed: false,
+      items: [
+        {
+          text: 'Cryptographic Reductions',
+          link: '/cryptography/',
+        },
+      ],
+    }
+
   ],
 })
