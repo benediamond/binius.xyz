@@ -1,0 +1,47 @@
+image: node:latest  # Or an appropriate image if VOCS requires a specific environment
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+variables:
+  S3_BUCKET: bininusxyz_docs
+  AWS_DEFAULT_REGION: us-west-2  # Change to your S3 bucket's region
+
+build_site:
+  stage: build
+  script:
+    - npm install   
+    - npm i vocs # Install VOCS
+    - npm run docs:build # Run the build command for VOCS
+  artifacts:
+    paths:
+      - docs/dist/ # Assuming your build output is in a 'dist' folder
+
+deploy_to_s3:
+  stage: deploy
+  variables:
+    ROLE_ARN: "arn:aws:iam::788825212508:role/gitlabAdminRole-0f223cf"
+  before_script:
+    - apt-get update && apt-get install -y awscli
+    # Assume IAM role using OIDC
+    - |
+      export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+        $(aws sts assume-role-with-web-identity \
+          --role-arn ${ROLE_ARN} \
+          --role-session-name "GitLabRunner-${CI_PROJECT_ID}-${CI_PIPELINE_ID}" \
+          --web-identity-token ${GITLAB_OIDC_TOKEN} \
+          --duration-seconds 10800 \
+          --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+          --output text)) && \
+      aws sts get-caller-identity
+  script:
+    - aws s3 sync docs/dist/ s3://$S3_BUCKET --delete --acl public-read
+  only:
+    - main  # Change if deploying from another branch or tag
+  dependencies:
+    - build_site
