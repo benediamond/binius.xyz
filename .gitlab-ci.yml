@@ -16,7 +16,6 @@ build_site:
   stage: build
   script:
     - npm install   
-    - npm i vocs # Install VOCS
     - npm run build # Run the build command for VOCS
   artifacts:
     paths:
