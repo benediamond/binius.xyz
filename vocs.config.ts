@@ -12,7 +12,7 @@ export default defineConfig({
       collapsed: false,
       items: [
         {
-          text: 'Arithmetization Techniques',
+          text: 'Arithmetization Overview',
           link: '/arithmetization/',
         },
         {
@@ -22,15 +22,24 @@ export default defineConfig({
       ],
     },
     {
+      text: 'Reductions',
+      collapsed: false,
+      items: [
+        {
+          text: 'Reductions Overview',
+          link: '/cryptography/',
+        },
+      ],
+    },
+    {
       text: 'Cryptography',
       collapsed: false,
       items: [
         {
-          text: 'Cryptographic Reductions',
+          text: 'Cryptography Overview',
           link: '/cryptography/',
         },
       ],
     }
-
   ],
 })
