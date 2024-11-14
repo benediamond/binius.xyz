@@ -17,7 +17,7 @@ build_site:
   script:
     - npm install   
     - npm i vocs # Install VOCS
-    - npm run docs:build # Run the build command for VOCS
+    - npm run build # Run the build command for VOCS
   artifacts:
     paths:
       - docs/dist/ # Assuming your build output is in a 'dist' folder
