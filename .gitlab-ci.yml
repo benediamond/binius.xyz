@@ -42,7 +42,10 @@ deploy_to_s3:
           --output text)) && \
       aws sts get-caller-identity
   script:
+    # Upload to S3
     - aws s3 sync docs/dist/ s3://$S3_BUCKET --delete --acl public-read
+    # Add CloudFront invalidation
+    - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
   only:
     - main  # Change if deploying from another branch or tag
   dependencies:
