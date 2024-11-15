@@ -1,3 +1,5 @@
 # Zerocheck [A vanishing argument for compositions of small-field multilinears]
 
-Etc.
+The simplest—and most classically familiar—claims that we must deal with are _vanishing claims_. Each of these claims essentially entails that, given a table whose columns are multilinears, a certain multivariate polynomial (with as many variables as the table has columns) vanishes identically on the table's rows.
+
+The classical tool for these sorts of claims is the _zerocheck_, as is more-or-less explained in [_HyperPlonk_](https://eprint.iacr.org/2022/1355). (Zerocheck itself is a thin wrapper around the sumcheck protocol.) In our setting, two main complications arise. Firstly, the polynomials we're interested in zerochecking are in general, defined over _tiny fields_.

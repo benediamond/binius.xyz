@@ -10,11 +10,8 @@ export default defineConfig({
     {
       text: 'Arithmetization',
       collapsed: false,
+      link: '/arithmetization/',
       items: [
-        {
-          text: 'Arithmetization Overview',
-          link: '/arithmetization/',
-        },
         {
           text: 'Multi-Multiset Matching',
           link: '/arithmetization/matching',
@@ -24,11 +21,8 @@ export default defineConfig({
     {
       text: 'Reductions',
       collapsed: false,
+      link: '/reductions/',
       items: [
-        {
-          text: 'Reductions Overview',
-          link: '/reductions/',
-        },
         {
           text: "Zerocheck",
           link: "/reductions/zerocheck",
@@ -45,12 +39,7 @@ export default defineConfig({
     {
       text: 'Cryptography',
       collapsed: false,
-      items: [
-        {
-          text: 'Cryptography Overview',
-          link: '/cryptography/',
-        },
-      ],
+      link: '/cryptography/',
     }
   ],
 })
