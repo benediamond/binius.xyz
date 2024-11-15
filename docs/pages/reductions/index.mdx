@@ -10,5 +10,7 @@ Our tables, in general, may contain _both_ committed and virtual columns. The ga
 
 Our use of channels, or _multi-multiset matching_, necessitates that we deal with a further sort of reduction. Indeed, multi-multiset matching outputs _multiset equality_ claims. The multisets at hand—i.e., which each such claim operates on—are themselves virtual; in general, they're complex concatenations of other polynomials, _which themselves_ are virtual in general. Our cryptographic reduction layer, therefore, must moreover handle multiset-equality claims; it must reduce these claims to _grand-product claims_, and—via GKR—ultimately to evaluation claims.
 
+## Section Directory
+
 This section contains the following subsections:
 - [**Zerocheck.**](/reductions/zerocheck) Zerochecking is the outermost layer of our conveyor belt of reductions, as least as far as vanishing claims are concerned. This step intakes a _zerocheck claim_—that is, a claim whereby a certain composition of multilinears vanishes identically over the cube—and reduces that claim to a set of _evaluation claims_, themselves pertaining to the various multilinears (both raw and virtual) underlying the initial composition. In this setting, we use sophisticated techniques tailored to the case of _small-field polynomials_—a research area initiated by Angus Gruen's [_Some Improvements for the PIOP for ZeroCheck_](https://eprint.iacr.org/2024/108).

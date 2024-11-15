@@ -1,7 +1,13 @@
 import { defineConfig } from 'vocs'
+import remarkMath from 'remark-math'
 
 export default defineConfig({
   title: 'binius.xyz',
+  markdown: {
+    remarkPlugins: [
+      remarkMath
+    ],
+  },
   sidebar: [
     {
       text: 'Introduction',
@@ -31,6 +37,10 @@ export default defineConfig({
             {
               text: "Univariate Zerocheck",
               link: "/reductions/zerocheck/univariate"
+            },
+            {
+              text: "Standard Zerocheck",
+              link: "/reductions/zerocheck/standard"
             }
           ]
         }

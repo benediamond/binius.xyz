@@ -1,7 +1,13 @@
 # Zerocheck [A vanishing argument for compositions of small-field multilinears]
 
-The simplest—and most classically familiar—claims that we must deal with are _vanishing claims_. Each of these claims essentially entails that, for some particular table whose columns are multilinears, a certain multivariate polynomial (with as many variables as that table has columns) vanishes identically over the table's rows.
+The simplest—and most classically familiar—claims that we must deal with are _vanishing claims_. Each of these claims essentially entails that, for some particular table whose columns are multilinears, a certain multivariate polynomial (with as many variables as that table has columns) vanishes identically over that table's rows.
 
-The classical tool for these sorts of claims is the _zerocheck protocol_, as is more-or-less explained in [_HyperPlonk_](https://eprint.iacr.org/2022/1355). (Zerocheck itself is a thin wrapper around sumcheck.) In our setting, two main complications arise. Firstly, the polynomials we're interested in zerochecking are in general, defined over _tiny fields_. It is absolutely imperative that we exploit this advantage; that is, we must adopt a zerocheck protocol which is sensitive to our polynomials' various fields of definition.
+The classical tool for these sorts of claims is the _zerocheck protocol_, as is more-or-less explained in [_HyperPlonk_](https://eprint.iacr.org/2022/1355). (Zerocheck itself is a thin wrapper around sumcheck.) In our setting, two main complications arise. Firstly, the polynomials we're interested in zerochecking are in general defined over _tiny fields_. It is imperative, for efficiency's sake, that we exploit this advantage; that is, we must adopt a zerocheck protocol which exploits our polynomials' various fields of definition.
 
-Secondly, the multilinears over which our zerochecks operate are _themselves_ often virtual. Our zerocheck, upon terminating, thus outputs evaluation claims which themselves pertain to _virtual_ polynomials. In order to reduce these claims to further claims about _committed_ (i.e., so-called "raw") polynomials, we must perform further reductions. Binius contains code designed to perform these latter reductions, which themselves often mandate _further_ sumchecks.
+Secondly, the multilinears over which our zerochecks operate are _themselves_ often virtual. Our zerocheck, upon terminating, thus outputs evaluation claims which themselves pertain to _virtual_ polynomials, in general. In order to reduce these claims to further claims about _committed_ (i.e., so-called "raw") polynomials, we must perform further reductions. Binius contains code designed to perform these latter reductions, which themselves often mandate further sumchecks.
+
+## Subsection Directory
+
+This subsection contains the following pages:
+- [**Univariate Zerocheck.**](/reductions/zerocheck/univariate) In this page, we outline in detail our implementation of the _univariate skip_, an idea first sketched in a [note](https://eprint.iacr.org/2024/108) due to Angus Gruen.
+- [**Standard Zerocheck.**](/reductions/zerocheck/standard) This page details our implementation of the zerocheck protocol for large-field multilinears.
