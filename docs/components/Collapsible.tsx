@@ -14,6 +14,6 @@ export default function Card({ children }: { children: React.ReactNode }) {
       }}
     >
       {headerContent}
-      {toggle ? bodyContent : <a>See more...</a>}
+      {toggle ? bodyContent : "Click to see more..."}
     </div>
   );}
