@@ -25,6 +25,9 @@ deploy_to_s3:
   stage: deploy
   variables:
     ROLE_ARN: "arn:aws:iam::788825212508:role/gitlabAdminRole-0f223cf"
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.com
   before_script:
     - apt-get update && apt-get install -y awscli
     # Assume IAM role using OIDC
