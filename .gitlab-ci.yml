@@ -9,7 +9,7 @@ cache:
     - node_modules/
 
 variables:
-  S3_BUCKET: bininusxyz_docs
+  S3_BUCKET: bininusxyz-docs
   AWS_DEFAULT_REGION: us-west-2  # Change to your S3 bucket's region
 
 build_site:
