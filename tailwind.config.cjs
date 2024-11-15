@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./docs/**/*.{html,md,mdx,tsx,js,jsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        highlight: 'var(--vocs-color_infoBackground)'
+      }
+    },
   },
   plugins: [],
 }

@@ -27,8 +27,19 @@ export default defineConfig({
       items: [
         {
           text: 'Reductions Overview',
-          link: '/cryptography/',
+          link: '/reductions/',
         },
+        {
+          text: "Zerocheck",
+          link: "/reductions/zerocheck",
+          collapsed: true,
+          items: [
+            {
+              text: "Univariate Zerocheck",
+              link: "/reductions/zerocheck/univariate"
+            }
+          ]
+        }
       ],
     },
     {
