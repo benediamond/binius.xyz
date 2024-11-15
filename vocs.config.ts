@@ -1,12 +1,16 @@
 import { defineConfig } from 'vocs'
 import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 
 export default defineConfig({
   title: 'binius.xyz',
   markdown: {
     remarkPlugins: [
-      remarkMath
+      remarkMath,
     ],
+    rehypePlugins: [
+      rehypeKatex,
+    ]
   },
   sidebar: [
     {
