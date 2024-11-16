@@ -3,7 +3,3 @@
 The _univariate skip_ plays a key role in our small-field zerocheck protocol. The essential premise is that the multilinears upon which our composition polynomials act are, often, defined over small fields. This fact makes the 0th round of the zerocheck special, in that much of the computation required by that round may be carried out over some appropriate small field. In the zerocheck's positive-indexed rounds, on the other hand, the polynomials at hand "saturate" to the maximal field size, and the small-field advantage disappears.
 
 The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip moves as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent rounds.
-
-```math
-x^2 + y^3
-```
