@@ -7,24 +7,35 @@ export default defineConfig({
   head() {
     return (
       <>
-        <style>{`
-          .page-loading {
-            opacity: 0;
-            transition: opacity 0.2s ease;
-          }
-        `}
+        <script>
+          {`
+            if (location.pathname !== '/') {
+              // Apply immediately before anything else loads
+              document.documentElement.style.opacity = '0';
+            }
+          `}
+        </script>
+        <style>
+          {`
+            html {
+              transition: opacity 0.2s ease;
+            }
+            html[data-loading] {
+              opacity: 0;
+            }
+          `}
         </style>
         <script>
           {`
-          if (location.pathname !== '/') {
-            document.documentElement.classList.add('page-loading');
-            document.addEventListener('DOMContentLoaded', () => {
-              requestAnimationFrame(() => {
-                document.documentElement.classList.remove('page-loading');
+            if (location.pathname !== '/') {
+              // Remove the opacity once everything is ready
+              window.addEventListener('load', () => {
+                requestAnimationFrame(() => {
+                  document.documentElement.style.opacity = '1';
+                });
               });
-            });
-          }
-        `}
+            }
+          `}
         </script>
       </>
     )
