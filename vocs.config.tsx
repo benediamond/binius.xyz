@@ -4,6 +4,31 @@ import rehypeKatex from 'rehype-katex'
 
 export default defineConfig({
   title: 'binius.xyz',
+  head() {
+    return (
+      <>
+        <style>{`
+          .page-loading {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+        `}
+        </style>
+        <script>
+          {`
+          if (location.pathname !== '/') {
+            document.documentElement.classList.add('page-loading');
+            document.addEventListener('DOMContentLoaded', () => {
+              requestAnimationFrame(() => {
+                document.documentElement.classList.remove('page-loading');
+              });
+            });
+          }
+        `}
+        </script>
+      </>
+    )
+  },
   markdown: {
     remarkPlugins: [
       remarkMath,
