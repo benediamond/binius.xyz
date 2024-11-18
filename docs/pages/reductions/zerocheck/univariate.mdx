@@ -12,11 +12,11 @@ $$C_j(M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell 
 
 vanishes identically on the cube $\mathcal{B}_\ell$. We note that, in general, we allow compositions $C_j$ with different _total degrees_ $d_j$. We write $d^* \coloneqq \max_{j = 0}^{c - 1} d_j$. Finally, we write $K \subset L$ for a cryptographically large field extension.
 
-The _standard_ zerocheck would reduce this zerocheck claim claim to _evaluation_ claims on the individual multilinears $M_i$ (at some random point $r \in L^\ell$ sampled during the course of the zerocheck). We are going to opt for a different path. We're going to fix a nonnegative integer parameter $k \in \{1, \ldots , \ell\}$—our "skipping parameter"—as well as a domain $D \subset L$ of size $2^k$. (For the purposes of intuition, one can take $k = 7$ and $\ell = 20$, let's say.) Here, for technical reasons, we take $D \subset L$ to be an $\mathbb{F}_2$-vector subspace of $L$. We're going to introduce further polynomials $\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1})$—each $\ell - k + 1$-variate—designed so as to take the same values that the multilinears $M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell - 1})$ respectively do (but on $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$, as opposed to on $\mathcal{B}_\ell \subset L^\ell$). More precisely, we identify $\mathcal{B}_k \cong D$ by associating $(u_0, \ldots , u_{k - 1}) \mapsto \{u\} \coloneqq \sum_{i = 0}^{k - 1} u_i \cdot \beta_i$, where $(\beta_0, \ldots , \beta_{k - 1})$ is an $\mathbb{F}_2$-basis of $D$; we then define the polynomials $\widehat{M}_i$ so as to cause
+The _standard_ zerocheck would reduce this zerocheck claim claim to _evaluation_ claims on the individual multilinears $M_i$ (at some random point $r \in L^\ell$ sampled during the course of the zerocheck). We are going to opt for a different path. We're going to fix a nonnegative integer parameter $k \in \{1, \ldots , \ell\}$—our "skipping parameter"—as well as a domain $D \subset L$ of size $2^k$. (For the purposes of intuition, one can take $k = 7$ and $\ell = 20$, let's say.) Here, for technical reasons, we take $D \subset L$ to be an $\mathbb{F}_2$-vector subspace of $L$. We're going to introduce further polynomials $\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1})$—each $\ell - k + 1$-variate—designed so as to take the same values that the multilinears $M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell - 1})$ respectively do (but on $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$, as opposed to on $\mathcal{B}_\ell \subset L^\ell$). More precisely, we identify $\mathcal{B}_k \cong D$ by associating $(u_0, \ldots , u_{k - 1}) \mapsto \sum_{i = 0}^{k - 1} u_i \cdot \beta_i$, where $(\beta_0, \ldots , \beta_{k - 1})$ is an $\mathbb{F}_2$-basis of $D$; we then define the polynomials $\widehat{M}_i$ in such a way as to make
 
-$$\widehat{M}_i(\{u\}, v_0, \ldots , v_{\ell - k - 1}) = M_i(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1})$$
+$$\widehat{M}_i(u, v_0, \ldots , v_{\ell - k - 1}) = M_i(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1})$$
 
-to hold for each $i \in \{0, \ldots , t - 1\}$ and each $(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1}) \in \mathcal{B}_k \times \mathcal{B}_{\ell - k}$. Here, each polynomial $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k  - 1})$ is moreover of degree less than $2^k$ in its first variable $Y$ and linear in each of its subsequent variables. (Each such polynomial is uniquely captured by its table of values on $D \times \mathcal{B}_{\ell - k}$.)
+hold for each $i \in \{0, \ldots , t - 1\}$ and each $(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1}) \in \mathcal{B}_k \times \mathcal{B}_{\ell - k} \cong D \times \mathcal{B}_{\ell - k}$. Here, each polynomial $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k  - 1})$ is moreover of degree less than $2^k$ in its first variable $Y$ and linear in each of its subsequent variables. (Each such polynomial is uniquely captured by its table of values on $D \times \mathcal{B}_{\ell - k}$.)
 
 We note that our _desired_ zerocheck claim is equivalent to the claim whereby, for each $j \in \{0, \ldots , c - 1\}$, the composition
 
@@ -24,7 +24,7 @@ $$C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t 
 
 vanishes identically on the oblong domain $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$.
 
-The point of the _univariate zerocheck_ is to target this latter (equivalent) claim instead, and indeed to reduce it to a claim about the values of the _rectangular_ polynomials $\widehat{M}_i$ at some point $(s, r_0, \ldots , r_{\ell - k - 1}) \in L^{\ell - k + 1}$, itself again sampled during the (univariate) zerocheck. It turns out that this latter procedure can be carried out more efficiently than the standard zerocheck can. The catch is that we need a way for the verifier to ascertain the values of the ultimate evaluations of the "imagined" rectangular polynomials $\widehat{M}_i(s, r_0, \ldots , r_{\ell - k - 1})$, given only standard commitments to the $M_i$. We will deal with both of these below.
+The point of the _univariate zerocheck_ is to target this latter (equivalent) claim instead, and indeed to reduce it to a claim about the values of the _rectangular_ polynomials $\widehat{M}_i$ at some point $(s', r'_0, \ldots , r'_{\ell - k - 1}) \in L^{\ell - k + 1}$, itself again sampled during the (univariate) zerocheck. It turns out that this latter procedure can be carried out more efficiently than the standard zerocheck can. The catch is that we need a way for the verifier to ascertain the values of the ultimate evaluations of the "imagined" rectangular polynomials $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, given only standard commitments to the $M_i$. We will deal with both of these below.
 
 ## The Math
 
@@ -32,15 +32,15 @@ The point of the _univariate zerocheck_ is to target this latter (equivalent) cl
 
 Up to a soundness error of at most $\frac{t - 1}{|L|}$, it is enough for the verifier to rather sample a random batching constant $\alpha \gets L$, and to check that the single polynomial
 
-$$C^*(Y, X_0, \ldots , X_{\ell - k - 1}) \coloneqq \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$$
+$$\sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$$
 
-vanishes identically on $D \times \mathcal{B}_{\ell - k}$.
+vanishes identically on $D \times \mathcal{B}_{\ell - k}$. We write $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ for this polynomial.
 
 ### Unique low-degree extension
 
-There is a unique $\ell - k + 1$-variate polynomial, say $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$, which agrees identically with $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ on $D \times \mathcal{B}_{\ell - k}$, and which is moreover of degree less than $2^k$ in $Y$ and linear in each of its subsequent variables. In fact, we can write down an explicit expression for $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$: this thing is exactly
+There is a unique $\ell - k + 1$-variate polynomial, say $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$, which agrees identically with $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ on $D \times \mathcal{B}_{\ell - k}$, and which moreover is of degree less than $2^k$ in $Y$ and linear in each of its subsequent variables. In fact, we can write down an explicit expression for $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$: this thing is exactly
 
-$$\sum_{(u, v) \in D \times \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(u, v), \ldots , \widehat{M}_{t - 1}(u, v)) \cdot \delta_D(u, Y) \cdot \widetilde{\texttt{eq}}(v, X_0, \ldots , X_{\ell - k - 1}).$$
+$$\sum_{(u, v) \in D \times \mathcal{B}_{\ell - k}} C^*(Y, X_0, \ldots , X_{\ell - k - 1}) \cdot \delta_D(u, Y) \cdot \widetilde{\texttt{eq}}(v, X_0, \ldots , X_{\ell - k - 1}).$$
 
 Here, we write $\delta_D(Y_0, Y_1)$ for the unique bivariate polynomial, of individual degree less than $2^k$ in each variable, whose restriction to $D \times D \subset L \times L$ is the equality indicator function.
 
@@ -50,23 +50,23 @@ Our second observation—which mirrors the theory behind the classical zerocheck
 
 This this latter equality in turn amounts to an (oblong) sumcheck: indeed, it amounts to the claim whereby the sum, taken over $(u, v) \in D \times \mathcal{B}_{\ell - k}$, of
 
-$$\sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1})) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(X, r)$$
+$$C^*(Y, X_0, \ldots , X_{\ell - k - 1}) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r)$$
 
 is zero.
 
 It follows just as in the normal sumcheck that the verifier can adjudicate this claim by the aid of a sequence of $\ell - k + 1$ _round polynomials_. The first among these will be the univariate polynomial
 
-$$g^{**}(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).$$
+$$g^{**}(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C^*(Y, v) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).$$
 
-(Our naming conventions will become clear shortly.) This thing will be of degree as high as $d^* \cdot (2^k - 1) + (2^k - 1) = (d^* + 1) \cdot (2^k - 1)$ in $Y$. To convey $g^{**}(Y)$ to the verifier, it's thus enough for the prover to compute its value on more than $(d^* + 1) \cdot (2^k - 1)$ _total_ points. On the other hand, we are going to introduce a few optimizations, to make our computation of $g^*(Y)$ more efficient.
+(Our naming conventions will become clear shortly.) This thing will be of degree as high as $d^* \cdot (2^k - 1) + (2^k - 1) = (d^* + 1) \cdot (2^k - 1)$ in $Y$. To convey $g^{**}(Y)$ to the verifier, it's thus enough for the prover to compute its value on more than $(d^* + 1) \cdot (2^k - 1)$ _total_ points. On the other hand, we are going to introduce a few optimizations, to make our computation of $g^{**}(Y)$ more efficient.
 
 ### Excising the Lagrange polynomial
 
 The first is a trick inspired by [[Gruen, § 3.2]](https://eprint.iacr.org/2024/108). The idea is that the prover can rather evaluate the simpler polynomial
 
-$$g^*(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \widetilde{\texttt{eq}}(v, r)$$
+$$g^*(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C^*(Y, v) \cdot \widetilde{\texttt{eq}}(v, r)$$
 
-on more than $(d^* + 1) \cdot (2^k - 1)$ points, and later "multiply in" $\delta_D(\cdot, s)$ pointwise. We note that both $g^*(Y)$ and $g^{**}(Y)$ will vanish identically on $D$, since each $C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$. It thus suffices for the prover to compute the value of $g^*(y)$ for each $y \in D^{**} \setminus D$, where $D^{**} \subset L$ is some "extended" domain containing more than $(d^* + 1) \cdot (2^k - 1)$ points.
+on more than $(d^* + 1) \cdot (2^k - 1)$ points, and later "multiply in" $\delta_D(Y, s)$ pointwise. We note that both $g^*(Y)$ and $g^{**}(Y)$ will vanish identically on $D$, since each $C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$. It thus suffices for the prover to compute the value of $g^*(y)$ for each $y \in D^{**} \setminus D$, where $D^{**} \subset L$ is some "extended" domain containing more than $(d^* + 1) \cdot (2^k - 1)$ points.
 
 ### Lifting the batching combination
 
@@ -74,7 +74,7 @@ We are going to do a further optimization whereby $g^*(Y)$ is computed "in piece
 
 $$g_j(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \widetilde{\texttt{eq}}(v, r).$$
 
-We note that $g^*(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ holds. Provided we can compute _each individual_ polynomial $g_j(Y)$—say, in the sense of obtaining its coefficient representation (in the novel polynomial basis)—we can then $\alpha$-combine these polynomials in order to obtain $g^*(Y)$. Finally, we can evaluate  $g^*(Y)$ over $D^{**} \setminus D$, which—as we just saw above—is enough to achieve what we want.
+We note that $g^*(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ holds. Provided we can compute _each individual_ polynomial $g_j(Y)$—say, in the sense of obtaining its coefficient representation (in the novel polynomial basis)—we can then $\alpha$-combine these polynomials in order to obtain $g^*(Y)$. Finally, we can evaluate the combination $g^*(Y)$ over $D^{**} \setminus D$, which—as we just saw above—is enough to achieve what we want.
 
 "Lifting the combination" in this way actually gives us two, completely distinct advantages:
 
@@ -110,3 +110,22 @@ Finally, the prover must evaluate the _combination_ $g^*(Y) = \sum_{j = 0}^{c - 
 This completes the specification of the prover's computation of $g^{**}(Y)$.
 
 ## The verifier's challenge and beyond
+
+Upon receiving $g^{**}(Y)$, the verifer may finally sample $s' \gets L$ and send it to the prover. Locally, the verifier will need to first check $0 \stackrel{?}= \sum_{y \in D^{**} \setminus D} g^{**}(Y)$, and then update its running sum claim to $a \coloneqq g^{**}(s')$.
+
+Up to a soundness error of $\frac{(d^* + 1) \cdot 2^k}{|L|}$ over the verifier's choice of $s' \in L$, our task has thus been reduced to showing that
+
+$$a \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell - k}} C^*(s', X_0, \ldots , X_{\ell - k - 1}) \cdot \delta_D(s', s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r).$$
+
+This latter thing is a perfectly good $\ell - k$-variate sumcheck over $L$, and can be handled using the [usual algorithms](/) for that task.
+
+### Specializing the rectangular polynomials
+
+We note that the prover will need to compute, for each $i \in \{0, \ldots , t - 1\}$, the table of values of the specialized polynomial $\widehat{M}_i(s', X_0, \ldots , X_{\ell - k - 1})$ over $\mathcal{B}_{\ell - k}$. This specialization itself will entail performing an independent barycentric extrapolation, for each $v \in \mathcal{B}_{\ell - k}$, of the $2^k$ datapoints $\widehat{M}_i(y, v)$ (here, $y$ varies throughout $D$). This extrapolation can be carried out in linear time, and involves only small-field operations.
+
+### The very end
+
+At the very end, the verifier will need to ascertain the respective values, for $i \in \{0, \ldots , t - 1\}$, of $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, for certain further challenges $(r'_0, \ldots , r'_{\ell - k - 1})$ sampled during the course of the positive-indexed rounds of the zerocheck. Getting these values requires a bit of trickery, since our standard PCS evaluation scheme only lets us evaluate the standard $M_i$s (without the hats) on points in $L^\ell$. As we argue in our section on [ring-switching](/), the $\widehat{M}_i$ too can be evaluated efficiently, though the details are subtle.
+
+
+## Efficiency Matters
