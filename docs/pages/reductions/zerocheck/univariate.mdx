@@ -1,19 +1,106 @@
-# Univariate Zerocheck [A small-field zerocheck protocol, implementing the univariate skip]
+# Univariate Zerocheck [A small-field zerocheck protocol, implementing the univariate skip with batching]
 
 The _univariate skip_ plays a key role in our small-field zerocheck protocol. The essential premise is that the multilinears upon which our composition polynomials act are, often, defined over small fields. This fact makes the 0th round of the zerocheck special, in that much of the computation required by that round may be carried out over some appropriate small field. In the zerocheck's positive-indexed rounds, on the other hand, the polynomials at hand "saturate" to the maximal field size, and the small-field advantage disappears.
 
-The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds. Our univariate skip prover resides [here](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/protocols/sumcheck/prove/univariate.rs?ref_type=heads); we will refer to that file when possible. The fundamental ideas in this page are due to [[Gruen]](https://eprint.iacr.org/2024/108).
+The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds. Our univariate skip prover resides [here](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/protocols/sumcheck/prove/univariate.rs?ref_type=heads); we will refer to that file when possible. The fundamental ideas in this page are due to [[Gruen]](https://eprint.iacr.org/2024/108). In Binius, we expand Gruen's ideas somewhat, by treating the _batch adjudication_ of many zerocheck claims, a setting which introduces complications.
 
 ## Background and Notation
 
-To explain how our univariate skip operates, we introduce notation. We fix a large binary field $L$, a subfield $K \subset L$, and a handful of multilinears $M_0, \ldots , M_{t - 1}$, each with $\ell$ variables and defined over $K$, say. We fix moreover a $t$-variate _composition polynomial_ $C(Y_0, \ldots , Y_{t - 1}) \in K[Y_0, \ldots , Y_{t - 1}]$. The _zerocheck claim_ entails that, for each $v \in \mathcal{B}_\ell$, $C(M_0(v), \ldots , M_{t - 1}(v)) = 0$. In other words, the composition
+To explain how our univariate skip operates, we introduce notation. We fix a binary field $K$ and a handful of multilinears $M_0, \ldots , M_{t - 1}$, each with $\ell$ variables and defined over $K$, say. We moreover fix a handful of $t$-variate _composition polynomials_ $C_j(Z_0, \ldots , Z_{t - 1}) \in K[Z_0, \ldots , Z_{t - 1}]$, for $j \in \{0, \ldots c - 1\}$, say. The _zerocheck claim_ entails that, for each $j \in \{0, \ldots , c - 1\}$ and each $v \in \mathcal{B}_\ell$, $C_j(M_0(v), \ldots , M_{t - 1}(v)) = 0$. In other words, the each of the compositions
 
-$$C(M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell - 1}))$$
+$$C_j(M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell - 1}))$$
 
-vanishes identically on the cube $\mathcal{B}_\ell$.
+vanishes identically on the cube $\mathcal{B}_\ell$. We note that, in general, we allow compositions $C_j$ with different _total degrees_ $d_j$. We write $d^* \coloneqq \max_{j = 0}^{c - 1} d_j$. Finally, we write $K \subset L$ for a cryptographically large field extension.
 
-The _standard_ zerocheck would reduce this particular claim to _evaluation_ claims on the individual multilinears $M_i$ (at some random point $r \in L^\ell$ sampled during the course of the zerocheck). We are going to opt for a different path. We're going to fix a nonnegative integer parameter $k \in \{0, \ldots , \ell\}$—our "skipping parameter"—as well as a domain $D \subset L$ of size $2^k$. (For the purposes of intuition, one can take $k = 7$.) We're going to "imagine" polynomials $\widehat{M}_0, \ldots , \widehat{M}_{t - 1}$—each defined on the _rectangular_ domain $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$—which take the same values that the multilinears $M_0, \ldots , M_{t - 1}$ respectively do (but on _this_ domain, instead of the $\ell$-cube). That is, provided we identify $\mathcal{B}_k \cong D$ by associating $(u_0, \ldots , u_{k - 1}) \mapsto \sum_{i = 0}^{k - 1} u_i \cdot \beta_i$—where $(\beta_0, \ldots , \beta_{k - 1})$ is an $\mathbb{F}_2$-basis of $D$—we obtain the identity
+The _standard_ zerocheck would reduce this zerocheck claim claim to _evaluation_ claims on the individual multilinears $M_i$ (at some random point $r \in L^\ell$ sampled during the course of the zerocheck). We are going to opt for a different path. We're going to fix a nonnegative integer parameter $k \in \{1, \ldots , \ell\}$—our "skipping parameter"—as well as a domain $D \subset L$ of size $2^k$. (For the purposes of intuition, one can take $k = 7$ and $\ell = 20$, let's say.) Here, for technical reasons, we take $D \subset L$ to be an $\mathbb{F}_2$-vector subspace of $L$. We're going to introduce further polynomials $\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1})$—each $\ell - k + 1$-variate—designed so as to take the same values that the multilinears $M_0(X_0, \ldots , X_{\ell - 1}), \ldots , M_{t - 1}(X_0, \ldots , X_{\ell - 1})$ respectively do (but on $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$, as opposed to on $\mathcal{B}_\ell \subset L^\ell$). More precisely, we identify $\mathcal{B}_k \cong D$ by associating $(u_0, \ldots , u_{k - 1}) \mapsto \{u\} \coloneqq \sum_{i = 0}^{k - 1} u_i \cdot \beta_i$, where $(\beta_0, \ldots , \beta_{k - 1})$ is an $\mathbb{F}_2$-basis of $D$; we then define the polynomials $\widehat{M}_i$ so as to cause
 
-$$\widehat{M}_i(u, v_0, \ldots , v_{\ell - k - 1}) = M_i(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1})$$
+$$\widehat{M}_i(\{u\}, v_0, \ldots , v_{\ell - k - 1}) = M_i(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1})$$
 
-for each $i \in \{0, \ldots , t - 1\}$ and each $(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1}) \in \mathcal{B}_k \times \mathcal{B}_{\ell - k} \cong D \times \mathcal{B}_{\ell - k}$.
+to hold for each $i \in \{0, \ldots , t - 1\}$ and each $(u_0, \ldots , u_{k - 1}, v_0, \ldots , v_{\ell - k - 1}) \in \mathcal{B}_k \times \mathcal{B}_{\ell - k}$. Here, each polynomial $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k  - 1})$ is moreover of degree less than $2^k$ in its first variable $Y$ and linear in each of its subsequent variables. (Each such polynomial is uniquely captured by its table of values on $D \times \mathcal{B}_{\ell - k}$.)
+
+We note that our _desired_ zerocheck claim is equivalent to the claim whereby, for each $j \in \{0, \ldots , c - 1\}$, the composition
+
+$$C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$$
+
+vanishes identically on the oblong domain $D \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$.
+
+The point of the _univariate zerocheck_ is to target this latter (equivalent) claim instead, and indeed to reduce it to a claim about the values of the _rectangular_ polynomials $\widehat{M}_i$ at some point $(s, r_0, \ldots , r_{\ell - k - 1}) \in L^{\ell - k + 1}$, itself again sampled during the (univariate) zerocheck. It turns out that this latter procedure can be carried out more efficiently than the standard zerocheck can. The catch is that we need a way for the verifier to ascertain the values of the ultimate evaluations of the "imagined" rectangular polynomials $\widehat{M}_i(s, r_0, \ldots , r_{\ell - k - 1})$, given only standard commitments to the $M_i$. We will deal with both of these below.
+
+## The Math
+
+### Batching
+
+Up to a soundness error of at most $\frac{t - 1}{|L|}$, it is enough for the verifier to rather sample a random batching constant $\alpha \gets L$, and to check that the single polynomial
+
+$$C^*(Y, X_0, \ldots , X_{\ell - k - 1}) \coloneqq \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$$
+
+vanishes identically on $D \times \mathcal{B}_{\ell - k}$.
+
+### Unique low-degree extension
+
+There is a unique $\ell - k + 1$-variate polynomial, say $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$, which agrees identically with $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ on $D \times \mathcal{B}_{\ell - k}$, and which is moreover of degree less than $2^k$ in $Y$ and linear in each of its subsequent variables. In fact, we can write down an explicit expression for $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$: this thing is exactly
+
+$$\sum_{(u, v) \in D \times \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(u, v), \ldots , \widehat{M}_{t - 1}(u, v)) \cdot \delta_D(u, Y) \cdot \widetilde{\texttt{eq}}(v, X_0, \ldots , X_{\ell - k - 1}).$$
+
+Here, we write $\delta_D(Y_0, Y_1)$ for the unique bivariate polynomial, of individual degree less than $2^k$ in each variable, whose restriction to $D \times D \subset L \times L$ is the equality indicator function.
+
+Our second observation—which mirrors the theory behind the classical zerocheck—is that $\widetilde{C}^*(Y, X_0, \ldots , X_{\ell - k - 1})$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$ _if and only if_ it vanishes on all of $L^{\ell - k + 1}$; more importantly, if it _doesn't_ vanish identically on $D \times \mathcal{B}_{\ell - k}$, then it can vanish on at most a proportion of $\frac{2^k - 1 + \ell - k}{|L|}$ of $L^{\ell - k + 1}$'s points (this is just Schwartz–Zippel). It is thus both complete and sound for the verifier to pick a _random_ element $(s, r_0, \ldots , r_{\ell - k - 1}) \gets L^{\ell - k + 1}$, and to check whether $\widetilde{C}^*(s, r_0, \ldots , r_{\ell - k - 1}) \stackrel{?}= 0$.
+
+### Oblong sumcheck
+
+This this latter equality in turn amounts to an (oblong) sumcheck: indeed, it amounts to the claim whereby the sum, taken over $(u, v) \in D \times \mathcal{B}_{\ell - k}$, of
+
+$$sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1})) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(X, r)$$
+
+is zero.
+
+It follows just as in the normal sumcheck that the verifier can adjudicate this claim by the aid of a sequence of $\ell - k + 1$ _round polynomials_. The first among these will be the univariate polynomial
+
+$$g^*(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).$$
+
+This thing will be of degree as high as $d^* \cdot (2^k - 1) + (2^k - 1) = (d^* + 1) \cdot (2^k - 1)$ in $Y$. To convey $g^*(Y)$ to the verifier, it's thus enough for the prover to compute its value on more than $(d^* + 1) \cdot (2^k - 1)$ _total_ points. On the other hand, we are going to introduce a few optimizations, to make our computation of $g^*(Y)$ more efficient.
+
+### Excising the Lagrange polynomial
+
+The first is a trick inspired by [[Gruen, § 3.2]](https://eprint.iacr.org/2024/108). The idea is that the prover can rather evaluate the simpler polynomial
+
+$$g^{**}(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \sum_{j = 0}^{c - 1} \alpha^j \cdot C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \widetilde{\texttt{eq}}(v, r)$$
+
+on more than $(d^* + 1) \cdot (2^k - 1)$ points, and later "multiply in" $\delta_D(\cdot, s)$ pointwise. We note that both $g^*(Y)$ and $g^{**}(Y)$ will vanish identically on $D$, since each $C_j(\widehat{M}_0(Y, X_0, \ldots , X_{\ell - k - 1}), \ldots , \widehat{M}_{t - 1}(Y, X_0, \ldots , X_{\ell - k - 1}))$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$. It thus suffices for the prover to compute the value of $g^{**}(y)$ for each $y \in D^{**} \setminus D$, where $D^{**} \subset L$ is some "extended" domain containing more than $(d^* + 1) \cdot (2^k - 1)$ points.
+
+### Lifting the batching combination
+
+We are going to do a further optimization whereby $g^{**}(Y)$ is computed "in pieces", independently for each $j \in \{0, \ldots , c - 1\}$, and _only then_ batched. In short, we are going to compute _individually_ the round polynomials
+
+$$g_j(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \widetilde{\texttt{eq}}(v, r).$$
+
+We note that $g^{**}(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ holds. Provided we can compute _each individual_ polynomial $g_j(Y)$—say, in the sense of obtaining its coefficient representation (in the novel polynomial basis)—we can then $\alpha$-combine these polynomials in order to obtain $g^{**}(Y)$. Finally, we can evaluate  $g^{**}(Y)$ over $D^{**} \setminus D$, which—as we just saw above—is enough to achieve what we want.
+
+"Lifting the combination" in this way actually gives us two, completely distinct advantages:
+
+- It lets us lift the the powers-of-$\alpha$ combination _out_ of the "hot loop"—we only have to compute this combination $|D^{**} \setminus D|$ times, as opposed to $2^{\ell - k} \cdot |D^{**} \setminus D|$ times. The tradeoff is that we have to maintain something like $c \cdot |D^{**} \setminus D|$ total space overhead during the process, as opposed to just $|D^{**} \setminus D|$, but this is small change.
+- The respective individual polynomials $g_j(Y)$ are, generally, of _different_ degrees (since the $d_j$s are allowed to be unequal). These differences get washed over when we batch. In particular, in order to uniquely determine $g_j(Y)$, it's enough merely to determine its values on more than $d_j \cdot (2^k - 1)$ points, as opposed to on more than $d^* \cdot (2^k - 1)$ points. This means that we must only evaluate the composition $C_j$ in the hot loop something like $2^{\ell - k} \cdot \left( d_j \cdot (2^k - 1) - 2^k \right)$ times, in order to exhaustively determine $g_j(Y)$, as opposed to the $2^{\ell - k} \cdot \left( d^* \cdot (2^k - 1) - 2^k \right)$ evaluations that would be required to learn $g^{**}(Y)$. (We can subtract $2^k$ points from these expressions, since we don't need to evaluate on $D$.)
+
+So algorithmically, we are going to, for each $j \in \{0, \ldots , c - 1\}$, evaluate $g_j(Y)$ identically over $y \in D_j \setminus D$, where $D_j$ is some domain containing _more than_ $d_j \cdot (2^k - 1)$ points. We will then need to interpolate each $g_j(Y)$ into the coefficient domain, $\alpha$-combine them, and then extrapolate the result onto $D^{**} \setminus D$. Finally, we will multiply the result pointwise by $\delta_D(Y, s)$ on $D^{**} \setminus D$, in order to get $g^*(Y)$.
+
+## The Protocol
+
+Here, we summarize the above developments in a more algorithmically concrete way, emphasizing efficiency considerations.
+
+### Extrapolating the initial data
+
+As was hinted at above, we'll begin by picking, for each $j \in \{0, \ldots , c - 1\}$, an extended domain $D_j \subset L$ which _contains_ $D$ and moreover is of size greater than $d_j \cdot (2^k - 1)$. In practice, we will actually "round up" each $D_j$ by adding $d_j - 1$ points to it, so that it becomes rather of size $d_j \cdot 2^k$. Further, we will want each domain $D_j$ to be a union of cosets of our original domain $D$.
+
+For reasons that will soon be clear, we will further pick an "intermediate" domain $D^*$ that contains each of the individual domains $D_j$. Obviously, $D^*$ can be chosen to be of size $d^* \cdot 2^k$ (recall that $d^* \coloneqq \max_{j = 0}^{c - 1} d_j$). Our first task will be to extrapolate _all_ of our oblong polynomials $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ onto the larger domain $D^* \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$. Concretely, this looks like taking, for each $i \in \{0, \ldots , t - 1\}$, the table of values of $\widehat{M}_i$, partitioning that table into $2^{\ell - k}$ chunks of size $2^k$, and then, in parallel, extrapolating each chunk from $D$ to $D^*$. That is, we interpret each chunk as the _values_ of some unique polynomial of degree less than $2^k$ on $D$ (in fact, this polynomial is nothing other than $\widehat{M}_i(Y, v)$, where $v \in \mathcal{B}_{\ell - k}$ is a chunk index), and then extrapolate that polynomial to $D^*$. This task can itself be achieved efficiently—that is, in $\Theta(k \cdot |D^*|)$ time, per-chunk—using the additive NTT [[LCH14]](https://arxiv.org/abs/1404.3458). Put yet a different way, we are doing $2^{\ell - k}$ independent, parallel, systematic Reed–Solomon encodings, each from a domain of size $2^k$ to a domain of size $d^* \cdot 2^k$.
+
+### Evaluating the composition polynomials
+
+Having done this, we will now proceed through our composition polynomials $j \in \{0, \ldots , c - 1\}$. For each such $j$, we will evaluate $g_j(y)$ (see above) for each $y \in D_j \setminus D$. Note that, for each $v \in \mathcal{B}_{\ell - k}$, the "substrate" values $\widehat{M}_0(y, v), \ldots , \widehat{M}_{t - 1}(y, v)$—i.e., upon which the composition $C_j(Z_0, \ldots , Z_{t - 1})$ must be evaluated—are already available on-hand to us (by design, in light of the extrapolation we just computed and the fact that $D_j \subset D^*$). It will thus remain merely to evaluate the composition $C_j$ on a bunch of ready-made points (something like $2^{\ell - k} \cdot (d_j - 1) \cdot 2^k = 2^\ell \cdot (d_j - 1)$ times).
+
+### Interpolating, combining, and extrapolating the polynomials $g_j(Y)$
+
+After doing this, the prover will have, for each $j \in \{0, \ldots , c - 1\}$, the _values_ of $g_j(Y)$ over $D_j$. The prover will then need to interpolate each of these into the coefficient domain—i.e., into a univariate polynomial of degree less than $d_j \cdot 2^k$ (in fact, $g_j(Y)$ will _a posteriori_ be of degree at most $d_j \cdot (2^k - 1)$). Though this task takes place outside of the "hot loop"—and so is less performance-criticial—we note that it too can be carried out efficiently, using a certain generalization of the additive NTT designed to treat domains whose sizes contain odd cofactors.
+
+At this point, the prover may $\alpha$-combine the polynomials $g_(Y)$ (i.e., in the coefficient domain).
+
+Finally, the prover must evaluate the _combination_ $g^{**}(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ on $D^{**} \setminus D$. This can itself be achieved efficiently using a single forward NTT on the domain $D^{**}$.
