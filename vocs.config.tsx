@@ -7,36 +7,15 @@ export default defineConfig({
   head() {
     return (
       <>
-        <script>
-          {`
-            if (location.pathname !== '/') {
-              // Apply immediately before anything else loads
-              document.documentElement.style.opacity = '0';
-            }
-          `}
-        </script>
-        <style>
-          {`
-            html {
-              transition: opacity 0.2s ease;
-            }
-            html[data-loading] {
-              opacity: 0;
-            }
-          `}
-        </style>
-        <script>
-          {`
-            if (location.pathname !== '/') {
-              // Remove the opacity once everything is ready
-              window.addEventListener('load', () => {
-                requestAnimationFrame(() => {
-                  document.documentElement.style.opacity = '1';
-                });
-              });
-            }
-          `}
-        </script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          if (location.pathname !== '/') {
+            document.documentElement.style.opacity = '0';
+            document.addEventListener('DOMContentLoaded', () => {
+              document.documentElement.style.opacity = '1';
+              document.documentElement.style.transition = 'opacity 0.1s';
+            });
+          }
+        `}} />
       </>
     )
   },
