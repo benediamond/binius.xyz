@@ -7,6 +7,7 @@ export default defineConfig({
   head() {
     return (
       <>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"></link>
         <script dangerouslySetInnerHTML={{ __html: `
           if (location.pathname !== '/') {
             document.documentElement.style.opacity = '0';
