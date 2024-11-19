@@ -58,7 +58,9 @@ It follows just as in the normal sumcheck that the verifier can adjudicate this 
 
 $$g^{**}(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C^*(Y, v) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).$$
 
-(Our naming conventions will become clear shortly.) This thing will be of degree as high as $d^* \cdot (2^k - 1) + (2^k - 1) = (d^* + 1) \cdot (2^k - 1)$ in $Y$. To convey $g^{**}(Y)$ to the verifier, it's thus enough for the prover to compute its value on more than $(d^* + 1) \cdot (2^k - 1)$ _total_ points. On the other hand, we are going to introduce a few optimizations, to make our computation of $g^{**}(Y)$ more efficient.
+(Our naming conventions will become clear shortly.) This thing will be of degree as high as $d^* \cdot (2^k - 1) + (2^k - 1) = (d^* + 1) \cdot (2^k - 1)$ in $Y$. To convey $g^{**}(Y)$ to the verifier, it's thus enough for the prover to compute its value on more than $(d^* + 1) \cdot (2^k - 1)$ _total_ points. We write $D^{**} \subset L$ for an "extended" domain, containing more than $(d^* + 1) \cdot (2^k - 1)$ points. We note that in fact $g^{**}(Y)$ will vanish identically on $D$, since , $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$. It thus suffices for the prover to compute the value of $g^{**}(y)$ for each $y \in D^{**} \setminus D$.
+
+On the other hand, we are going to introduce a few optimizations, to make our computation of $g^{**}(Y)$ more efficient.
 
 ### Excising the Lagrange polynomial
 
@@ -66,7 +68,9 @@ The first is a trick inspired by [[Gruen, § 3.2]](https://eprint.iacr.org/2024/
 
 $$g^*(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C^*(Y, v) \cdot \widetilde{\texttt{eq}}(v, r)$$
 
-on more than $(d^* + 1) \cdot (2^k - 1)$ points, and later "multiply in" $\delta_D(Y, s)$ pointwise. We note that both $g^*(Y)$ and $g^{**}(Y)$ will vanish identically on $D$, since , $C^*(Y, X_0, \ldots , X_{\ell - k - 1})$ vanishes identically on $D \times \mathcal{B}_{\ell - k}$. It thus suffices for the prover to compute the value of $g^*(y)$ for each $y \in D^{**} \setminus D$, where $D^{**} \subset L$ is some "extended" domain containing more than $(d^* + 1) \cdot (2^k - 1)$ points.
+on more than $(d^* + 1) \cdot (2^k - 1)$ points, and later "multiply in" $\delta_D(Y, s)$ pointwise.
+
+We note further that $g^*(Y)$ is of lower degree than $g^{**}(Y)$ is, a fact that we can exploit. Indeed, to capture $g^*(Y)$ exhaustively, we must merely learn its value on more than $d^* \cdot (2^k - 1)$ points. We write $D^*$ for an _intermediate_ domain that contains each of the individual domains $D_j$ (_a fortiori_, $D^*$ will be of size more than $d^* \cdot (2^k - 1)$; we recall that $d^* \coloneqq \max_{j = 0}^{c - 1} d_j$). We note that $g^*(Y)$ too will vanish on $D$. We may thus compute $g^*(Y)$ for each $y \in D^* \setminus D$, and then _extrapolate_ the result onto the larger domain $D^{**} \setminus D$. The point of course is that the work of this extrapolation takes place out of the "hot loop"; it's much easier to extend $g^*(Y)$ onto $D^{**} \setminus D$ this way than by directly using the sum-based definition above.
 
 ### Lifting the batching combination
 
@@ -74,14 +78,14 @@ We are going to do a further optimization whereby $g^*(Y)$ is computed "in piece
 
 $$g_j(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} C_j(\widehat{M}_0(Y, v), \ldots , \widehat{M}_{t - 1}(Y, v)) \cdot \widetilde{\texttt{eq}}(v, r).$$
 
-We note that $g^*(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ holds. Provided we can compute _each individual_ polynomial $g_j(Y)$—say, in the sense of obtaining its coefficient representation (in the novel polynomial basis)—we can then $\alpha$-combine these polynomials in order to obtain $g^*(Y)$. Finally, we can evaluate the combination $g^*(Y)$ over $D^{**} \setminus D$, which—as we just saw above—is enough to achieve what we want.
+We note that $g^*(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ holds. Provided we can compute _each individual_ polynomial $g_j(Y)$—say, in the sense of obtaining its evaluations over the set $D_j \setminus D$—we can then multiply these polynomials by the appropriate powers of $\alpha$, interpolate them individually, and finally add together the results, to get $g^*(Y)$. We can then evaluate this combination $g^*(Y)$ over $D^{**} \setminus D$, which—as we just saw above—is enough to achieve what we want.
 
 "Lifting the combination" in this way actually gives us two, completely distinct advantages:
 
-- It lets us lift the the powers-of-$\alpha$ combination _out_ of the "hot loop"—we only have to compute this combination $|D^{**} \setminus D|$ times, as opposed to $2^{\ell - k} \cdot |D^{**} \setminus D|$ times. The tradeoff is that we now have to maintain something like $c \cdot |D^{**} \setminus D|$ total space overhead during the process, as opposed to just $|D^{**} \setminus D|$, but this is small change.
+- It lets us lift the the powers-of-$\alpha$ combination _out_ of the "hot loop"—we only have to compute this combination on the order of $|D^* \setminus D|$ times, as opposed to $2^{\ell - k} \cdot |D^* \setminus D|$ times. The tradeoff is that we now have to maintain as much as $\sum_{j = 0}^{c - 1} |D_j \setminus D|$ total space overhead during the process, as opposed to just $|D^* \setminus D|$, but this is small change.
 - The respective individual polynomials $g_j(Y)$ are, generally, of _different_ degrees (since the $d_j$s are allowed to be unequal). These differences get washed over when we batch. In particular, in order to uniquely determine $g_j(Y)$, it's enough merely to determine its values on more than $d_j \cdot (2^k - 1)$ points, as opposed to on more than $d^* \cdot (2^k - 1)$ points. This means that we must only evaluate the composition $C_j$ in the hot loop something like $2^{\ell - k} \cdot \left( d_j \cdot (2^k - 1) - 2^k \right)$ times, in order to exhaustively determine $g_j(Y)$, as opposed to the $2^{\ell - k} \cdot \left( d^* \cdot (2^k - 1) - 2^k \right)$ evaluations that would be required to learn $g^*(Y)$. (We can subtract $2^k$ points from these expressions, since we don't need to evaluate on $D$.)
 
-So algorithmically, we are going to, for each $j \in \{0, \ldots , c - 1\}$, evaluate $g_j(Y)$ identically over $y \in D_j \setminus D$, where $D_j$ is some domain containing _more than_ $d_j \cdot (2^k - 1)$ points. We will then need to interpolate each $g_j(Y)$ into the coefficient domain, $\alpha$-combine them, and then extrapolate the result onto $D^{**} \setminus D$. Finally, we will multiply the result pointwise by $\delta_D(Y, s)$ on $D^{**} \setminus D$, in order to get $g^{**}(Y)$.
+So algorithmically, we are going to, for each $j \in \{0, \ldots , c - 1\}$, evaluate $g_j(Y)$ identically over $y \in D_j \setminus D$, where $D_j$ is some domain containing _more than_ $d_j \cdot (2^k - 1)$ points. We will then need to $\alpha$-scale these polynomials' evaluation vectors, interpolate them individually, add them, and then extrapolate the result onto $D^{**} \setminus D$. This will give us $g^*(Y)$; finally, we will multiply the result pointwise by $\delta_D(Y, s)$ on $D^{**} \setminus D$, in order to get $g^{**}(Y)$.
 
 ## The Protocol
 
@@ -89,9 +93,9 @@ Here, we summarize the above developments in a more algorithmically concrete way
 
 ### Extrapolating the initial data
 
-As was hinted at above, we'll begin by picking, for each $j \in \{0, \ldots , c - 1\}$, an extended domain $D_j \subset L$ which _contains_ $D$ and moreover is of size greater than $d_j \cdot (2^k - 1)$. In practice, we will actually "round up" each $D_j$ by adding $d_j - 1$ points to it, so that it becomes rather of size $d_j \cdot 2^k$. Further, we will want each domain $D_j$ to be a union of cosets of our original domain $D$.
+As was hinted at above, we'll begin by picking, for each $j \in \{0, \ldots , c - 1\}$, an extended domain $D_j \subset L$ which _contains_ $D$ and moreover is of size greater than $d_j \cdot (2^k - 1)$. In practice, we will actually "round up" each $D_j$ by adding $d_j - 1$ points to it, so that it becomes rather of size $d_j \cdot 2^k$. Further, we will want each domain $D_j$ to be a union of cosets of our original domain $D$. We will finally pick domain $D^*$ as before; we can actually just let $D^* \coloneqq \bigcup_{j = 0}^{c - 1} D_j$.
 
-For reasons that will soon be clear, we will further pick an "intermediate" domain $D^*$ that contains each of the individual domains $D_j$. Obviously, $D^*$ can be chosen to be of size $d^* \cdot 2^k$ (recall that $d^* \coloneqq \max_{j = 0}^{c - 1} d_j$). Our first task will be to extrapolate _all_ of our oblong polynomials $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ onto the larger domain $D^* \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$. Concretely, this looks like taking, for each $i \in \{0, \ldots , t - 1\}$, the table of values of $\widehat{M}_i$, partitioning that table into $2^{\ell - k}$ chunks of size $2^k$, and then, in parallel, extrapolating each chunk from $D$ to $D^*$. That is, we interpret each chunk as the _values_ of some unique polynomial of degree less than $2^k$ on $D$ (in fact, this polynomial is nothing other than $\widehat{M}_i(Y, v)$, where $v \in \mathcal{B}_{\ell - k}$ is a chunk index), and then extrapolate that polynomial to $D^*$. This task can itself be achieved efficiently—that is, in $\Theta(k \cdot |D^*|)$ time, per-chunk—using the additive NTT [[LCH14]](https://arxiv.org/abs/1404.3458). Put yet a different way, we are doing $2^{\ell - k}$ independent, parallel, systematic Reed–Solomon encodings, each from a domain of size $2^k$ to a domain of size $d^* \cdot 2^k$.
+Our first task will be to extrapolate _all_ of our oblong polynomials $\widehat{M}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ onto the larger domain $D^* \times \mathcal{B}_{\ell - k} \subset L^{\ell - k + 1}$. Concretely, this looks like taking, for each $i \in \{0, \ldots , t - 1\}$, the table of values of $\widehat{M}_i$, partitioning that table into $2^{\ell - k}$ chunks of size $2^k$, and then, in parallel, extrapolating each chunk from $D$ to $D^*$. That is, we interpret each chunk as the _values_ of some unique polynomial of degree less than $2^k$ on $D$ (in fact, this polynomial is nothing other than $\widehat{M}_i(Y, v)$, where $v \in \mathcal{B}_{\ell - k}$ is a chunk index), and then extrapolate that polynomial to $D^*$. This task can itself be achieved efficiently—that is, in $\Theta(k \cdot |D^*|)$ time, per-chunk—using the additive NTT [[LCH14]](https://arxiv.org/abs/1404.3458). Put yet a different way, we are doing $2^{\ell - k}$ independent, parallel, systematic Reed–Solomon encodings, each from a domain of size $2^k$ to a domain of size $d^* \cdot 2^k$.
 
 ### Evaluating the composition polynomials
 
@@ -101,9 +105,9 @@ We thus see why we evaluated the $\widehat{M}_i$s onto $D^*$—we wanted to prep
 
 ### Interpolating, combining, and extrapolating
 
-After doing this, the prover will have, for each $j \in \{0, \ldots , c - 1\}$, the _values_ of $g_j(Y)$ over $D_j$. The prover will then need to interpolate each of these into the coefficient domain—i.e., into a univariate polynomial of degree less than $d_j \cdot 2^k$ (in fact, $g_j(Y)$ will _a posteriori_ be of degree at most $d_j \cdot (2^k - 1)$). Though this task takes place outside of the "hot loop"—and so is less performance-criticial—we note that it too can be carried out efficiently, using a certain generalization of the additive NTT designed to treat domains whose sizes contain odd cofactors.
+After doing this, the prover will have, for each $j \in \{0, \ldots , c - 1\}$, the _values_ of $g_j(Y)$ over $D_j$. The prover will then need to $\alpha$-scale these things (i.e., for each $j \in \{0, \ldots , c - 1\}$, multiply $g_j(Y)$'s evaluations pointwise by $\alpha^j$). This will take $(d_j - 1) \cdot 2^k$ multiplications per polynomial (here, we exploit the fact that $g_j(Y)$ is nonzero only over $D_j \setminus D$). Finally, the prover will interpolate each of the resulting (scaled) evaluation vectors into the coefficient domain. Though this task takes place outside of the "hot loop"—and so is less performance-criticial—we note that it too can be carried out efficiently, using a certain generalization of the inverse additive NTT designed to treat domains whose sizes contain odd cofactors.
 
-At this point, the prover may $\alpha$-combine the polynomials $g_j(Y)$ (i.e., in the coefficient domain).
+At this point, the prover may add together the appropriately scaled polynomials $g_j(Y)$ (i.e., in the coefficient domain).
 
 Finally, the prover must evaluate the _combination_ $g^*(Y) = \sum_{j = 0}^{c - 1} \alpha^j \cdot g_j(Y)$ on $D^{**} \setminus D$. This can itself be achieved efficiently using a single forward NTT on the domain $D^{**}$. At this point, the prover may multiply pointwise by $\delta_D(Y, s)$ on $D^{**} \setminus D$, thereby obtaining $g^{**}(Y)$.
 
@@ -117,7 +121,7 @@ Up to a soundness error of $\frac{(d^* + 1) \cdot 2^k}{|L|}$ over the verifier's
 
 $$a \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell - k}} C^*(s', X_0, \ldots , X_{\ell - k - 1}) \cdot \delta_D(s', s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r).$$
 
-This latter thing is a perfectly good $\ell - k$-variate sumcheck over $L$, and can be handled using the [usual algorithms](/) for that task.
+This latter thing is a perfectly good $\ell - k$-variate sumcheck over $L$, and can be handled using the [usual algorithms](/todo) for that task.
 
 ### Specializing the rectangular polynomials
 
@@ -125,9 +129,13 @@ We note that the prover will need to compute, for each $i \in \{0, \ldots , t - 
 
 ### The very end
 
-At the very end, the verifier will need to ascertain the respective values, for $i \in \{0, \ldots , t - 1\}$, of $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, for certain further challenges $(r'_0, \ldots , r'_{\ell - k - 1})$ sampled during the course of the positive-indexed rounds of the zerocheck. Getting these values requires a bit of trickery, since our standard PCS evaluation scheme only lets us evaluate the standard $M_i$s (without the hats) on points in $L^\ell$. As we argue in our section on [ring-switching](/), the $\widehat{M}_i$ too can be evaluated efficiently, though the details are subtle.
+At the very end, the verifier will need to ascertain the respective values, for $i \in \{0, \ldots , t - 1\}$, of $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, for certain further challenges $(r'_0, \ldots , r'_{\ell - k - 1})$ sampled during the course of the positive-indexed rounds of the zerocheck. Getting these values requires a bit of trickery, since our standard PCS evaluation scheme only lets us evaluate the standard $M_i$s (without the hats) on points in $L^\ell$. As we argue in our section on [ring-switching](/todo), the $\widehat{M}_i$ too can be evaluated efficiently, though the details are subtle.
 
 
 ## Efficiency Matters
 
-To complete.
+The key point is that the entire "univariate skip" procedure above can be carried out over various small fields. The full picture is complicated, since there are many different fields at play (at least _a priori_). Indeed, the underlying multilinears $M_i(X_0, \ldots , X_{\ell - 1})$ could even be defined over different fields. Barring that, the composition polynomials $C_j$ also could be. To simplify our analysis below, we assume that all of the $M_i$s and $C_j$s are defined over the single field $K$. Finally, we write $K^*$ and $K^{**}$, respectively, for the minimally large tower fields large enough to contain $D^*$ and $D^{**}$. In practice, we will choose the $\mathbb{F}_2$-vector subspaces $D^*$ and $D^{**}$ of $L$ in such a way that they "play nicely" with $L$'s field structure. That is, we will design these subspaces in such a way as to be contained in as small a subfield of $L$ as possible. (This is easy to do provided we choose an $\mathbb{F}_2$-basis such that all of $L$'s subfields are generated by appropriate prefixes of the basis. The tower basis described in [[DP23, § 2.3]](https://eprint.iacr.org/2023/1784) has this property.)
+
+We sketch the key sources of efficiency gain as follows. For each $j \in \{0, \ldots , c - 1\}$, the extrapolation of the polynomials $\widehat{M}_i(Y, v)$ (for varying $v \in \mathcal{B}_{\ell - k}$) from $D$ to $D^*$ can be carried out entirely over the _larger_ of the two fields $K$ and $K^*$. Moreover, when these fields differ, further efficiency gains can be realized. (For example, if $K = \mathbb{F}_2$, then we must merely extrapolate a _bit-vector_ over $K^*$; this task is more efficient than extrapolating a $K^*$-vector is.) Similarly, the evaluation of the constraint polynomial $C_j$ over the entirety of $D^* \times \mathcal{B}_{\ell - k}$ can be carried out exclusively over the larger among the fields $K$ and $K^*$.
+
+The precise field required is a bit subtle. Indeed, we write $K$ as before for our polynomials' coefficient field. For simplicity, we assume that each composition polynomial $C_j$ is also defined over $K$, as well as that $K$ is sufficiently large that it can be made to contain $D^{**}$.
