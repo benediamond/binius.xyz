@@ -34,15 +34,14 @@ export default defineConfig({
       link: '/introduction',
     },
     {
+      text: 'Overview',
+      link: '/overview',
+    },
+    {
       text: 'Arithmetization',
       collapsed: false,
       link: '/arithmetization/',
-      items: [
-        {
-          text: 'Multi-Multiset Matching',
-          link: '/arithmetization/matching',
-        },
-      ],
+      items: [],
     },
     {
       text: 'Reductions',
@@ -70,6 +69,8 @@ export default defineConfig({
       text: 'Cryptography',
       collapsed: false,
       link: '/cryptography/',
+      items: [
+      ]
     }
   ],
 })

@@ -5,13 +5,15 @@ import { Callout } from 'vocs/components';
  
  # Binius [A SNARK protocol over towers of binary fields, implemented in Rust]
 
-_Binius_ is a state-of-the-art noninteractive succinct proof. It comprises a theoretical cryptographic protocol, expounded in a sequence of recent technical manuscripts [[1]](https://eprint.iacr.org/2023/1784) [[2]](https://eprint.iacr.org/2024/504), a production-grade [Rust implementation](https://gitlab.com/IrreducibleOSS/binius) of that protocol, and finally a documentation suite, featured on this very website.
+_Binius_ is a state-of-the-art noninteractive succinct proof. It comprises a theoretical cryptographic protocol (expounded in a sequence of recent technical manuscripts [[1]](https://eprint.iacr.org/2023/1784) [[2]](https://eprint.iacr.org/2024/504)), a production-grade [Rust implementation](https://gitlab.com/IrreducibleOSS/binius) of that protocol, and finally a documentation suite, featured on this very website.
 
 Binius's underlying cryptographic protocol operates natively over _towers of binary fields_, mathematical objects which, on the one hand, efficiently arithmetize natural problems of interest (like standard hash functions), and, on the other, admit extremely efficient implementations in both software and hardware. Binius's full codebase resides on GitLab at [`IrreducibleOSS / binius`](https://gitlab.com/IrreducibleOSS/binius/). That codebase contains not just Binius's core prover and verifier logic, but moreover various examples which serve to exhibit that system's end-to-end behavior on tasks of essential interest (like Merkle–Patricia trie inclusion proving).
 
 ## Site Directory
 
-In this site, we thoroughly document Binius, at a level of detail appropriate for public consumption. Binius, in sum, spans roughly three separate layers of abstraction, which we outline now.
+For a first, high-level look, please start with our [overview page](/overview).
+
+Below, we sketch this site's main sub-areas in slightly more detail. Binius, in sum, spans roughly three separate layers of abstraction, which we outline now.
 
 <Callout type="note" className="hover:bg-highlight">
 <Collapsible>
