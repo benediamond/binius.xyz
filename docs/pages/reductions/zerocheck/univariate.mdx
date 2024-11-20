@@ -115,7 +115,7 @@ This completes the specification of the prover's computation of $g^{**}(Y)$.
 
 ## The verifier's challenge and beyond
 
-Upon receiving $g^{**}(Y)$, the verifer may finally sample $s' \gets L$ and send it to the prover. Locally, the verifier will need to first check $0 \stackrel{?}= \sum_{y \in D^{**} \setminus D} g^{**}(Y)$, and then update its running sum claim to $a \coloneqq g^{**}(s')$.
+Upon receiving $g^{**}(Y)$, the verifer may finally sample $s' \gets L$ and send it to the prover. Locally, the verifier will need to check that $g^{**}(y) = 0$ for each $y \in D$; in practice, the prover won't even send these points (so this will be true by _fiat_). The verifier will then update its running sum claim to $a \coloneqq g^{**}(s')$.
 
 Up to a soundness error of $\frac{(d^* + 1) \cdot 2^k}{|L|}$ over the verifier's choice of $s' \in L$, our task has thus been reduced to showing that
 

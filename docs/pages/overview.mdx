@@ -32,4 +32,8 @@ Separately, the verifier [checks](https://gitlab.com/IrreducibleOSS/binius/-/blo
 
 For the M3 instance to be satisfied, not only must the prover's tables balance the system's channels, but its tables must moreover satisfy the system's _constraints_. Constraints are essentially multivariate polynomials, each with as many variables as the number of columns of the table upon which it acts. A table is said to _satisfy_ a constraint if that constraint vanishes identically on each of the table's rows.
 
-The _zerocheck_ is a key tool which allows the verifier to reduce _vanishing claims_ of this sort to further evaluation claims.
+The _zerocheck_ is the key tool for this problem. Zerocheck reduces _vanishing claims_ for composites of multilinears to _evaluation claims_ on the underlying multilinears. The classical zerocheck technique is essentially a thin wrapper around the sumcheck.
+
+Because we work over small fields, we in fact adopt a rather sophisticated [variant](/) of the zerocheck, called the _univariate skip_. Very roughly, this zerocheck treats the 0th round in a special way, and moves as much work as possible into that round. Our verifier's zerocheck-specific work takes place in [this block](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/constraint_system/verify.rs?ref_type=heads#L178-227) of verifier code.
+
+## Evalcheck
