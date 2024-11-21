@@ -62,6 +62,14 @@ export default defineConfig({
               link: "/reductions/zerocheck/standard"
             }
           ]
+        },
+        {
+          text: "Multiset Check",
+          link: "/reductions/multiset",
+        },
+        {
+          text: "GKR-Based Grand Product",
+          link: "/reductions/gpa",
         }
       ],
     },
