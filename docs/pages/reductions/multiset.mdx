@@ -1,0 +1,15 @@
+# Multiset-Check [Reducing multiset equality to grand-product claims]
+
+_Stashing content here; this page is not done._
+
+Zooming into a single channel, we write $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$ for the _pair_ of tuples of $\ell$-variate virtual polynomials at issue. The _multiset equality_ claim entails that the multisets of values taken by these tuples over the cube—that is, the multisets
+
+$$\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$ and $$\left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$,
+
+viewed as multi-subsets of $\mathcal{T}_\tau^\mu$—are equal.
+
+What [[DP23](https://eprint.iacr.org/2023/1784.pdf), § 4] tells us is that to check this claim, _it suffices in turn_ (up to some negligible soundness error) for the verifier to sample a _fingerprinting challenge_ $s$ and a _permutation challenge_ $r$, and to check instead that the virtual polynomials:
+
+$$T^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$ and $$U^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$$
+
+have identical _grand products_. That is, it's enough to check that $\prod_{v \in \mathcal{B}_\ell} T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} U^*(v)$.

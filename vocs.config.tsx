@@ -70,6 +70,10 @@ export default defineConfig({
         {
           text: "GKR-Based Grand Product",
           link: "/reductions/gpa",
+        },
+        {
+          text: "Evalcheck",
+          link: "/reductions/evalcheck",
         }
       ],
     },

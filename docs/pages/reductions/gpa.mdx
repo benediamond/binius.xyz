@@ -1,0 +1,15 @@
+# GKR-Based Grand Product [A grand-product protocol with no commitment overhead]
+
+_Stashing content here; this page is not done._
+
+we have a clear way to express $T^*_k(v)$ in terms of $T^*_{k + 1}$:
+
+$$T^*_k(v) = T^*_{k + 1}(v \mathbin{\Vert} 0) \cdot T^*_{k + 1}(v \mathbin{\Vert} 1)$$.
+
+Because $T^*_k$ is multilinear by _fiat_, we obtain an expression for it in terms of $T^*_{k + 1}$ by taking the MLE of the right-hand side above:
+
+This trick gives us a way to reduce a claim about $T^*_k$ to a claim about $T^*_{k + 1}$. Indeed, the claim $T^*_k(r_k) \stackrel{?}= a_k$ amounts to the claim:
+
+$$a_k \stackrel{?}= \sum_{v \in \mathcal{B}_k} T^*_{k + 1}(v \mathbin{\Vert} 0) \cdot T^*_{k + 1}(v \mathbin{\Vert} 1) \cdot \widetilde{\texttt{eq}}(v, r_k)$$,
+
+which is exactly the kind of thing we can easily sumcheck. Indeed, after running $k$-sumcheck rounds, the verifier can reduce the claim $T^*_k(r_k) \stackrel{?}= a_k$ to the further claim $T^*_{k + 1}(r_{k + 1}) \stackrel{?}= a_{k + 1}$, for some further values $r_{k + 1}$ and $a_{k + 1}$ obtained during the sumcheck. By performing this repeatedly, we get a way to reduce the initial grand product claim $a = a_0 \stackrel{?}= T_0(\varnothing) = \prod_{v \in \mathcal{B}_\ell} T^*(v)$ to an evaluation claim of the form $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$.
