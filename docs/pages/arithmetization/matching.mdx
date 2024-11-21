@@ -1,10 +1,109 @@
 # M3: Multi-Multiset Matching
  
 ## Introduction
-Before diving into the details, we informally describe the M3 model of computation. It is helpful to begin with the PLONKish model
-of computation as a point of comparison.
+Before diving into the details, we informally describe the M3 model of computation.  We fix a finite field $\mathbb F_q$.
+We also fix a multiplicative generator $\alpha\in \mathbb F_q^{\times}$.
 
-In the following, we fix a large finite field $\mathbb F$.
+### An informal description of M3
+M3 is a constraint-system model of computation. A primary novelty, in comparison to other models of
+computation, is the use of a kind of generalized multisets, where the multiplicity of elements may be negative.
+We call such gadgets *channels*.
+
+In M3 one has several *tables* and several *channels*. To each table $T$, there is a list of polynomial
+constraints that each row must satisfy. However, the order of the rows **does not matter**.
+
+The channels facilitate communication between the tables. Roughly speaking, for each pair $(T,C)$ of a 
+table and a channel and for each filled-in row $R$ of $T$, there are *flushing rules* that add "to be proven" statements and removes "already shown" claims to the channel.
+(If we think of a channel as a generalized multiset, removing an element could cause the "multiplicity" of the element to become
+negative.)
+
+There are boundary constraints/initial conditions on the channels. The analogy in imperative programming is "inputs" and "outputs". Here, we think
+of boundary constraints as being "things we would like to prove" and "things we already know".
+
+A *satisfying assignment* of an M3 instance is a filling-in of some rows of each table $T$ such that:
+* for each table $T$ and each associated polynomial constraint $f_{T,i}$, each row $R$ of $T$ satifies $f_{T,i}$; and
+* after flushing each row of each table, each channel $C$ is balanced, i.e., is the *empty generalized multiset*.
+
+## Formal description
+### Channels
+A channel $C$ consists of
+* a positive integer $r_C$; and
+* a function $i_C\colon \mathbb F_q^{r_c}\rightarrow \mathbb Z$.
+
+We call a channel $C$ *balanced* if the function $i_C$ is identically 0.
+
+Psychologically
+* we think of each channel as have an associated tuple of *types*; while these primitive
+types may include: $32$-bit unsigned integers, op-codes, field elements themselves, etc., we will always represent them as field elements.
+* a channel may be thought of as a generalized multiset whose elements are in $\mathbb F^{r_c}$ and whose multiplicities may be positive or negative.
+The function $i_C$ is then the *indicator function* for this generalized multiset.
+* an element occuring with multiplicity $1$ corresponds to "a claim that must be shown"; an element occuring with multiplicity $-1$
+corresponds to "a claim that has already been shown". (Similarly, an element occuring with positive multiplicity $k$ corresponds to an element
+that "must be shown $k$ times".)
+* a balanced channel corresponds to the empty generalized multiset.
+
+### Constraint Tables
+A *constraint table* consists of:
+* a table/grid, with with $n_T$ columns and a maximum of $m_T$ rows.
+* a finite list $f_{T,i}$ of $n_T$-variate polynomials with coefficients in $\mathbb F_q$;
+* for each channel $C$, there are
+    * a collection of $r_C$-tuple of $n_T$-variate polynomials $(\text{push}_{T,C,j})_j$; and
+    * a collection of $r_C$-tuple of $n_T$-variate polynomials $(\text{pull}_{T,C,j})_j$.
+
+Note that each collection may be empty. The most common use case will be where, for any given $(T,C)$, the collection
+will either be empty or consist of a single $r_C$-tuple of $n_T$-variate polynomials.
+
+Psychologically
+* we think of the elements of the table as witnessing some part of the execution trace of the a subroutine of our desired computation.
+* the polynomial constraints $f_{T,i}$ on the rows ensure that these "primitive execution steps" are correct.
+* for any $j$, we may think of $\text{push}_{T,C,j}$ as a machine that takes as input elements of $\mathbb F_q^{n_T}$ and outputs
+elements of $\mathbb F_q^{r_C}$. (The same is naturally true of $\text{pull}_{T,C,j}$.)
+* the pushing and pulling polynomials allow for coordination with the channels, as we will see in the description of flushing.
+
+### Flushing
+Once a row $R$ in a routing table $T$ has been filled, it may be *flushed*; this means that for
+each channel $C$,
+* for each $j$, the polynomial $\text{push}_{T,C,j}$ is applied to $R$ to obtain an element of $x_j:=\text{push}_{T,C, j}(R)\in\mathbb F_q^{r_C}$. We then
+increment $i_C(x_j)$, i.e., do `i_C(x_j) += 1`.
+* for each $j$, the polynomial $\text{pull}_{T,C, j}$ is applied to $R$ to obtain an element of $y_j:=\text{pull}_{T,C,j}(R)\in\mathbb F_q^{r_C}$. We then
+decrement $i_C(y_j)$, i.e., do `i_C(y_j) -= 1`.
+
+Psychologically
+* for a given row $R$ of a routing table $T$ and a given channel $C$, the flushing rules generate
+what we loosely referred to as "what has been proven" ($y$) and "what remains to be proven" ($x$) claims.
+    * if we imagine the channel as consisting of claims needing to be shown, then pulling and pushing "replaces" a claim that needs to
+    be shown with a (presumbly slightly easier) claim that needs to be shown.
+* flushing rules permit *communication/coordination* between routing tables.
+### Boundary constraints
+At the start of an M3 instance, the channels will usually not be balanced, i.e., $i_C$ will not not the zero-function.
+We call these initial conditions the *boundary constraints*. Boundary constraints may be either hard-coded
+into the M3 problem or instance-specific.
+
+Psychologically
+* if we imagine channels as generalized multisets, then typically the boundary constraints correspond to: "what we want to show" (which occurs with multiplicity $1$
+and "what we know" (which occurs with multiplicity $-1$)
+
+### Model of computation
+An M3 instance is specified by a set of routing tables $\{T\}$, a set of channels $\{C\}$, and a set of flushing rules. Note
+that the channels may not start out balanced.
+
+A *satisfying assignment* of the M3 instance with boundary constraints corresponds to filling in the
+constraint tables with elements of $\mathbb F$ such that the following hold:
+* for every contraint table $T$ and every polynomial constraint $f_{T,i}$ associated to $T$, each row of $T$ satisfies $f_{T,i}$; and
+* after applying all of the flushing rules $\text{push}_{T,C}$ and $\text{pull}_{T,C}$, every channel is balanced.
+
+It is easy to see that both the search and decision version of M3-satisfiability are NP-complete problems.
+
+### The name
+One convenient way of representing a channel $C$ is as a *pair of multisets* $S_C$ and $S'_C$, with elements in $\mathbb F_q^{r_C}$.
+In particular, the multiplicities of the elements of $S_C$ and $S'_C$ are all positive. (However, the multisets are not necessarily
+disjoint!) Without loss of generality, pushing only affects $S_C$ and pulling only affects $S'_C$. Then checking that a channel is balanced
+will amount to checking that the multisets $S_C$ and $S'_C$ are the same.
+
+Hence, checking the satisfiability of an M3 instance amounts to *matching multiple multisets*.
+
+## Motivation
+There are several interrelated motivations for M3. At this point, it is useful to compare to PLONKish arithmetization.
 ### PLONKish arithmetization
 
 PLONKish arithmetization works as follows. One has a large table/grid $T$, of dimensions $m\times n$, and a list of $n$-variate polynomials $f_{i}$.
@@ -20,79 +119,83 @@ In particular, the PLONKish model has the following two properties:
 * there is one large table and each row must satisfy the *same polynomial constraints*; and
 * the order of the rows matters due to copy-constraints or the shifted-column constraints.
 
-### M3
-In contrast, in M3 one has several *routing tables* and several *channels*. A routing table $T$
-is similar to the PLONKish table, in that each row satisfies a fixed list of polynomial constraints. However, the order of the
-rows **does not matter**. As indicated above, this forbids the use of copy constraints or shifted-column constraints.
+### Overhead
+In PLONKish systems, there are (at least) the following two types of overhead.
+* *Uniformity Overhead*. It is common for the the constraint polynomials to be sparse. In other words,
+for a given constraint polynomial, most columns are not involved.
+* *Padding Overhead*. Typically, when one commits to the columns of a table, one pads to force the height
+of the table to be a power of 2. (This is for concrete efficiency reasons having to do with the PCS).
 
-The channels, whatever they are, facilitate *communication* between the routing tables. Each channel roughly has two
-types of statements: statements we have already proven and statements we wish to prove. For each pair $(T,C)$ of a routing
-table and a channel, there is a rule that adds a "to be proven" statement and a "already shown" claim to the channel.
+Routing tables allow one to circumvent the former, and any approach with multiple tables has a tendency to shrink the required padding overhead).
 
-Internally, a channel is represented by a pair of multisets; as above, the meaning of one multiset is approximately
-"claims we have proven" and the meaning of the other is approximately "claims to be shown".
+### Non-temporal nature
+In the model, note that the order of the filled-in rows in the routing tables is irrelevant. Moreover,
+there simply *is no notion of order* for the channels. We think of this as an extreme form of non-determinism.
+The ordering is instead replaced by the flushing rules and checking that the channels are balanced; one may think
+of the flushing rules as a complex orchestration of the computation at hand.
 
-An M3 instance is *satisfied* if the following hold:
-* for each routing table $T$ and each associated polynomial constraint $f_{T,i}$, each row of $T$ satifies $f_{T,i}$; and
-* each channel $C$ is balanced, i.e., each pair of multisets $S_{ C}$ and $S'_{C}$ associated to a channel are the same as multisets.
 
-## Formal description
-### Channels
-A channel $C$ consists of:
-* a positive integer $r_C$
-* a pair of multisets $S_C$ and $S'_C$, where each element of either is an element of $\mathbb F^r$, i.e., an $r$-tuple of field elements.
+### Variable length inputs
+**TODO**
 
-Psychologically
-* we think of each channel as have an associated tuple of *types*; while these primitive
-types may include: $32$-bit unsigned integers, op-codes, field elements themselves, etc., we will always represent them as field elements.
-* the multiset $S_C$ roughly represents "claims we have proven" and the multiset $S'_C$ represents "claims to be shown".
-This is not precisely accurate but is a good rough heuristic.
+### Non-global nature
+Most approaches to zkVMs have a single global execution trace as a table. M3 has nothing of the sort; instead, it is the flushing rules
+which permit coordination between the simpler and more narrow routing tables.
 
-### Routing tables
-A *routing table* consists of:
-* a table/grid, with with $n_T$ columns and a maximum of $m_T$ rows.
-* a finite list $f_{T,i}$ of $n_T$-variate polynomials with coefficients in $\mathbb F$;
-* for each channel $C$:
-    * an $r_C$-tuple of $n_T$-variate polynomials $\text{push}_{T,C}$; and
-    * an $r_C$-tuple of $n_T$-variate polynomials $\text{pull}_{T,C}$.
+## Examples and patterns
+We discuss some basic examples and patterns.
 
-Psychologically
-* we think of the elements of the table as witnessing some part of the execution trace of the a subroutine of our desired computation.
-* the polynomial constraints $f_{T,i}$ on the rows ensure that these "primitive execution steps" are correct.
+### Fibonacci
+As usual, we start with the example of computing the $n^{\text{th}}$ element of the Fibonacci sequence. 
+It turns out to be mildly more convenient to prove both the values of $F_n$ and $F_{n+1}$ if $n$ is odd and $F_{n-1}$ if $n$ is even.
+Here is one example for using the M3 constraint system to encode this problem.
 
-### Flushing
-Once a row $R$ in a routing table $T$ has been filled, it may be *flushed*; this means that for
-each channel $C$,
-* the polynomial $\text{push}_{T,C}$ is applied to $R$ to obtain an element of $\mathbb F^{r_C}$ and
-this element is then inserted in $S'_C$; and
-* the polynomial $\text{pull}_{T,C}$ is applied to $R$ to obtain an element of $\mathbb F^{r_C}$ and
-this element is then inserted in $S_C$.
+We have one channel $C$, with $r_C=3$. The elements of $C$, $(z_0,z_1, z_2)$, have the following meaning: if $z_0 = \alpha^k$, then $F_k = z_1$
+and $F_{k+1} = z_2$. (**TODO:** should I put the second thing also in the exponent or is `u32_add` easier?)
 
-Psychologically
-* for a given row $R$ of a routing table $T$ and a given channel $C$, the flushing rules generate
-what we loosely referred to as "what has been proven" and "what remains to be proven" claims.
-    * if we imagine the channel as consisting of claims needing to be shown, then pulling and pushing "replaces" a claim that needs to
-    be shown with a (presumbly slightly easier) claim that needs to be shown.
-* flushing rules permit *communication/coordination* between routing tables.
-### Boundary constraints
-At the start of an M3 instance, there will typically be elements inserted each of the multisets of some subset of the columns.
-We call these *boundary constraints*, and they may also be called "initial conditions". Boundary constraints may be either hard-coded
-into the M3 problem or instance-specific.
+Our boundary constraints will then be: $(\alpha^{n-1}, F_{n-1}, F_n)$ with multiplcity $1$ and $(1, 1, 1)$ with multiplicity $-1$.
 
-### Model of computation
-An M3 instance is specified by a set of routing tables $\{T\}$ and a set of channels $\{C\}$; the latter
-may not start out empty. (As above, we call the initial elements of $S_C$ and $S'_C$ the "boundary constraints".)
+The constraint table $T$ has five columns. An element $(x_0,x_1,x_2,x_3,x_4)$ corresponds to the following statement. Suppose
+$x_0 = g^i$. Then if  $F_{i-3} = x_1$ and $F_{i-2} = x_2$, then $F_{i-1} = x_3$ and $F_{i} = x_4$. In particular, there are two
+polynomial constraints on $T$:
+1. $ x_1 +_{\text{u32-add}} x_2 = x_3.$
+2. $ x_2 +_{\text{u32-add}} x_3 = x_4.$
 
-A *satisfying assignment* of the M3 instance with boundary constraints corresponds to filling in the
-routing tables with elements of $\mathbb F$ such that the following hold:
-* for every routing table $T$ and every polynomial constraint $f_{T,i}$ associated to $T$, each row of $T$ satisfies $f_{T,i}$; and
-* after applying all of the flushing rules $\text{push}_{T,C}$ and $\text{pull}_{T,C}$, for every
-channel $C$, the multisets $S_C$ and $S'_C$ are equal, i.e., the channel $C$ is *balanced*.
+The flushing rules are as follows.
+* $\text{push}_0(X_0,X_1,X_2,X_3, X_4) = (X_0*\alpha^{-3}, X_1)$
+* $\text{push}_1(X_0,X_1,X_2,X_3, X_4) = (X_0*\alpha^{-2}, X_2)$
+* $\text{pull}_0(X_0,X_1,X_2,X_3, X_4) = (X_0 * \alpha^{-1}, X_3)$
+* $\text{pull}_1(X_0,X_1,X_2,X_3, X_4) = (X_0 , X_4)$
+### Branching
+### ROM
+The pattern for ROM access closely resembles the Lasso protocol.
 
+
+
+### RAM (offline memory checking)
+### Program stack
+### a program with a bit of stochastic behavior
+
+
+
+
+## Prior work
+
+### Comparison (to be heavily edited)
+At its core, there is a mathematical claim: the use of M3 seems to offer no disadvantages compared to PLONKish arithmetization and
+often offers advantages. **TODO:** add precise parameters.
+
+## Examples
+
+We have the following examples to show how to accomplish basic tasks using M3.
+
+
+
+## To be put somewhere else (in the proving system?)
 ### Interactive oracle proof
 Given an M3 instance with boundary constraints, a prover wishes to prove to a verifier that they
 know a satisfying assignment. Here is a simple way to accomplish this.
-1. The prover fills in the routing tables $T$ and, for each column of each routing table, sends an oracle of the column.
+1. The prover fills in the constraint tables $T$ and, for each column of each routing table, sends an oracle of the column.
 2. The verifier must check:
     (a) that the rows in each routing table $T$ all satisfy $f_{T,i}$; and
     (b) after applying the flushing rules, each channel is balanced.
@@ -106,49 +209,3 @@ the verifier picks $r\in \mathbb F$ and and then the prover and verifier engage 
 $$\prod_{s\in S_C}(s-r) = \prod_{s'\in S'_C}(s'-r).$$
 There are a variety of ways one could implement this, but they all require the verifier querying the column oracles
 from the routing tables together with knowledge of the flushing rules.
-
-### Small fields
-It may happen that we know that certain columns of a routing table $T$ always live in a given subfield of $\mathbb F$.
-As will be discussed later, we incorporate such properties to concretely improve efficiency.
-
-## Commentary (to be heavily edited)
-## Motivation
-There are several interrelated motivations for M3.
-### Overhead
-In PLONKish systems, there are (at least) the following two types of overhead.
-* *Uniformity Overhead*. It is common for the the constraint polynomials to be sparse. In other words,
-for a given constraint polynomial, most columns are not involved.
-* *Padding Overhead*. Typically, when one commits to the columns of a table, one pads to force the height
-of the table to be a power of 2. (This is for concrete efficiency reasons having to do with the PCS).
-
-Routing tables allow one to circumvent the former, and any approach with multiple tables has a tendency to shrink the required padding overhead).
-
-### Variable length inputs
-**TODO**
-### Non-temporal nature
-In the model, note that the order of the filled-in rows in the routing tables is irrelevant. Moreover,
-there simply *is no notion of order* for the channels. We think of this as an extreme form of non-determinism.
-The ordering is instead replaced by the flushing rules and checking that the channels are balanced; one may think
-of the flushing rules as a complex orchestration of the computation at hand.
-
-The copy-constraints/shifted-column constraints in PLONKish arithmetization were what forced the rows to have a definite order. **TODO**
-in our examples section, we explain how to imitate this behavior using M3.
-
-### Non-global nature
-Most approaches to zkVMs have a single global execution trace as a table. M3 has nothing of the sort; instead, it is the flushing rules
-which permit coordination between the simpler and more narrow routing tables.
-
-### Prior work
-
-### Comparison (to be heavily edited)
-At its core, there is a mathematical claim: the use of M3 seems to offer no disadvantages compared to PLONKish arithmetization and
-often offers advantages. **TODO:** add precise parameters.
-
-## Examples
-
-We have the following examples to show how to accomplish basic tasks using M3.
-
-#### fibonacci (no advantage)
-#### branching
-#### a program with a bit of stochastic behavior
-#### 
