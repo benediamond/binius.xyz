@@ -60,8 +60,8 @@ export default defineConfig({
               link: "/arithmetization/matching/definition"
             },
             {
-              text: "Reducing M3 to Multisets",
-              link: "/arithmetization/matching/reducing"
+              text: "Verifying M3 Instances",
+              link: "/arithmetization/matching/verifying"
             },
           ]
         },

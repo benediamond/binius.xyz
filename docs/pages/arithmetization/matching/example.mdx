@@ -7,7 +7,7 @@ You know the prime factorization of some integer.
 :::
 
 Let's pick an integer—3,135. I'm going to set up a "channel", a sort of abstract, bidirectional data stream. I'm going to start by "pushing" 3,135, the number I'm interested in, to the channel. I'm also going to "pull" the terminal number 1.
-```
+```txt
                /¯\¯¯¯¯¯¯¯¯¯¯¯\
     PUSH      :   :           :    PULL
 ---------->   |   |  channel  | ---------->
@@ -46,7 +46,7 @@ Intuitively, the only way that you, the prover, can possibly nullify my initial 
 
 The effect of this row is to _pull_ 3,135 and _push_ 165. That pull "strikes off", or "counterbalances", or "nullifies", my initial push of 3,135. On the other hand, it creates a new outstanding liability, namely 165. My channel state is now:
 
-```
+```txt
                /¯\¯¯¯¯¯¯¯¯¯¯¯\
     PUSH      :   :           :    PULL
 ---------->   |   |  channel  | ---------->
