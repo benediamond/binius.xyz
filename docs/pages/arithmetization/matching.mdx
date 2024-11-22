@@ -1,8 +1,8 @@
 # M3: Multi-Multiset Matching
- 
+
 ## Introduction
-Before diving into the details, we informally describe the M3 model of computation.  We fix a finite field $\mathbb F_q$.
-We also fix a multiplicative generator $\alpha\in \mathbb F_q^{\times}$.
+Before diving into the details, we informally describe the M3 model of computation.  We fix a family of *binary tower fields*:
+$\mathbb F_2\cong\mathcal T_{0}\subset \cdots \subset \mathcal T_{\iota}\subset \cdots \subset \mathcal T_{\tau}\cong \mathbb F_{2^{2^{\tau}}}$, a depth $\tau$-tower of quadratic extensions of $\mathbb F_2$.
 
 ### An informal description of M3
 M3 is a constraint-system model of computation. A primary novelty, in comparison to other models of
@@ -13,7 +13,7 @@ In M3 one has several *tables* and several *channels*. To each table $T$, there 
 constraints that each row must satisfy. However, the order of the rows **does not matter**.
 
 The channels facilitate communication between the tables. Roughly speaking, for each pair $(T,C)$ of a 
-table and a channel and for each filled-in row $R$ of $T$, there are *flushing rules* that add "to be proven" statements and remove "already shown" claims to the channel.
+table and a channel and for each filled-in row $R$ of $T$, there are *flushing rules* that add "to be proven" statements and remove "already shown" claims to/from the channel.
 (If we think of a channel as a generalized multiset, removing an element could cause the "multiplicity" of the element to become
 negative.)
 
@@ -24,18 +24,22 @@ A *satisfying assignment* of an M3 instance is a filling-in of some rows of each
 * for each table $T$ and each associated polynomial constraint $f_{T,i}$, each row $R$ of $T$ satifies $f_{T,i}$; and
 * after flushing each row of each table, each channel $C$ is balanced, i.e., is the *empty generalized multiset*.
 
+### Other fields
+The constraint-system programming framework we describe below certainly applies to general finite fields. However, several optimizations
+use the nested structure of tower-families of fields. We therefore simply restrict to our primary case of interest.
+
 ## Formal description
 ### Channels
 A channel $C$ consists of
 * a positive integer $r_C$; and
-* a function $i_C\colon \mathbb F_q^{r_c}\rightarrow \mathbb Z$.
+* a function $i_C\colon \mathcal T_{\tau}^{r_c}\rightarrow \mathbb Z$.
 
 We call a channel $C$ *balanced* if the function $i_C$ is identically 0.
 
 Psychologically
 * we think of each channel as have an associated tuple of *types*; while these primitive
 types may include: $32$-bit unsigned integers, op-codes, field elements themselves, etc., we will always represent them as field elements.
-* a channel may be thought of as a generalized multiset whose elements are in $\mathbb F^{r_c}$ and whose multiplicities may be positive or negative.
+* a channel may be thought of as a generalized multiset whose elements are in $\mathcal T_{\tau}^{r_c}$ and whose multiplicities may be positive or negative.
 The function $i_C$ is then the *indicator function* for this generalized multiset.
 * an element occuring with multiplicity $1$ corresponds to "a claim that must be shown"; an element occuring with multiplicity $-1$
 corresponds to "a claim that has already been shown". (Similarly, an element occuring with positive multiplicity $k$ corresponds to an element
@@ -44,29 +48,33 @@ that "must be shown $k$ times".)
 
 ### Constraint Tables
 A *constraint table* consists of:
-* a table/grid, with with $n_T$ columns and a maximum of $m_T$ rows.
-* a finite list $f_{T,i}$ of $n_T$-variate polynomials with coefficients in $\mathbb F_q$;
+* a grid with $n_T$ columns and a maximum of $m_T$ rows;
+* a finite list $f_{T,i}$ of $n_T$-variate polynomials with coefficients in $\mathcal T_{\tau}$;
 * for each channel $C$, there are
     * a collection of $r_C$-tuples of $n_T$-variate polynomials $(\text{push}_{T,C,j})_j$; and
-    * a collection of $r_C$-tuples of $n_T$-variate polynomials $(\text{pull}_{T,C,j})_j$.
+    * a collection of $r_C$-tuples of $n_T$-variate polynomials $(\text{pull}_{T,C,j})_j$;
+* and finally, for each column, there is a non-negative integer $\iota$, which forces the to-be-filled-in
+elements of that column to live in $\mathcal T_{\iota}\subset \mathcal T_{\tau}$.
 
-Note that each collection may be empty. The most common use case will be where, for any given $(T,C)$, the collection
-will either be empty or consist of a single $r_C$-tuple of $n_T$-variate polynomials.
+Note that each collection of $\text{push}$ing and $\text{pull}$ing operations may be empty. The most common use case will be where, 
+for any given $(T,C)$, the collection will either be empty or consist of a single $r_C$-tuple of $n_T$-variate polynomials.
+
 
 Psychologically
 * we think of the elements of the table as witnessing some part of the execution trace of the a subroutine of our desired computation.
 * the polynomial constraints $f_{T,i}$ on the rows ensure that these "primitive execution steps" are correct.
-* for any $j$, we may think of $\text{push}_{T,C,j}$ as a function that takes as input elements of $\mathbb F_q^{n_T}$ and outputs
-elements of $\mathbb F_q^{r_C}$. (The same is naturally true of $\text{pull}_{T,C,j}$.) More correctly, these are regular maps
-$\mathbb A^{n_T}\rightarrow \mathbb A^{r_C}$, where the base field is implicitly taken to be $\mathbb F_q$.
+* for any $j$, we may think of $\text{push}_{T,C,j}$ as a function that takes as input elements of $\mathcal T_{\tau}^{n_T}$ and outputs
+elements of $\mathcal T_{\tau}^{r_C}$. (The same is naturally true of $\text{pull}_{T,C,j}$.) More correctly, these are regular maps
+$\mathbb A^{n_T}\rightarrow \mathbb A^{r_C}$, where the base field is implicitly taken to be $\mathcal T_{\tau}$.
 * the pushing and pulling polynomials allow for coordination with the channels, as we will see in the description of flushing.
-
+* the columns being forced to live in smaller fields will allow for certain optimizations and is not strictly necessary for the
+construction of the constraint system. One example of such a situation: a selector column is forced to have entries in $\mathcal T_{0}$.
 ### Flushing
 Once a row $R$ in a constraint table $T$ has been filled, it may be *flushed*; this means that for
 each channel $C$,
-* for each $j$, the polynomial $\text{push}_{T,C,j}$ is applied to $R$ to obtain an element of $x_j:=\text{push}_{T,C, j}(R)\in\mathbb F_q^{r_C}$. We then
+* for each $j$, the polynomial $\text{push}_{T,C,j}$ is applied to $R$ to obtain an element of $x_j:=\text{push}_{T,C, j}(R)\in\mathcal T_{\tau}^{r_C}$. We then
 increment $i_C(x_j)$, i.e., do `i_C(x_j) += 1`.
-* for each $j$, the polynomial $\text{pull}_{T,C, j}$ is applied to $R$ to obtain an element of $y_j:=\text{pull}_{T,C,j}(R)\in\mathbb F_q^{r_C}$. We then
+* for each $j$, the polynomial $\text{pull}_{T,C, j}$ is applied to $R$ to obtain an element of $y_j:=\text{pull}_{T,C,j}(R)\in\mathcal T_{\tau}^{r_C}$. We then
 decrement $i_C(y_j)$, i.e., do `i_C(y_j) -= 1`.
 
 Psychologically
@@ -80,6 +88,10 @@ At the start of an M3 instance, the channels will usually not be balanced, i.e.,
 We call these initial conditions the *boundary constraints*. Boundary constraints may be either hard-coded
 into the M3 problem or instance-specific.
 
+**TO REVIEW:** Joseph explained to me that it is also sometimes meaningful to have some constraint tables
+also have "boundary constraints" filled in, e.g. for Lasso. This is especially relevant for "transparent columns".
+I want to get feedback before I add this, but this seems *obviously right* to me; it just slightly complicates the model.
+
 Psychologically
 * if we imagine channels as generalized multisets, then typically the boundary constraints correspond to: "what we want to show" (which occurs with multiplicity $1$
 and "what we know" (which occurs with multiplicity $-1$)
@@ -88,20 +100,129 @@ and "what we know" (which occurs with multiplicity $-1$)
 An M3 instance is specified by a set of constraint tables $\{T\}$, a set of channels $\{C\}$, and a set of flushing rules. Note
 that the channels may not start out balanced.
 
-A *satisfying assignment* of the M3 instance with boundary constraints corresponds to filling in the
-constraint tables with elements of $\mathbb F$ such that the following hold:
-* for every contraint table $T$ and every polynomial constraint $f_{T,i}$ associated to $T$, each row of $T$ satisfies $f_{T,i}$; and
+A *satisfying assignment* of the M3 instance with boundary constraints corresponds to filling in the columns of
+constraint tables with elements of $\mathcal T_{\tau}$ such that the following hold:
+* for every constraint table $T$ and every polynomial constraint $f_{T,i}$ associated to $T$, each row of $T$ satisfies $f_{T,i}$;
+* the filled-in elements of every column live in the appropriate tower subfield $\mathcal T_{\iota}$; and
 * after applying all of the flushing rules $\text{push}_{T,C}$ and $\text{pull}_{T,C}$ once to each row, every channel is balanced.
 
 It is easy to see that both the search and decision version of M3-satisfiability are NP-complete problems.
 
 ### The name
-One convenient way of representing a channel $C$ is as a *pair of multisets* $S_C$ and $S'_C$, with elements in $\mathbb F_q^{r_C}$.
+One convenient way of representing a channel $C$ is as a *pair of multisets* $S_C$ and $S'_C$, with elements in $\mathcal T_{\tau}^{r_C}$.
 In particular, the multiplicities of the elements of $S_C$ and $S'_C$ are all positive. (However, the multisets are not necessarily
 disjoint!) Without loss of generality, pushing only adds to $S_C$ and pulling only adds to $S'_C$. Then checking that a channel is balanced
 will amount to checking that the multisets $S_C$ and $S'_C$ are the same.
 
 Hence, checking the satisfiability of an M3 instance involves *matching multiple multisets*.
+
+
+## Examples and patterns
+We discuss some basic examples and patterns. We assume here that we are further equipped with 
+* a collection $\{\beta_j\}_{j=0}^{2^{\tau}-1}$  of elements of $\mathcal T_{\tau}$ such that
+for any $\iota$, the subset $\{\beta_j\}_{j=0}^{2^{\iota}-1}$ is an $\mathbb F_2$-linear basis of $\mathcal T_{\iota}$; and
+* a multiplicative generator $\alpha\in \mathcal T_{\tau}^{\times}$.
+
+### Fibonacci
+As usual, we start with the example of computing the $n^{\text{th}}$ element of the Fibonacci sequence. 
+It turns out to be mildly more convenient to prove both the values of $F_n$ and $F_{n+1}$ if $n$ is even (resp. $F_n$ and $F_{n-1}$ if $n$ is odd).
+Here is one example for using the M3 constraint system to encode this problem.
+
+We have one channel $C$, with $r_C=3$. The elements of $C$, $(\text{i},z_1, z_2)$, have the following meaning: if $\text{i}$ is the binary expansion of $k$, 
+then the triple $(\text{i}, z_1,z_2)$ corresponds to the claim that $F_k = z_1$ and $F_{k+1} = z_2$.
+
+Our boundary constraints will then be: $(n-1, F_{n-1}, F_n)$ with multiplcity $1$ and $(0, 1, 1)$ with multiplicity $-1$.
+
+The constraint table $T$ has four columns. An element $(x_0,x_1,x_2,x_3)$ corresponds to the following statement. Suppose
+$x_0$ is the binary expansion of $i$. If  $F_{i-1} = x_1$ and $F_{i} = x_2$, then $F_{i+1} = x_3$ In particular, is one
+polynomial constraints on $T$:
+1. $ x_1 +_{\text{u32}} x_2 = x_3.$
+
+The flushing rules are as follows.
+* $\text{push}_0(X_0,X_1,X_2,X_3, X_4) = (X_0-_{\text{u32}}1, X_1, X_2)$
+* $\text{pull}_1(X_0,X_1,X_2,X_3, X_4) = (X_0 , X_2, X_3)$
+
+In natural language: we replace the claims of $F_i$ and $F_{i-1}$ with claims of $F_{i-2}$ and $F_{i-3}$.
+
+#### Comments
+* This perhaps looks unnatural due to the $\text{u32}$ operations. One could offload these to another M3 instance,
+as we will see in the callstack example.
+* In other arithmetization models of the above problem, one typically *fixes $n$* and has $F_0$ and $F_1$ be inputs. 
+Doing this here would of course remove the pesky $\text{u32}$ operations. However, one feature of M3 is that it allows us to 
+elegantly deal with *variable length* computations. In particular, it facilitates "calling other functions" via flushing.
+* if we used multiplicative rather than additive counters for $X_0$, then the protocol would look as follows:
+    * flushing: $\text{push}_0(X_0,X_1,X_2,X_3, X_4) = (X_0\alpha^{-1}, X_1, X_2)$
+    * boundary constraints: $(1, 1, 1)$ with multiplicity $-1$ and $(\alpha^{n-1}, F_{n-1},F_n)$ with multiplicity $1$.
+
+
+### ROM
+We want to model ROM access. We will follow the pattern suggested by [Lasso](https://eprint.iacr.org/2023/1216.pdf), as expressed in [Binius.](https://eprint.iacr.org/2023/1784.pdf)
+
+Here, we have some fixed $B\in \mathbb F_q^N$, which we think of as read-only memory. Given another $A\in \mathbb F_q^M$, we want to model the computation that every coordinate of $A$ is also a coordinate of $B$.
+
+Here is one approach. (**REVIEW** should I include ordered rows/filled in tables in the M3 model description for boundary constraints?)
+We will have two tables, $T_A$ and $T_B$, and one channel $C$.
+
+We name the columns of $T_A$ as the variables $X_A$, $X_R$, and $X_{R\text{-inv}}$. We name the columns of $T_B$ as the variables $X_B$, $X_F$.
+
+There is a unique polynomial constraint on $T_A$: 
+
+$X_{R\text{-inv}}X_R = 1.$
+
+The boundary constraint is that the $X_B$ of $T_B$ is simply the elements of $B$ (in order).
+
+Here are the flushing rules.
+* $\text{pull}_{T_A, C}(X_A, X_F) = (X_A, \alpha X_R)$
+* $\text{push}_{T_A, C}(X_A, X_F) = (X_A, X_R)$
+* $\text{pull}_{T_B, C}(X_B, X_R, X_{R\text{-inv}}) = (X_B, 1)$
+* $\text{push}_{T_B, C}(X_B, X_R, X_{R\text{-inv}}) = (X_A, X_F)$
+#### Comments
+* The columns $X_R$ and $X_F$ corresponded to "exponentiated counters".
+* The quadratic constraint $X_R * X_{R-\text{inv}}=1$ forbids any element of the $X_R$ column from being $0$.
+* The column $X_F$ corresponds to Lasso's array of "final counts".
+* Here is an example of a satisfying assignment, if the desired statement is true. Initialize a vector $F$ of length $N$ of all ones
+and a vector $R$ of length $N$ of all zeros. 
+Fill in the coordinates of $A$ in the column $X_A$. Go through them; at the $i^{\text{th}}$ slot, pick any $j$ such that
+$b_j = a[i]$; set $R[i] = F[j]$ and overwrite $F[j] = F[j]\times \alpha$
+* Note that the $\text{push}$es and $\text{pull}$s don't directly translate into simple "claims to be shown".
+### RAM (offline memory checking)
+We next model offline memory checking. 
+### Call stack
+Imagine we have a block of code:
+```
+def f(a, b, c):
+    return g(foo(a, b), bar(b, c))
+
+```
+where `foo`, `bar`, and `g` are defined elsewhere.
+
+We want to design an M3 system to witness this computation, assuming that we have an M3 system for the subroutines.
+
+We will have three channels: $C_{\text{f}}$, $C_{\text{foo}}$, and $C_{\text{bar}}$ and a distinguished table $T_{\text{f}}$.
+Moreover, $r_{C_{\text{f}}} = 4$, and the element $(z_0, z_1, z_2, z_3)$ corresponds to the statement $f(z_0, z_1, z_2) = z_3$.
+
+Suppose we want to "compute" $f(1, 2, 3)$. Then the boundary constraint of the computation would be the multiset $\{(1, 2, 3, f(1, 2, 3))\}$.
+The table $T_{\text{f}}$ has 6 columns and no constraints. Let us name the columns: $X_a$, $X_b$, $X_c$,
+
+$X_{\text{foo}}$,
+$X_{\text{bar}}$, and $X_g$. The pushing and pulling operations from $T_{\text{f}}$
+are the following.
+
+* $\text{pull}_{T_{\text{f}}, C_{\text{f}}}(X_a, X_b, X_c, X_{\text{foo}}, X_{\text{bar}}, X_{\text{g}}) = (X_a, X_b, X_c, X_{\text{g}})$
+* $\text{push}_{T_{\text{f}}, C_{\text{foo}}}(X_a, X_b, X_c, X_{\text{foo}}, X_{\text{bar}}, X_{\text{g}}) = (X_a, X_b, X_{\text{foo}})$
+* $\text{push}_{T_{\text{f}}, C_{\text{bar}}}(X_a, X_b, X_c, X_{\text{foo}}, X_{\text{bar}}, X_{\text{g}}) = (X_b, X_c, X_{\text{bar}})$
+* $\text{push}_{T_{\text{f}}, C_{\text{g}}}(X_a, X_b, X_c, X_{\text{foo}}, X_{\text{bar}}, X_{\text{g}}) = (X_{\text{foo}}, X_{\text{bar}}, X_{\text{g}})$
+
+In other words, we resolve the claimed value of $f(a, b, c)$ into subcomputations for claimed values of: `foo(a, b)`, `bar(b, c)`, and `g(foo(a, b), bar(b, c))`
+
+The prover could fill in the first row of $T_{\text{f}}$ with the sextuple of field elements:
+$(a, b, c, \text{foo}(a, b), \text{bar}(b, c), g(\text{foo}(a, b), \text{bar}(b, c)))$.
+
+### Memory allocation
+### a program with a bit of stochastic behavior
+
+
+
 
 ## Motivation
 There are several interrelated motivations for M3. At this point, it is useful to compare to PLONKish arithmetization.
@@ -143,76 +264,12 @@ of the flushing rules as a complex orchestration of the computation at hand.
 Most approaches to zkVMs have a single global execution trace as a table. M3 has nothing of the sort; instead, it is the flushing rules
 which permit coordination between the simpler and more narrow constraint tables.
 
-## Examples and patterns
-We discuss some basic examples and patterns.
-
-### Fibonacci
-As usual, we start with the example of computing the $n^{\text{th}}$ element of the Fibonacci sequence. 
-It turns out to be mildly more convenient to prove both the values of $F_n$ and $F_{n+1}$ if $n$ is odd (resp. $F_n$ and $F_{n-1}$ if $n$ is even).
-Here is one example for using the M3 constraint system to encode this problem.
-
-We have one channel $C$, with $r_C=3$. The elements of $C$, $(z_0,z_1, z_2)$, have the following meaning: if $z_0 = \alpha^k$, then $F_k = z_1$
-and $F_{k+1} = z_2$. (**TODO:** should I put the second thing also in the exponent or is `u32_add` easier?)
-
-Our boundary constraints will then be: $(\alpha^{n-1}, F_{n-1}, F_n)$ with multiplcity $1$ and $(1, 1, 1)$ with multiplicity $-1$.
-
-The constraint table $T$ has five columns. An element $(x_0,x_1,x_2,x_3,x_4)$ corresponds to the following statement. Suppose
-$x_0 = g^i$. Then if  $F_{i-3} = x_1$ and $F_{i-2} = x_2$, then $F_{i-1} = x_3$ and $F_{i} = x_4$. In particular, there are two
-polynomial constraints on $T$:
-1. $ x_1 +_{\text{u32-add}} x_2 = x_3.$
-2. $ x_2 +_{\text{u32-add}} x_3 = x_4.$
-
-The flushing rules are as follows.
-* $\text{push}_0(X_0,X_1,X_2,X_3, X_4) = (X_0*\alpha^{-3}, X_1)$
-* $\text{push}_1(X_0,X_1,X_2,X_3, X_4) = (X_0*\alpha^{-2}, X_2)$
-* $\text{pull}_0(X_0,X_1,X_2,X_3, X_4) = (X_0 * \alpha^{-1}, X_3)$
-* $\text{pull}_1(X_0,X_1,X_2,X_3, X_4) = (X_0 , X_4)$
-
-In natural language: we replace the claims of $F_i$ and $F_{i-1}$ with claims of $F_{i-2}$ and $F_{i-3}$.
-### Branching
-### ROM
-We want to model ROM access. (**TODO** should I actually do the full thing here and include address in $B$?) 
-
-Here, we have some fixed $B\in \mathbb F_q^N$, which we think of as read-only memory. Given another $A\in \mathbb F_q^N$, we want to model the computation that every coordinate of $A$ is also a coordinate of $B$.
-
-Here is one approach, based on the Lasso protocol. We will again have one constraint table $T$ and two channels: $C_{\text{Lasso}}$ and $C_{\text{ROM}}$.
-There will be five columns of the constraint table, which we label $X_A, X_B, X_R, X_{R_{inv}}X_F$.
-
-There is a unique polynomial constraint:
-$X_R X_{R_{inv}} = 1$.
-
-The boundary constraints are: $C_{\text{ROM}}$ is the multiset $\{b_i\}_{i=0}^{N-1}$, i.e., the multiset of coordinates of $B$.
-
-Here are the flushing rules to $C_{\text{Lasso}}$
-* $\text{push}_{T, C_{\text{Lasso}}, 0}(X_A, X_B, X_R, X_{R_{inv}}, X_F) = (X_A,1)$
-* $\text{push}_{T, C_{\text{Lasso}}, 1}(X_A, X_B, X_R, X_{R_{inv}}, X_F) = (X_B,\alpha X_R)$
-* $\text{pull}_{T, C_{\text{Lasso}}, 0}(X_A, X_B, X_R, X_{R_{inv}}, X_F) = (X_A,X_F)$
-* $\text{pull}_{T, C_{\text{Lasso}}, 1}(X_A, X_B, X_R, X_{R_{inv}}, X_F) = (X_B,X_R)$
-
-Here are the flushing rules to $C_{\text{ROM}}$.
-* $\text{pull}_{T, C_{\text{ROM}}, 0}(X_A, X_B, X_R, X_{R_{inv}}, X_F) = X_B$
-
-In natural language: the channel $C_{\text{Lasso}}$ ensures that the Lasso multiset equality holds, while the second is to ensure that the elements of $B$
-were indeed all entered into the constraint table.
-### RAM (offline memory checking)
-We next model offline memory checking. 
-### Program stack
-### Copy Constraints
-### a program with a bit of stochastic behavior
-
-
-
 
 ## Prior work
 
 ### Comparison (to be heavily edited)
 At its core, there is a mathematical claim: the use of M3 seems to offer no disadvantages compared to PLONKish arithmetization and
 often offers advantages. **TODO:** add precise parameters.
-
-## Examples
-
-We have the following examples to show how to accomplish basic tasks using M3.
-
 
 
 ## To be put somewhere else (in the proving system?)
