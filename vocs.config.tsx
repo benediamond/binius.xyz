@@ -41,7 +41,22 @@ export default defineConfig({
       text: 'Arithmetization',
       collapsed: false,
       link: '/arithmetization/',
-      items: [],
+      items: [
+        {
+          text: "Background",
+          link: "/arithmetization/background"
+        },
+        {
+          text: "Multi-Multiset Matching",
+          link: "/arithmetization/matching",
+          items: [
+            {
+              text: "A Toy Example",
+              link: "/arithmetization/matching/example"
+            },
+          ]
+        },
+      ]
     },
     {
       text: 'Reductions',
