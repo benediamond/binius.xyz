@@ -49,10 +49,19 @@ export default defineConfig({
         {
           text: "Multi-Multiset Matching",
           link: "/arithmetization/matching",
+          collapsed: true,
           items: [
             {
               text: "A Toy Example",
               link: "/arithmetization/matching/example"
+            },
+            {
+              text: "Definition of M3",
+              link: "/arithmetization/matching/definition"
+            },
+            {
+              text: "Reducing M3 to Multisets",
+              link: "/arithmetization/matching/reducing"
             },
           ]
         },

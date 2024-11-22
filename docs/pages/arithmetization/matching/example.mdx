@@ -22,17 +22,17 @@ I'm also going to set up a table, containing three columns:
 | -----:| ---------:| ------------:|
 
 Here are the rules of the game.
-- You, the prover, get to append _arbitrary_ rows $(a, b, p)$ to this table, provided that
+- You, the prover, get to append _arbitrary_ rows $(a, b, p)$ to this table, subject to the constraints that:
   - $a = b \cdot p$ holds, and
   - $p$ is prime.
   
-  Subject to these constraints, you can do whatever you want.
+  Subject to these constraints, you can do whatever you want. (The constraint "$p$ is prime" is not _algebraic_, as our constraints will all be; this is just for the sake of illustration.)
 - For each row you append, I will
-  - _pull_ $a$ and
-  - _push_ $b$
+  - _pull_ $a$ from and
+  - _push_ $b$ to
   
-  from my channel.
-- Your goal is to add rows to the table (obeying its constraints) in such a way that my channel balances.
+  my channel.
+- Your goal is to append rows to the table (obeying its constraints) in such a way that my channel becomes balanced.
 
 The claim here is that _if_ you somehow manage to balance my channel, then I become convinced that you know the prime factorization of 3,135. I don't need to know anything more—in particular, I care nothing for what rows you actually append (over and above, of course, the fact that they cause my channel to balance).
 
