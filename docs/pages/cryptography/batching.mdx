@@ -1,0 +1,14 @@
+# Batch Evaluation [Enriching FRI-Binius to support differently-sized polynomials]
+
+_Stashing content here; this page is not done._
+
+We write $n$ for the total number of evaluation claims at hand—each of the form
+
+$$T_i(r_i) \stackrel{?}= s_i$$.
+
+Each polynomial $T_i$ is $\ell_i$-variate, say; here, $i$ ranges throughout $\{0, \ldots , n - 1\}$.
+
+We first need to adjust our initial commitment phase, so as to accommodate the case of polynomials $T_i$ of different sizes and over different fields. Concretely, this looks like:
+
+- For _each_ individual polynomial $T_i$, over the field $K_i$, say, we "pack" it, until it becomes defined over the huge field $L$. This in general will entail reducing the "length" of $T_i$; i.e., the number of variables that it is defined over.
+- We then take the resulting packed multilinears, each of which looks like a power-of-two-length list of $L$-elements. We "pack" these values into a single, enormous cube. Concretely, this looks like sorting them in descending order by list length (i.e., _post_-packing length). We then greedily concatenate these things. After zero-padding the resulting concatenated list to a power-of-two length, we can view as the table of values of an enormous, $L$-valued multilinear. We then commit to _this_ thing using the FRI-Binius protocol.

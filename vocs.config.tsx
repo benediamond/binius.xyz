@@ -82,6 +82,10 @@ export default defineConfig({
       collapsed: false,
       link: '/cryptography/',
       items: [
+        {
+          text: "Batch Evaluation",
+          link: "/cryptography/batching",
+        },
       ]
     }
   ],
