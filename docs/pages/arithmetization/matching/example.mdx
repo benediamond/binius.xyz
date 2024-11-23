@@ -1,6 +1,10 @@
 # A Toy Example [Illustrating how M3 lets us solve problems]
 
-Since M3 is so conceptually new, we illustrate it first using an example. _I_, the verifier, am going to set up a way for _you_, the prover, to prove to me that:
+Since M3 is so conceptually new, we illustrate it first using an example.
+
+## The Game
+
+_I_, the verifier, am going to set up a way for _you_, the prover, to prove to me that:
 
 :::note
 You know the prime factorization of some integer.
@@ -36,7 +40,7 @@ Here are the rules of the game.
 
 The claim here is that _if_ you somehow manage to balance my channel, then I become convinced that you know the prime factorization of 3,135. I don't need to know anything more—in particular, I care nothing for what rows you actually append (over and above, of course, the fact that they cause my channel to balance).
 
-## Winning the Game
+### Winning the game
 
 Intuitively, the only way that you, the prover, can possibly nullify my initial pull of 3,135 is to append a row to the table for which $a = 3135$. On the other hand, the constraints of the table dictate that you must simultaneously choose values $b$ and $p$ for which $a = b \cdot p$ holds and $p$ is prime. In fact, the triple $(3135, 165, 19)$ does the trick. Let's append it:
 
@@ -65,13 +69,13 @@ In a sense, you have gotten "closer", since you have shrunk the size of the outs
 
 Note that these rows all satisfy the required rules. Finally, they cause my channel to balance.
 
-## Why This is Convincing
+### Why this is convincing
 
 Why is this sound? Why should I, the verifier, be completely convinced that you know the prime factorization of 3,135, _merely_ upon learning that you've managed to balance my channel (i.e., without bothering to look any further at your rows)?
 
 Roughly, this channel game allows you—the prover—to make "unsupervised progress" towards the goal. It forces you to find a "path" from 3,135 to 1, where a "legal step" entails breaking off a prime factor. That is, I only allow you to take a step—i.e., to "walk away" from a number—at the cost of replacing that number with a smaller one, which differs from it by a prime factor.
 
-## Order-Invariance and Path-Agnosticism
+### Some interesting aspects
 
 We note that this paradigm leaves many things completely up to the prover—which path to take, for example. Indeed, the following table would also have equally served the verifier's ends:
 
@@ -86,6 +90,14 @@ Here, the prover "breaks off" his prime factors in a different order.
 
 Moreover, the _order_ of the prover's rows is completely irrelevant. If a table causes the verifier's channel to balance, then all permutations of that table also will, and vice versa.
 
-## Stepping Back
+Roughly, M3 is a _general strategy_ of formulating problems in this way. In general, it features "path-agnosticism" and "order-invariance". It allows the prover to make incremental, unsupervised progress towards a goal, while leaving the prover's _particular_ path—and even the order he takes his steps in—as nondeterministic choices.
 
-What does this toy example tell us about M3? Roughly, M3 is a _general strategy_ of attacking problems in this way. It features path-agnosticism and order-invariance. In general, it allows the prover to make _incremental progress_ towards a goal, while leaving, as a nondeterministic choice, the path the prover takes, and even the order he takes his steps in.
+## M3 in General
+
+Before we proceed to full-blown M3, we distill a few principles from the above example.
+
+First, we note that the verifier made pushes and pulls that were _uniform across rows_; i.e., the verifier did the exact same thing to each row (push $a$ and pull $b$, in our case). As we'll see below, these pushes and pulls were what we'll call _flushing rules_. In general, flushing rules have to be row-uniform—though they _can_ entail virtual columns, derived indirectly from the table's committed columns. Separately, the prover's freedom was restricted in an important way: he was only allowed to append pairs $(a, b, p)$ for which $a = b \cdot p$ held and $p$ was prime. (If either of these rules were relaxed, then the protocol would have become completely insecure.) As we will see soon, these were examples of _constraints_ that applied to the prover's table. In general, our constraints will be _algebraic_, formulated in terms of polynomial relations (so for example, "$p$ is prime" is off the table—unless you can come with an M3 instance for it!).
+
+As we explain our [definition of M3](/arithmetization/definition), we require in general that our flushing rules be _uniform_ and our constraints be _algebraic_. These "rules", in turn, make M3 instance [checkable](/arithmetization/matching/verifying) _efficiently_ by the verifier. Indeed, they make each instance's satisfaction reducible to [zerochecks](/reductions/zerocheck) and [multiset-checks](/reductions/multiset).
+
+In general M3 instances, we will have _a number of channels_, as well as a plurality of tables. Moreover, these tables will interact with the channels according to generally complex flushing rules. For some "real" examples of M3, we refer to the [M3 Examples](/arithmetization/examples) subsection of this site.

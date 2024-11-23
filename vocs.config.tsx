@@ -65,6 +65,17 @@ export default defineConfig({
             },
           ]
         },
+        {
+          text: "M3 Examples",
+          link: "/arithmetization/examples",
+          collapsed: true,
+          items: [
+            {
+              text: "Lasso Lookup",
+              link: "/arithmetization/examples/lasso"
+            },
+          ]
+        },
       ]
     },
     {
