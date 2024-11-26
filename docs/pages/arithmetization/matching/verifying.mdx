@@ -6,11 +6,9 @@ We note that we have introduced, above, the roles of _prover_ and _verifier_, wh
 
 As is justified by our [polynomial commitment scheme](/cryptography), we will work in the abstract _PIOP model_. In this model, the prover can "commit to" multilinear polynomials, by sending them to an abstract oracle machine (which in turn notifies the verifier, upon each receipt). Later, the verifer can _query_, or evaluate, these polynomials at points of his own choosing, simply by asking the oracle. By this model's very definition, we assume that this oracle is "perfectly reliable": once the prover has committed to a polynomial, he can't change it; moreover, the verifier is guaranteed to get the correct evaluations out of the oracle.
 
-## Checking the Attempt
+As we will see below, checking whether an M3 _attempt_ satisfies an M3 _instance_ entails two main parts.
 
-To check whether an M3 _attempt_ satisfies an M3 _instance_, we need to ensure two major things.
-
-### Constraint satisfaction
+## Constraint Satisfaction
 
 Here, we need to check whether the the prover has populated the instance's various _tables_ in such a way that their _constraints_ are satisfied. The rough point here is that this constraint-satisfaction check amounts to a [zerocheck](/reductions/zerocheck), and can be checked as such.
 
@@ -30,6 +28,18 @@ vanishes identically on the cube $\mathcal{B}_\ell$.
 
 This is _precisely_ the scenario that the [zerocheck](/reductions/zerocheck) is designed to treat. The _zerocheck_ serves to reduce identical vanishing claims of the above form to _evaluation_ claims. That is, by executing a certain sumcheck, the verifier may reduce the vanishing claim above to further _evaluation claims_—that is, to claims of the form $M_i(r) \stackrel{?}= s_i$ (where the evaluation point $r$ and the claimed values $s_i$ arise during the zerocheck). By definition of the PIOP model, we already agreed that the verifier can evaluate these claims directly. We give much more detail in our [reductions](/reductions) and [cryptography](/cryptography) sections.
 
-### Channel balancing
+## Channel Balancing
 
-As we hinted at when we [defined](/arithmetization/matching/definition) M3, channels, under the hood, are, _essentially_ pairs of dueling "multisets". A _multiset_ is a list of elements, in which the unique items are counted, as is the _number_ of times each item appears (its _multiplicity_), but the order of the elements is not counted.
+As we hinted at when we [defined](/arithmetization/matching/definition) M3, channels, under the hood, are _essentially_ pairs of dueling "multisets". A _multiset_ is a list of elements, in which the unique items are counted, as is the _number_ of times each item appears (its _multiplicity_), but the order of the elements is not counted.
+
+To check whether any given channel balances, then, it's enough to simply running a _multiset-check_. As we [explain](/reductions/multiset) in our reductions section, we know exactly how to evaluate these checks—or more precisely, to reduce them to grand-product claims, themselves amenable to our GKR-based [grand-product argument](/reductions/gpa).
+
+## Flushing Rules
+
+The catch is that the _particular_ multisets involved in each channel-balancing check will _not_—in almost all interesting cases—be simple committed multilinears. Rather, they will be populated by flushing rules. Indeed, in general, each multiset at hand will contain not just elements but _tuples_; moreover, it will have "received" its tuples from _many different_ sources, at the hands of _many different_ flushing rules. That is, in general, _many different_ flushing rules will contribute elements to each given, particular multiset (by _pushing_ or _pulling_ to that multiset's channel, as the case may be).
+
+Thus, we need a way of constituting large, virtual multilinears, themselves built as "concatenations" of many individual, smaller things. This is essentially the _merge_ virtual polynomial, a construction we discuss in our [page](/reductions/virtual) about virtual polynomials.
+
+:::info
+The real picture is slightly more complicated, since the respective contributions of the different tables at hand to a given, particular multiset may be differently sized. In practice, we use a "white-box" sort of multiset-check, which is sensitive to the different sizes of the multiset's constituents. That is, we directly reduce it to _individual_ grand products on these components.
+:::
