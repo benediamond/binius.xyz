@@ -10,7 +10,7 @@ A M3 instance consists of various objects, which interact.
 A _channel_ is simply an abstract, stateful bidirectional "receptacle" of data, which features a fixed width and type signature. That is, each channel exposes two methods, "push" and "pull". These methods have identical signatures; that is, both take a single _tuple_, with a fixed number of components, which themselves each have prescribed bit-widths. The tuple arity and type signature a channel features are durable, permanent properties of that channel.
 
 :::info
-For example, a channel's type signature might be $(\mathcal{T}_4, \mathcal{T}_5)$. In this case, both its _push_ and its _pull_ methods would take a single argument, itself a tuple consisting of a $\mathcal{T}_4$-element and a $\mathcal{T}_5$-element. Concretely, one such thing might look like `(0xae12, 0x7ef8a40e)`.
+For example, a channel's type signature might be $(\mathcal{T}_4, \mathcal{T}_5)$. In this case, both its _push_ and its _pull_ methods would take a single argument, itself a tuple consisting of a $\mathcal{T}_4$-element and a $\mathcal{T}_5$-element. Concretely, one such thing might look like `(0xd9de, 0x86cd91f4)`.
 :::
 
 Finally, a channel either is or isn't _balanced_ at any given time. To be _balanced_ entails simply that its pushes exactly match its pulls. That is, the respective _multisets_ of its pushed and pulled elements (i.e., ignoring order, but counting multiplicity) are equal.
@@ -22,7 +22,7 @@ For example, a channel with the following table of accumulated pushes and pulls:
 | `(0xd9de, 0x0000d9de)` | `(0xbd8f, 0x00000000)` |
 | `(0xbd8f, 0x00000000)` | `(0xd9de, 0x86cd91f4)` |
 
-would be _balanced_. But if we chaned any single character in this table, the channel would become unbalanced—as it likewise would if we, say, added an element to the left-hand side (but not the right).
+would be _balanced_. But if we changed any single character in this table, the channel would become unbalanced—as it likewise would if we, say, added an element to the left-hand side (but not the right).
 :::
 
 ### Tables and constraints
