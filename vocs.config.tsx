@@ -84,6 +84,10 @@ export default defineConfig({
       link: '/reductions/',
       items: [
         {
+          text: "Virtual Columns",
+          link: "/reductions/virtual",
+        },
+        {
           text: "Zerocheck",
           link: "/reductions/zerocheck",
           collapsed: true,
