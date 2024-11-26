@@ -84,7 +84,7 @@ export default defineConfig({
       link: '/reductions/',
       items: [
         {
-          text: "Virtual Columns",
+          text: "Virtual Polynomials",
           link: "/reductions/virtual",
         },
         {
