@@ -123,7 +123,7 @@ Up to a soundness error of $\frac{(d^* + 1) \cdot 2^k}{|L|}$ over the verifier's
 
 $$a \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell - k}} C^*(s', X_0, \ldots , X_{\ell - k - 1}) \cdot \delta_D(s', s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r).$$
 
-This latter thing is a perfectly good $\ell - k$-variate sumcheck over $L$, and can be handled using the [usual algorithms](/) for that task.
+This latter thing is a perfectly good $\ell - k$-variate sumcheck over $L$, and can be handled using the [usual algorithms](/reductions/zerocheck/standard) for that task.
 
 ### Specializing the rectangular polynomials
 
@@ -131,7 +131,7 @@ We note that the prover will need to compute, for each $i \in \{0, \ldots , t - 
 
 ### The very end
 
-At the very end, the verifier will need to ascertain the respective values, for $i \in \{0, \ldots , t - 1\}$, of $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, for certain further challenges $(r'_0, \ldots , r'_{\ell - k - 1})$ sampled during the course of the positive-indexed rounds of the zerocheck. Getting these values requires a bit of trickery, since our standard PCS evaluation scheme only lets us evaluate the standard $M_i$s (without the hats) on points in $L^\ell$. As we argue in our section on [ring-switching](/), the $\widehat{M}_i$ too can be evaluated efficiently, though the details are subtle.
+At the very end, the verifier will need to ascertain the respective values, for $i \in \{0, \ldots , t - 1\}$, of $\widehat{M}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$, for certain further challenges $(r'_0, \ldots , r'_{\ell - k - 1})$ sampled during the course of the positive-indexed rounds of the zerocheck. Getting these values requires a bit of trickery, since our standard PCS evaluation scheme only lets us evaluate the standard $M_i$s (without the hats) on points in $L^\ell$. As we argue in our section on [ring-switching](/cryptography/switching), the $\widehat{M}_i$ too can be evaluated efficiently, though the details are subtle.
 
 
 ## Efficiency Matters

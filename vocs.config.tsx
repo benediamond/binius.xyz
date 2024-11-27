@@ -126,6 +126,10 @@ export default defineConfig({
       link: '/cryptography/',
       items: [
         {
+          text: "Ring-Switching",
+          link: "/cryptography/switching",
+        },
+        {
           text: "Batch Evaluation",
           link: "/cryptography/batching",
         },
