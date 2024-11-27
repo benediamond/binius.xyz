@@ -25,6 +25,8 @@ Here, we explain how to express Lasso naturally as an M3 instance.
 
 Binius achieves lookups in the binary tower setting using _Lasso_, a technique developed by Setty, Thaler and Wahby [[STW23](https://eprint.iacr.org/2023/1216)]. Under the hood, the essential idea here is _offline memory checking_, a technique which originates with Blum et al. [[Blu+91](https://ieeexplore.ieee.org/document/185352)]. In [[DP23](https://eprint.iacr.org/2023/1784.pdf), § 4.4], we describe how to adapt Lasso's offline-memory-checking argument to the binary setting. Our treatment here follows that latter work.
 
+We note that that work's Lasso rendition doesn't _explicitly_ mention M3, tables, channels, or anything like that, but _was_ nonetheless essentially those things. I.e., it's not much work to recast that treatment as an M3 instance.
+
 ## The Instance Specification
 
 We begin by describing the instance specification. For background, we fix a ground field $\mathcal{T}_\iota$ and a length parameter $\ell$. We are going to treat tables $T$ and looked-up columns $U$ both with values in $\mathcal{T}_\iota$, and _both_ of length $2^\ell$. (The requirement whereby these columns' lengths are equal can be relaxed.)
@@ -33,13 +35,13 @@ For technical reasons, we are moreover going to choose a further tower field $\m
 
 ### Channels
 
-We will create just a single channel, of type signature $(\mathcal{T}_\iota, \mathcal{T}_\zeta)$. That is, the things we're allowed to flush into it (i.e., whether pushing or pulling) will be tuples, consisting of a $\mathcal{T}_\iota$-element and $\mathcal{T}_\zeta$-element.
+We will create just a single channel, of type signature $(\mathcal{T}_\iota, \mathcal{T}_\zeta)$. That is, the things we're allowed to flush into it (i.e., whether pushing or pulling) will be tuples, consisting of a $\mathcal{T}_\iota$-element and $\mathcal{T}_\zeta$-element. Intuitively, each such tuple can be thought of an an _element_ and a _timestamp_.
 
 ### Tables
 
 Our first table consists simply of the statement $(T, U)$. It is of height $2^\ell$, and of type signature $(\mathcal{T}_\iota, \mathcal{T}_\iota)$. This table is already fixed as of the beginning of the protocol.
 
-We're going to create a single _further_ table, of type signature $(\mathcal{T}_\zeta, \mathcal{T}_\zeta)$. That is, it will have two columns, both valued in $\mathcal{T}_\zeta$; we will call these $R$ (for _read counts_) and $F$ (for _final counts_). Its height will be $2^\ell$, the same as $T$ and $U$.
+We're going to create a single _further_ table, of type signature $(\mathcal{T}_\zeta, \mathcal{T}_\zeta)$. That is, it will have two columns, both valued in $\mathcal{T}_\zeta$; we will call these $R$ (for _read timestamps_) and $F$ (for _final timestamps_). Its height will be $2^\ell$, the same as $T$ and $U$.
 
 We will allow the prover to populate the second table $(R, F)$ arbitrarily during its execution. This table will have only the constraint whereby $R$ be _identically nonzero_. Though this is technically not an algebraic constraint, we have a way in Binius of dealing with this (essentially, we run a grand product, and check that the _product_ of its elements is nonzero). We thus suppress this technicality for now.
 

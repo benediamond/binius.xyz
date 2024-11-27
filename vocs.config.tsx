@@ -84,6 +84,10 @@ export default defineConfig({
       link: '/reductions/',
       items: [
         {
+          text: "Background",
+          link: "/reductions/background",
+        },
+        {
           text: "Virtual Polynomials",
           link: "/reductions/virtual",
         },
