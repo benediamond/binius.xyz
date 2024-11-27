@@ -1,6 +1,6 @@
 # Lasso Lookup [Lookups within the M3 formalism]
 
-_Lookup protocols_ are essential in modern SNARKs. At their core, they allow a sort of _unstructured access_. While a typical polynomial constraint might dictate, for example, that one column be the element-wise _product_ of two other columns—an algebraic relationship—a lookup allows us to prove that a column's _values_ are merely present in some other column—and in an unstructured way, no less, in the sense that we don't care _where_ in that latter column the first column's values appear.
+_Lookup protocols_ are essential in modern SNARKs. At their core, they allow a sort of _unstructured access_. While a typical polynomial constraint might decree, for example, that one column be the element-wise _product_ of two other columns—an algebraic relationship—a lookup allows us to prove that a column's values are merely _present_ in some other column—and in an unstructured way, no less, in the sense that we don't care _where_ in that latter column the first column's values appear.
 
 As a brief technical explanation, a lookup argument pertains to a _table_ column $T$ and a _looked-up_ column $U$. The statement is that all of $U$'s values appear in $T$ (somewhere). Here, $T$ can be thought of as the global lookup table, which tells us which values are "allowed".
 
@@ -81,7 +81,7 @@ Here, we will work through an explicit example, and get some intuitions for why 
  (6, R₂ + 1)                     (6, R₂)
  (7, R₃ + 1)                     (7, R₃)
 ```
-Here, we cheat a bit notationally, by "taking discrete logarithms" of the columns $R$ and $F$ with respect to $\alpha$. I.e., instead of writing $1 = \alpha^0$, we instead write `0`, and more generally write `i` instead of $\alpha^i$, for each $i \in \{0, \ldots , |\mathcal{T}_\zeta| - 2\}$.
+Here, we cheat a bit notationally, by "taking discrete logarithms" of the columns $R$ and $F$ with respect to $\alpha$. I.e., instead of writing $1 = \alpha^0$, we instead write `0`, and more generally write `i` instead of $\alpha^i$, for each $i \in \{0, \ldots , |\mathcal{T}_\zeta| - 2\}$. Note that we required that these columns be nonzero, so this makes sense.
 
 ### Populating the tables
 
@@ -125,4 +125,4 @@ Let's assume for the sake of argument that $U$'s final element were $4$, instead
 
 It seems intuitively clear that whatever the prover sets $R_3$ to, the pair of _different_ tuples $(4, R_3 + 1)$ and $(4, R_3)$ will stick out like a sore thumb, with nothing to balance them. In fact, a problem like this is going to persist even of $U$ had many $4$s in it (or other bad values, etc.): even after setting the relevant entries of $R$ cleverly, there is nothing the prover is going to be able to do to lead to a balanced channel overall.
 
-The key subtlety is that if the prover can trigger an overflow in the "counter space", then it can get away with this after all. That is why we required above that $\zeta$ be "sufficiently large" (relative to $\ell$).
+The key subtlety is that if the prover can trigger an overflow in the "counter space", then it can get away with this after all. That is why we required above that $\zeta$ be "sufficiently large" relative to $\ell$ (as well as that everything be nonzero!).
