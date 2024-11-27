@@ -91,7 +91,7 @@ We have "dummied out" the values of $F$ and $R$, since we (as the prover) don't 
 
 Let's walk our way down the table $U$, row by row. First, we hit the 8. We know that our only hope of cancelling out the verifier's initial push `(8, 0)` (way on the top left) hinges on setting $R_0 \coloneqq 0$. On the other hand, as we do this, we simultaneously induce a push—or a "liability"—of `(8, 1)` in the bottom left quadrant. We mentally remark this for later, since we will need to cancel it out (this is where $F$ will come in!).
 
-:::info
+:::note
 If we instead set $F_3 \coloneqq 0$, then that too would counterbalance `(8, 0)`. But then we would run into a problem right away: whatever value we set $R_0$ to, we would induce an unbalanced push of $(8, R_0 + 1)$, which we would have no way to later eliminate.
 :::
 

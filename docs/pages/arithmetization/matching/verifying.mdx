@@ -4,8 +4,6 @@ As we've argued, M3 is a flexible _abstraction_ which lets us formulate and capt
 
 We note that we have introduced, above, the roles of _prover_ and _verifier_, which were completely absent from the [abstract defintion](/arithmetization/matching/definition) of M3. In Binius, it will be the _verifier_ who is interested in assessing the adequacy of an M3 attempt by the _prover_. The _verifier_ will pre-seed all channels at hand with statement-specific data, and will orchestrate the execution of the instance's flushing rules. The _prover_ will be responsible for populating the instance's tables in the first place; i.e., he will do so with an eye towards getting the verifier's channels to balance (and cognizant all the while of the attempt's statement, and of the verifier's pre-seeding rules). The goal will be to do all this in such a way that is _succinct_ for the verifier, and moreover reasonably efficient for the prover.
 
-As is justified by our [polynomial commitment scheme](/cryptography), we will work in the abstract _PIOP model_. In this model, the prover can "commit to" multilinear polynomials, by sending them to an abstract oracle machine (which in turn notifies the verifier, upon each receipt). Later, the verifer can _query_, or evaluate, these polynomials at points of his own choosing, simply by asking the oracle. By this model's very definition, we assume that this oracle is "perfectly reliable": once the prover has committed to a polynomial, he can't change it; moreover, the verifier is guaranteed to get the correct evaluations out of the oracle.
-
 ## Checking the Attempt
 
 Checking whether an M3 _attempt_ satisfies an M3 _instance_ entails a few main steps.
@@ -28,13 +26,13 @@ $$C_j(M_0(X_0, \ldots , X_{\ell - 1}), \ldots, M_{t - 1}(X_0, \ldots , X_{\ell -
 
 vanishes identically on the cube $\mathcal{B}_\ell$.
 
-This is _precisely_ the scenario that the [zerocheck](/reductions/zerocheck) is designed to treat. The _zerocheck_ serves to reduce identical vanishing claims of the above form to _evaluation_ claims. That is, by executing a certain sumcheck, the verifier may reduce the vanishing claim above to further _evaluation claims_—that is, to claims of the form $M_i(r) \stackrel{?}= s_i$ (where the evaluation point $r$ and the claimed values $s_i$ arise during the zerocheck). By definition of the PIOP model, we already agreed that the verifier can evaluate these claims directly. We give much more detail in our [reductions](/reductions) and [cryptography](/cryptography) sections.
+This is _precisely_ the scenario that the [zerocheck](/reductions/zerocheck) is designed to treat. The _zerocheck_ serves to reduce identical vanishing claims of the above form to _evaluation_ claims. That is, by executing a certain sumcheck, the verifier may reduce the vanishing claim above to further _evaluation claims_—that is, to claims of the form $M_i(r) \stackrel{?}= s_i$ (where the evaluation point $r$ and the claimed values $s_i$ arise during the zerocheck). Evaluation claims of this latter form are directly amenable to treatment at the hands of our [polynomial commitment scheme](/cryptography).
 
 ### Channel balancing
 
 As we hinted at when we [defined](/arithmetization/matching/definition) M3, channels, under the hood, are _essentially_ pairs of dueling "multisets". A _multiset_ is a list of elements, in which the unique items are counted, as is the _number_ of times each item appears (its _multiplicity_), but the order of the elements is not counted.
 
-To check whether any given channel balances, then, it's enough to simply running a _multiset-check_. As we [explain](/reductions/multiset) in our reductions section, we know exactly how to evaluate these checks—or more precisely, to reduce them to grand-product claims, themselves amenable to our GKR-based [grand-product argument](/reductions/gpa).
+To check whether any given channel balances, then, it's enough to simply running a _multiset-check_. As we [explain](/reductions/multiset) in our reductions section, we know exactly how to evaluate these checks—or more precisely, how to reduce them to grand-product claims, themselves amenable to our GKR-based [grand-product argument](/reductions/gpa).
 
 ### Flushing rules
 

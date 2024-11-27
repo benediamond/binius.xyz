@@ -17,3 +17,17 @@ Why use virtual polynomials at all? Virtual polynomials—when they _can_ be use
 One further factor makes our prover and verifier algorithms complex and instance-dependent. While the _vanishing claims_ that arise from the constraint-satisfaction of tables are fairly familiar, we moreover have _channel-balancing claims_ to deal with. As we've [explained](/arithmetization/matching/verifying) before, these latter claims amount to _multiset equality checks_. In Binius, we thus need to generally evaluate _not just_ vanishing claims but _moreover_ multiset checks.
 
 We explain our zerocheck techniques thoroughly [here](/reductions/zerocheck). In a [separate page](/reductions/multiset), we moreover explain our multiset-check. As we explain in that latter page, we resolve multiset equality claims by reducing them to grand-product claims on multilinears that are _themselves_ virtual: these latter multilinears are certain "fingerprinted" combinations (i.e., of the multilinears that make up the _tuple_ being multiset-checked). These too, are _virtual polynomials_ in the same sense, and are treated as such in Binius.
+
+## The PIOP–PCS Boundary
+
+Binius has clasically had a strong PIOP–PCS separation (though this has beome [more subtle](/cryptography/switching) over time). In short, a _PCS_ (polynomial commitment scheme) is a protocol between the prover and the verifier, which lets a prover _commit_ to a multilinear polynomial and which lets the verifier later _evaluate_ it at arbitrary points. The pithy way of saying this is:
+
+:::note
+If the PCS is secure, then the parties may view it as a blackbox—i.e., as an abstract, third-party _oracle machine_. The prover simply hands the polynomial directly to the oracle machine, who sits on it. Later, when the verifier wants to query the polynomial, he simply asks the oracle machine for its value. The oracle machine is assumed to be perfectly honest and reliable.
+:::
+
+Of course, "perfectly honest oracle machines" don't exist in real life. But that's the point: the point of (secure) PCSs is to allow us to _act as if they did_. Indeed, when it comes down to defining the security of multilinear PCSs, the natural way to proceed is to essentially _prove_ that the protocol is as good as an oracle machine of the above form (see [[DP23](https://eprint.iacr.org/2023/1784.pdf), § 3.2] for a rigorous treatment)—so that in practice, we may simply "pretend" we had the oracle machine and move on.
+
+This is the basic idea of PIOP–PCS separation. Once we've gone through the work of defining the PCS, we may progress to the _PIOP_. A _PIOP_ (polynomial interactive oracle proof) is, by definition, a protocol between the prover and verifier which takes place in the _enriched computational model_ in which the abstract polynomial oracle machine above is simply assumed to exist. That is, the prover and verifier may freely send each other messages, proceeding over multiple rounds of interaction; _moreover_, they may freely make use of the polynomial oracle throughout the protocol's various phases.
+
+This model is extremely useful for us, since it allows us to run interactive protocols—like the _sumcheck_—which reduce directly to multilinear evaluation claims. Indeed, this entire site section will take place in the PIOP model, in the sense that we will seek throughout to reduce complex mathematical claims to _evaluation_ claims.

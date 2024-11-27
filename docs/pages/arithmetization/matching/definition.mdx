@@ -113,6 +113,6 @@ This completes our definition of M3 in the abstract. In the [next page](/arithme
 
 We end this section by remarking on the _directionality_ of channels. Thus far, the terms "pushing" and "pulling" have been arbitrary, and could have been freely reversed throughout. As it happens in practice, these directions _matter_, and cannot in general be interchanged. Roughly, "pushing" a tuple to a channel corresponds to "registering it as a new, pending, unresolved liability". In contrast, "pulling" a tuple from a channel corresponds to "declaring it as stricken, accounted for and resolved". In practice, M3 instances tend to operate by allowing the prover to _pull_ large claims, but only if he simultaneously _pushes_ various smaller claims, whose collective truth moreover implies the large claim. Indeed, this was more-or-less the pattern visible in our [toy example](/arithmetization/matching/example).
 
-:::info
-If it helps, you can think of each channel as a sort of _ledger_, containing a _liabilities_ list and an _assets_ side. Every time a tuple is _pushed_ to the channel, it is written into the _liabilities_ list. Every time something is _pulled_, it is written into the _assets_ list. The channel is _balanced_ if its assets equal its liabilities (as multisets).
+:::note
+If it helps, you can think of each channel as a sort of _ledger_, containing a _liabilities_ side and an _assets_ side. Every time a tuple is _pushed_ to the channel, it is written into the _liabilities_ list. Every time something is _pulled_, it is written into the _assets_ list. The channel is _balanced_ if its assets equal its liabilities (as multisets).
 :::
