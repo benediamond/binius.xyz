@@ -63,6 +63,11 @@ export default defineConfig({
               text: "Verifying M3 Instances",
               link: "/arithmetization/matching/verifying"
             },
+            {
+              text: "Proving Collatz Orbits",
+              link: "/arithmetization/matching/collatz"
+            },
+
           ]
         },
         {
