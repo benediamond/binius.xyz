@@ -39,7 +39,7 @@ Upon doing this, I wind up with the following initial channel state:
                \_/___________/
 ```
 
-## Tables
+### Tables
 I'm now going to set up _two tables_, let's say $T_{\text{even}}$ and $T_{\text{odd}}$.
 
 The first table, $T_{\text{even}}$, will have two columns:
@@ -58,7 +58,7 @@ You probably see where this is going. We now need to specify what our _constrain
 - For $T_{\text{even}}$, we are going to require that $E = 2 \cdot H$ (as natural numbers). Note that this has the effect of ensuring that $E$ is even.
 - For $T_{\text{odd}}$, we are going to have two constraints: first, $O = 2 \cdot R + 1$ (this ensures that $O$ is odd) and finally that $P = 3 \cdot O + 1$.
 
-Putting the above two rules together, we see that for input on the left, we are getting the output of the Collatz function on the right.
+Putting the above two rules together, we see that for each input on the left, we are getting the output of the Collatz function on the right.
 
 ### Flushing rules
 
@@ -99,7 +99,7 @@ The pattern is clear: you, the prover, need to keep appending rows with the "out
 |              16 |        8 |
 |               8 |        4 |
 |               4 |        2 |
-|               1 |        1 |
+|               2 |        1 |
 
 
 | Odd Number $O$ | Rounded-Down Half $R$ | Output $P$ |
@@ -107,9 +107,11 @@ The pattern is clear: you, the prover, need to keep appending rows with the "out
 |              3 |                     1 |         10 |
 |              5 |                     2 |         16 |
 
-At this point my channel has been balanced. It should be intuitively clear that this thing is correct and secure. (In particular, the only way to make this thing balance is by actually knowing the Collatz orbit.)
+At this point my channel has been balanced.
 
 ## Some Remarks
+
+It should be intuitively clear that this thing is correct and secure. (In particular, the only way to make this thing balance is by actually knowing the Collatz orbit.)
 
 This M3 sketch illustrates something interesting: we let the _choice of_ progression rule become completely nondeterministic, put on the prover. That is, we let the _prover_ deal with the problem of deciding _which_ case we're in: whether we're at an even number, which we must halve, or an odd number, which we must triple and add one to.
 
