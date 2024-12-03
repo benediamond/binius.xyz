@@ -1,0 +1,8 @@
+# Concatenating and Interleaving [Building large polynomials out of smaller ones]
+
+As we've discussed before, multilinear polynomials can be associated with lists of values. That is, for each field $\mathcal{T}_i$ and each size parameter $\ell$, we have two objects which are really "the same":
+
+1. A multilinear polynomial $t(X_0, \ldots , X_{\ell - 1})$ with coefficients in $\ell$.
+2. An ordered list of $2^\ell$ elements of $\mathcal{T}_\iota$.
+
+Indeed, to go from one to the other, we associate $t(X_0, \ldots , X_{\ell - 1})$ with its vector of values on the cube $\left( t(v) \right)_{v \in \mathcal{B}_\ell}$. It's a basic mathematical fact that this association is bijective (i.e., $t$'s values on the cube uniquely capture it as a multilinear).

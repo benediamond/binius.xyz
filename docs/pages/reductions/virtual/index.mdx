@@ -16,7 +16,9 @@ What does this mean? The verifier to keep the polynomial $t^* \coloneqq \alpha_0
 
 Here, we explain the _definition_ of virtual polynomials in simple terms. Roughly, a virtual polynomial is a bundle consisting of a _specification_ of a polynomial (i.e., in terms of other polynomials, themselves either committed or virtual), together with an _algorithm_, possibly interactive, which lets the verifier efficiently learn the thing's value at any given point.
 
-Indeed, a "virtual polynomial" is defined in functional terms: if the verifier has the ability to efficiently learn its value at any point—possibly by querying other things, interacting with the prover, and doing a succinct amount of local work—then it's a virtual polynomial.
+Indeed, a "virtual polynomial" is defined in functional terms: if the verifier has the ability to efficiently learn its value at any point—possibly by querying other things, interacting with the prover, and doing a succinct amount of local work in the process—then it's a virtual polynomial.
+
+The reference for this site subsection is [[DP23](https://eprint.iacr.org/2023/1784), §§ 4.1 and 4.3].
 
 ## Examples
 
