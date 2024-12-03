@@ -1,0 +1,35 @@
+# Virtual Polynomials [Polynomials algebraically derived from committed ones]
+
+_Virtual polynomials_ play an essential role in Binius, and play a central role in this site subsection.
+
+All [prior, DEEP-ALI-based](/reductions/background) SNARKS involve tables (or AIR instances) whose columns are _exclusively committed_. Throughout Binius, we secure enormous gains by refraining, when possible, from committing to "derived columns". That is, many of the columns _we want_ to put into our tables happen to depend—in simple, algebraic ways—upon other columns. Instead of committing to _all of them_—and then constraining _post facto_ that the various columns relate to each other in the required way—we may instead commit _only_ to the "independent"  or "fundamental" polynomials, and then materialize the further ones as virtual derivates of the these original things.
+
+:::info
+As a simple example, let's take a _linear combination_. Given underlying multilinears $t_0$ and $t_1$ and scalars $\alpha_0$ and $\alpha_1$, we might be interested in the linear combination $t^* \coloneqq \alpha_0 \cdot t_0 + \alpha_1 \cdot t_1$, let's say. (That is, $t^*$'s entries are given element-wise as a linear combination of $t_0$'s and $t_1$'s entries.)
+
+Instead of telling the prover first to commit separately to $t^*$, and then _constraining_ or _zerochecking_ that $t^* = \alpha_0 \cdot t_0 + \alpha_1 \cdot t_1$ holds for each $v \in \mathcal{B}_\ell$, we can instead let the verifier conjure up $t^*$ "virtually".
+
+What does this mean? The verifier to keep the polynomial $t^* \coloneqq \alpha_0 \cdot t_0 + \alpha_1 \cdot t_1$ in its head as a "virtual" or "formal" object. When it comes time to evaluate $t^*$—at $r \in \mathcal{T}_\tau^\ell$, let's say—the verifier can't evaluate $t^*$ directly. On the other hand, the verifier can "pretend" it has evaluation access to $t^*$, by splicing in a simple, local evaluation subroutine. That is, it may instead ask the oracle for $s_0 \coloneqq t_0(r)$ and $s_1 \coloneqq t_1(r)$; then, locally, it can compute the linear combination $t^*(r) = \alpha_0 \cdot s_0 + \alpha_1 + s_1$. This procedure is essentially "as good as" having direct query access to $t^*$.
+:::
+
+## Sketch of Definition
+
+Here, we explain the _definition_ of virtual polynomials in simple terms. Roughly, a virtual polynomial is a bundle consisting of a _specification_ of a polynomial (i.e., in terms of other polynomials, themselves either committed or virtual), together with an _algorithm_, possibly interactive, which lets the verifier efficiently learn the thing's value at any given point.
+
+Indeed, a "virtual polynomial" is defined in functional terms: if the verifier has the ability to efficiently learn its value at any point—possibly by querying other things, interacting with the prover, and doing a succinct amount of local work—then it's a virtual polynomial.
+
+## Examples
+
+We begin by sketching the two most basic "virtual" polynomials:
+
+- **Committed polynomials.** These polynomials are not virtual at all, but actually committed to. [We already agreed](/reductions/background#the-pioppcs-boundary)—i.e., by definition of a PIOP—that the verifier may evaluate these things "in a single instruction" by asking the oracle.
+- **Transparent polynomials.** These give us another sort of "degenerate" example. A _transparent_ polynomial is one which the verifier may simply evaluate itself. These are also "virtual", but in a trivial way, since they don't depend on any underlying, committed polynomials.
+
+:::info
+Perhaps the most important transparent polynomial is the _[equality indicator polynomial](/overview#zerocheck)_ $\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1})$. While _general_ $2 \cdot \ell$-variate multilinear polynomials could take as much as $2^{2 \cdot \ell}$ work for the verifier to evaluate, the equality indicator is special: because of how it splits (i.e., into a product of $\ell$ factors) the verifier can evaluate it any point in just $O(\ell)$ work.
+:::
+
+The most "interesting" virtual polynomials depend on underlying committed (or transparent) polynomials in nontrivial ways. Here, we sketch the most important examples, referring where applicable to dedicated subpages.
+
+- **Linear combinations.** As we've seen in the example above, for any list of underlying, $\ell$-variate multilinears $t_0, \ldots , t_{\mu - 1}$, and any list of scalars $\alpha_0, \ldots , \alpha_{\mu - 1}$, we may virtually simulate access to the combination polynomial $\alpha_0 \cdot t_0 + \cdots + \alpha_{\mu - 1} \cdot t_{\mu - 1}$. Indeed, to evaluate the _combination_ at any point $r \in \mathcal{T}_\tau^\ell$, the verifier may simply evaluate the individual things there, and then locally take the appropriate linear combination. Of course, we need to assume that the number $\mu$ of underlying multilinears is small enough that the verifier can take the combination himself.
+- [**Concatenating and interleaving.**](merge) Some of our simplest, and most important, virtual polynomial constructions gives us ways of _merging_ and _combining_ various constituent polynomials into bigger ones. Here, beginning with $2^\alpha$ $\ell$-variate polynomials $t_0, \ldots , t_{2^\alpha - 1}$, we can virtually materialize the $\ell + \alpha$-variate polynomial whose list of values on $\mathcal{B}_{\ell + \alpha}$ is the _concatenation_ or the _interleaving_ of the constituent polynomials $t_0, \ldots , t_{2^\alpha - 1}$'s respective lists.

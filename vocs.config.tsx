@@ -95,6 +95,17 @@ export default defineConfig({
         {
           text: "Virtual Polynomials",
           link: "/reductions/virtual",
+          collapsed: true,
+          items: [
+            {
+              text: "Concatenating and Interleaving",
+              link: "/reductions/virtual/merge"
+            },
+            {
+              text: "Shifting",
+              link: "/reductions/virtual/shift"
+            }
+          ]
         },
         {
           text: "Zerocheck",
