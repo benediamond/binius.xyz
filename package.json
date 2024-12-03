@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vocs dev",
     "build": "vocs build",
-    "preview": "vocs preview"
+    "preview": "vocs preview",
+    "prepare": "husky",
+    "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
     "@types/react": "latest",
@@ -15,5 +17,8 @@
     "remark-math": "^6.0.0",
     "typescript": "latest",
     "vocs": "latest"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }
