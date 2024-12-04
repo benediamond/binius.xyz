@@ -1,6 +1,6 @@
 # Virtual Polynomials [Polynomials algebraically derived from committed ones]
 
-_Virtual polynomials_ play an essential role in Binius, account for the bulk of this subsection's complexity.
+_Virtual polynomials_ play an essential role in Binius, account for the bulk of [this subsection](/reductions)'s complexity.
 
 All [prior, DEEP-ALI-based](/reductions/background) SNARKS involve tables (or AIR instances) whose columns are _exclusively committed_. Throughout Binius, we secure enormous gains by refraining, when possible, from committing to "derived columns". That is, many of the columns _we want_ to put into our tables happen to depend—in simple, algebraic ways—upon other columns. Instead of committing to _all of them_—and then constraining _post facto_ that the various columns relate to each other in the required way—we may instead commit _only_ to the "independent"  or "fundamental" polynomials, and then materialize the further ones as virtual derivates of the these original things.
 
