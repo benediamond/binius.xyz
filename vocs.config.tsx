@@ -98,7 +98,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
-              text: "Concatenating and Interleaving",
+              text: "Merging",
               link: "/reductions/virtual/merge"
             },
             {
