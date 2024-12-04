@@ -35,7 +35,7 @@ The important thing here is that if $2^\alpha$ is small, then this thing is succ
 
 ## Interleaving
 
-By changing this story very slightly, we can also achieve a dual outcome, whereby we _interleave_ $2^\alpha$ $\ell$-variate polynomials. That is, we construct an $\ell + \alpha$-variate polynomial whose (lexicographically flattened) list of evaluations is the interleaving of the respective lists of $2^\alpha$ constituent polynomials $t_0, \ldots , t_{2^\alpha - 1}$.
+By changing this story very slightly, we can also achieve a dual outcome, whereby we _interleave_ $2^\alpha$ $\ell$-variate polynomials. That is, we construct an $\ell + \alpha$-variate polynomial whose (lexicographically flattened) list of evaluations is exactly the interleaving of the respective lists of $2^\alpha$ constituent polynomials $t_0, \ldots , t_{2^\alpha - 1}$.
 
 To do this, we just need to switch the endianness of our combination operation—that is, we need to combine these polynomials using the _low_ variables as "selectors" instead of the high variables. That is, we need to use the alternate expression:
 

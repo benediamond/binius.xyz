@@ -79,6 +79,14 @@ export default defineConfig({
               text: "Lasso Lookup",
               link: "/arithmetization/examples/lasso"
             },
+            {
+              text: "RAM",
+              link: "/arithmetization/examples/ram"
+            },
+            {
+              text: "Merkle–Patricia Inclusion",
+              link: "/arithmetization/examples/mpt"
+            },
           ]
         },
       ]
@@ -97,6 +105,10 @@ export default defineConfig({
           link: "/reductions/virtual",
           collapsed: true,
           items: [
+            {
+              text: "Introduction",
+              link: "/reductions/virtual/introduction"
+            },
             {
               text: "Merging",
               link: "/reductions/virtual/merge"
