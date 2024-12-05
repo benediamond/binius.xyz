@@ -1,6 +1,6 @@
 # Shifting [A virtual polynomial that circularly rotates a committed one]
 
-As we've [already seen](/reductions/virtual/introduction), we can think of _multilinears_ as _lists_. Often, it's convenient to _specify_ a virtual polynomial on the _list_ side of things, and then to later recapture that operation on the algebraic side.
+As we've [already seen](/primer), we can think of _multilinears_ as _lists_. Often, it's convenient to _specify_ a virtual polynomial on the _list_ side of things, and then to later recapture that operation on the algebraic side.
 
 Describing how shifting operates on lists is not hard. Roughly, if we start with a list $(t_i)_{i = 0}^{2^\ell - 1}$, we want to _circularly rotate_ that thing downwards by $o$ steps, let's say. So the resulting list will be $(t_{i - o \pmod{2^\ell}})_{i = 0}^{2^\ell - 1}$.
 
@@ -15,7 +15,7 @@ If our initial multilinear is $t$, we will write $\texttt{shift}_{b, o}(t)$ for 
 
 Now, this is a perfectly valid description of something to do with a list. The much-harder question is: will the verifier have a way of evaluating $\texttt{shift}_{b, o}(t)$ efficiently? That is, let's _assume_ that the verifier has the ability to efficiently evaluate $t(r')$ for any given point $r' \in \mathcal{T}_\tau^\ell$ (for example, $t$ is simply committed). Can we devise a means by which the verifier might bootstrap $t$-evaluation into $\texttt{shift}_{b, o}(t)$-evaluation? That is, how might the verifier efficiently ascertain $\texttt{shift}_{b, o}(t)(r)$, given the ability to evaluate the underlying polynomial $t$?
 
-Note here that we are already using the [duality](/reductions/virtual/introduction) between lists and multilinears. At first, when we _defined_ $\texttt{shift}_{b, o}(t)$, we did so as a list. Just above though, we're already understanding it as a multilinear polynomial. Indeed, how else would we make sense of evaluating it at a _random_ $r \in \mathcal{T}_\tau^\ell$ (i.e., which isn't necessarily in the cube)?
+Note here that we are already using the [duality](/primer) between lists and multilinears. At first, when we _defined_ $\texttt{shift}_{b, o}(t)$, we did so as a list. Just above though, we're already understanding it as a multilinear polynomial. Indeed, how else would we make sense of evaluating it at a _random_ $r \in \mathcal{T}_\tau^\ell$ (i.e., which isn't necessarily in the cube)?
 
 So the first thing we need to do is write down an algebraic expression for $\texttt{shift}_{b, o}(t)$. In principle, this isn't hard, since we already know its values on the cube (we can just take its MLE). The problem though, will be to do this in such a way that the verifier may evaluate it efficiently.
 
