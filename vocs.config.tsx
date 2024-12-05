@@ -134,8 +134,8 @@ export default defineConfig({
               link: "/reductions/zerocheck/univariate"
             },
             {
-              text: "Standard Zerocheck",
-              link: "/reductions/zerocheck/standard"
+              text: "The Rest",
+              link: "/reductions/zerocheck/rest"
             }
           ]
         },
