@@ -1,6 +1,6 @@
-# Univariate Zerocheck [A small-field zerocheck protocol, implementing the univariate skip with batching]
+# Univariate Skip [A small-field zerocheck protocol, implementing the univariate skip with batching]
 
-_Note: this will have to be rewritten, and most will probably be cut. We care more about the verifier than the prover._
+Here, we begin in earnest our treatment of _vanishing claims_. As we've mentioned elsewhere, the main complication at hand is that the polynomials we want to verify the vanishing of are defined over _small fields_. Here, we sketch Binius's zerocheck variant, which is designed to exploit precisely this small-field situation. The theoretical ideas of this page largely come from Gruen [[Gru24]](https://eprint.iacr.org/2024/108).
 
 The _univariate skip_ plays a key role in our small-field zerocheck protocol. The essential premise is that the multilinears upon which our composition polynomials act are, often, defined over small fields. This fact makes the 0th round of the zerocheck special, in that much of the computation required by that round may be carried out over some appropriate small field. In the zerocheck's positive-indexed rounds, on the other hand, the polynomials at hand "saturate" to the maximal field size, and the small-field advantage disappears.
 
