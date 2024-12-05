@@ -163,6 +163,10 @@ export default defineConfig({
           link: "/cryptography/switching",
         },
         {
+          text: "Rectangular Evaluations",
+          link: "/cryptography/rectangular",
+        },
+        {
           text: "Batch Evaluation",
           link: "/cryptography/batching",
         },
