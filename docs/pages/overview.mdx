@@ -28,7 +28,9 @@ Before it generates any randomness, the verifier must receive the prover's commi
 
 The prover's _commitments_, discussed above, represent the _values_ with which it has opted to populate the M3 instance's various tables. To each among these tables is associated various _constraints_, multivariate polynomials which must hold identically, row-wise, on the table's rows (i.e., by definition of the M3 instance). The verifier's first task conceptually is to make sure that the relevant constraints _actually hold_ row-wise on the prover's tables.
 
-The _zerocheck_ is the key tool for this problem. The _zerocheck protocol_ reduces _vanishing claims_ for composites of multilinears to _evaluation claims_ on the underlying multilinears. The classical zerocheck technique is essentially a thin wrapper around the sumcheck. Basically, if we want to check that the $\ell$-variate multivariate composite polynomial $C(X_0, \ldots , X_{\ell - 1})$ is such that $C(v) = 0$ holds for each $v \in \mathcal{B}_\ell$, then it's enough to define $C$'s _multiilnear extension_:
+The _zerocheck_ is the key tool for this problem. The _zerocheck protocol_ reduces _vanishing claims_ for composites of multilinears to _evaluation claims_ on the underlying multilinears. Though we explain that protocol in great detail in our [page](/reductions/zerocheck) dedicated to the matter, we sketch it here.
+
+The classical zerocheck technique is essentially a thin wrapper around the sumcheck. Basically, if we want to check that the $\ell$-variate multivariate composite polynomial $C(X_0, \ldots , X_{\ell - 1})$ is such that $C(v) = 0$ holds for each $v \in \mathcal{B}_\ell$, then it's enough to define $C$'s _multiilnear extension_:
 
 $$\widetilde{C}(X_0, \ldots , X_{\ell - 1}) \coloneqq \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, v_0, \ldots , v_{\ell - 1})$$,
 
@@ -36,9 +38,9 @@ and check whether $\widetilde{C}(r) \stackrel{?}= 0$ holds, for a point $r \gets
 
 $$\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1}) \coloneqq \prod_{i = 0}^{\ell - 1} \left( (1 - X_i) \cdot (1 - Y_i) + X_i \cdot Y_i \right)$$
 
-is the _equality indicator polynomial_, the unique, $2 \cdot \ell$-variate multilinear polynomial whose restriction to $\mathcal{B}_\ell \times \mathcal{B}_\ell$ is the equality indicator function. More precisely, the _sumcheck protocol_ reduces the above sum claim—that is, $0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r, v)$—to an _evaluation claim_ on the underlying polynomial $C$ (that is, to a claim of the form $C(r') \stackrel{?}= s$, where the values $r'$ and $s$ arise during the sumcheck protocol).
+is the _[equality indicator polynomial](/primer#the-equality-indicator-polynomial)_, the unique, $2 \cdot \ell$-variate multilinear polynomial whose restriction to $\mathcal{B}_\ell \times \mathcal{B}_\ell$ is the equality indicator function. More precisely, the _sumcheck protocol_ reduces the above sum claim—that is, $0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r, v)$—to an _evaluation claim_ on the underlying polynomial $C$ (that is, to a claim of the form $C(r') \stackrel{?}= s$, where the values $r'$ and $s$ arise during the sumcheck protocol).
 
-We discuss the zerocheck further [here](/reductions/zerocheck). Because we work over small fields, we in fact adopt a rather sophisticated variant of the zerocheck, called the [_univariate skip_](/reductions/zerocheck/univariate). Very roughly, this zerocheck treats the 0th round in a special way, and moves as much work as possible into that round.
+Because we work over small fields, we in fact adopt a rather sophisticated variant of the zerocheck, called the [_univariate skip_](/reductions/zerocheck/univariate). Very roughly, this zerocheck treats the 0th round in a special way, and moves as much work as possible into that round.
 
 ## The Channel-Balancing Argument
 

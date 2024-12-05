@@ -38,6 +38,11 @@ export default defineConfig({
       link: '/overview',
     },
     {
+      text: "Mathematical Primer",
+      link: "/primer"
+    },
+
+    {
       text: 'Arithmetization',
       collapsed: false,
       link: '/arithmetization/',
@@ -106,10 +111,6 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
-              text: "Introduction",
-              link: "/reductions/virtual/introduction"
-            },
-            {
               text: "Merging",
               link: "/reductions/virtual/merge"
             },
@@ -125,12 +126,16 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
-              text: "Univariate Zerocheck",
+              text: "Review",
+              link: "/reductions/zerocheck/review"
+            },
+            {
+              text: "Univariate Skip",
               link: "/reductions/zerocheck/univariate"
             },
             {
-              text: "Standard Zerocheck",
-              link: "/reductions/zerocheck/standard"
+              text: "The Rest",
+              link: "/reductions/zerocheck/rest"
             }
           ]
         },
@@ -156,6 +161,10 @@ export default defineConfig({
         {
           text: "Ring-Switching",
           link: "/cryptography/switching",
+        },
+        {
+          text: "Rectangular Evaluations",
+          link: "/cryptography/rectangular",
         },
         {
           text: "Batch Evaluation",
