@@ -54,9 +54,9 @@ where both sides are viewed as _multi-subsets_ of $\mathcal{T}_\tau^\mu$.
 
 What [[DP23](https://eprint.iacr.org/2023/1784.pdf), § 4] tells us is that to check this claim, it suffices (up to some negligible soundness error) for the verifier to sample a _fingerprinting challenge_ $s$ and a _permutation challenge_ $r$, and to check instead that the virtual polynomials:
 
-$$T^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$ and $$U^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$$
+$$T \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$ and $$U \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$$
 
-have identical _grand products_. That is, it's enough to check that $\prod_{v \in \mathcal{B}_\ell} T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} U^*(v)$.
+have identical _grand products_. That is, it's enough to check that $\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} U(v)$.
 
 ## The GKR-Based Grand Product Argument
 
@@ -66,7 +66,7 @@ We describe our GKR-based grand product argument in detail [here](/reductions/gp
 
 $$T_k(r_k) = \sum_{v \in \mathcal{B}_k} T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1) \cdot \widetilde{\texttt{eq}}(v, r_k)$$.
 
-By sumchecking this thing, the verifier can reduce the claim $T_k(r_k) \stackrel{?}= a_k$ to the further claim $T_{k + 1}(r_{k + 1}) \stackrel{?}= a_{k + 1}$, for some further values $r_{k + 1}$ and $a_{k + 1}$ obtained during the sumcheck. By performing this repeatedly, we get a way to "unwind" the initial grand product claim $a \stackrel{?}= T_0(\varnothing) = \prod_{v \in \mathcal{B}_\ell} T(v)$ into an evaluation claim of the form $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$.
+By sumchecking this thing, the verifier can reduce the claim $T_k(r_k) \stackrel{?}= a_k$ to the further claim $T_{k + 1}(r_{k + 1}) \stackrel{?}= a_{k + 1}$, for some further values $r_{k + 1}$ and $a_{k + 1}$ obtained during the sumcheck. By performing this repeatedly, we get a way to "unwind" the initial grand product claim $a_0 \coloneqq a \stackrel{?}= T_0(\varnothing) = \prod_{v \in \mathcal{B}_\ell} T(v)$ into an evaluation claim of the form $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$.
 
 We've thus reduced all of our grand product claims to evaluation claims, which is what we wanted.
 

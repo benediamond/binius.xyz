@@ -16,24 +16,38 @@ where both sides of the above equality are understood as _multisets_ (i.e., with
 
 The first step will be to "de-tuplify" the two multisets at hand. Here, we are going to reduce the problem of matching multisets whose _elements_ are tuples (i.e., with $\mu$ components each) to the problem of matching multisets whose elements are just singleton field elements.
 
-Indeed, it is shown in [[DP23](https://eprint.iacr.org/2023/1784.pdf), Prot. 4.20] that, to check whether the above multiset equality holds, it suffices for the verifier—up to a soundness error on the order of $\frac{\mu \cdot 2^\ell}{|\mathcal{T}_\tau|}$—to sample a random fingerprinting challenge $s \gets \mathcal{T}_\tau$, and to check instead whether the two virtual polynomials $\sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $\sum_{i = 0}^{\mu - 1} s^i \cdot U_i$ yield equal multisets over $\mathcal{B}_\ell$. Note that we have replaced the _tuples_ $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$ of virtual columns with the _single_ virtual columns $\sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $\sum_{i = 0}^{\mu - 1} s^i \cdot U_i$. These things are _linear combination_ virtual polynomials, something we're [allowed to do](/reductions/virtual).
+Indeed, it is shown in [[DP23](https://eprint.iacr.org/2023/1784.pdf), Prot. 4.20] that, to check whether the above multiset equality holds, it suffices for the verifier (up to a small soundness error) to sample a random fingerprinting challenge $s \gets \mathcal{T}_\tau$, and to check instead whether the two virtual polynomials $\sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $\sum_{i = 0}^{\mu - 1} s^i \cdot U_i$ yield equal multisets over $\mathcal{B}_\ell$. Note that we have replaced the _tuples_ $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$ of virtual columns with the _single_ virtual columns $\sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $\sum_{i = 0}^{\mu - 1} s^i \cdot U_i$. These things are _linear combination_ virtual polynomials, something we're [allowed to do](/reductions/virtual#nontrivial-examples).
 
 Unrolling this, we see that our claim is now the equality of $1$-ary multisets:
 
 $$\left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot T_i(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot U_i(v) \mid v \in \mathcal{B}_\ell \right\}$$.
 
-The point here is that we've made progress, since these are multisets of singletons, instead of multisets of tuples.
+The point here is that we've made progress, since these are multisets of singletons, instead of multisets of tuples. We can abbreviate $T^* \coloneqq \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $U^* \coloneqq \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$.
 
 ## The Permutation Step
 
-Zooming into a single channel, we write $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$ for the _pair_ of tuples of $\ell$-variate virtual polynomials at issue. The _multiset equality_ claim entails that the multisets of values taken by these tuples over the cube—that is, the multisets
+It thus remains to check whether two _single_ columns $T$ and $U$ yield equal multisets. Here, we follow [[DP23](https://eprint.iacr.org/2023/1784.pdf), Prot. 4.17]. To reiterate, we're interested in checking whether
 
-$$\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$ and $$\left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$,
+$$\left\{ T^*(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ U^*(v) \mid v \in \mathcal{B}_\ell \right\}$$.
 
-viewed as multi-subsets of $\mathcal{T}_\tau^\mu$—are equal.
+as multisets.
 
-What [[DP23](https://eprint.iacr.org/2023/1784.pdf), § 4] tells us is that to check this claim, _it suffices in turn_ (up to some negligible soundness error) for the verifier to sample a _fingerprinting challenge_ $s$ and a _permutation challenge_ $r$, and to check instead that the virtual polynomials:
+The key mathematical fact is that it's secure (again, up to a small error) for the verifier to sample a random challenge $r \gets \mathcal{T}_\tau$, and to check instead whether the two products
 
-$$T^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$ and $$U^* \coloneqq r + \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$$
+$$\prod_{v \in \mathcal{B}_\ell} r + T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} r + U^*(v)$$
 
-have identical _grand products_. That is, it's enough to check that $\prod_{v \in \mathcal{B}_\ell} T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} U^*(v)$.
+are equal. Here, on the two sides of this product identity, we have more linear combination virtual polynomials: now, the much-simpler ones $r + T^*$ and $r + U^*$ (these are valid linear combination virtual polynomials nonetheless).
+
+Product claims of this form are exactly what our [grand product argument](/reductions/gpa) are capable of treating. More precisely, that argument serves to treat claims of the form
+
+$$\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$$,
+
+where $T$ is virtual and $a$ is supplied nondeterministically to the verifier. Here, we want to imagine
+
+$$T = r + T^* = r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$.
+
+## Miscellaneous Considerations
+
+In practice, there are a few power-of-2 issues that make our picture more complicated. For one, the _heights_ of the M3 tables we're interested in flushing might not be powers of 2. That issue creates a signfiicant—though surmountable—technical challenge; we gloss over it for now.
+
+Separately, the _combined quantity_ of all tuples pushed or pulled (as the case may be) to any given channel might itself not be a power of 2. One fact that makes this easier to deal with is that product identities of the form given above—i.e., of the form $\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$—can be broken up. If $T$ is itself a concatenation of _multiple_ lists, which isn't itself of power-of-two size—or, for that matter, if its constituent lists are not even of _equal_ sizes—then it's enough to separately learn the grand products of each of its constituent sublists. These latter grand products can then be multiplied in the clear by the verifier.
