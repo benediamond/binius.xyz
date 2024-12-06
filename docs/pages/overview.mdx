@@ -48,7 +48,7 @@ At the center of each M3 instance is a plurality of abstract objects called _cha
 
 Under the hood, each channel amounts to a pair of dueling "multisets", abstract lists populated by the instance's flushing rules. To check whether the relevant channels balance, the verifier must therefore run a handful of _multiset equality checks_. The theory behind these checks is developed in Protocols 4.17 and 4.20 of [[DP23](https://eprint.iacr.org/2023/1784.pdf)], and is discussed further [here](/reductions/multiset). For now, we sketch the idea. We write $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$ for a single multiset instance; that is, we want to check that
 
-$$\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\} = \left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$,
+$$\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$,
 
 where both sides are viewed as _multi-subsets_ of $\mathcal{T}_\tau^\mu$.
 
