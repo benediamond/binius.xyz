@@ -1,6 +1,10 @@
 # Proving Collatz Orbits [Another toy example from elementary number theory]
 
-Here, we discuss another _toy_ example, based on the famous _Collatz conjecture_. We use the word "toy" here since this thing isn't quite suitable to be used in a real-life M3 instance. The problem is that Binius doesn't have natural-number-valued datatypes (rather, everyting is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
+Here, we discuss another toy example, based on the famous _Collatz conjecture_. We use the word "toy" here since this thing isn't quite suitable to be used in a real-life M3 instance. The problem is that Binius doesn't have natural-number-valued datatypes (rather, everyting is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
+
+:::note
+In fact, it's _possible_ to refine this into a real-life example, by instead using unsigned integer datatypes and appropriately prohibiting overflows. We actually have an end-to-end Collatz example in Binius!
+:::
 
 The _[Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)_ would have it that for any starting integer $x \in \mathbb{N}$, the procedure which sends:
 
