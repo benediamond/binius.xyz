@@ -1,5 +1,44 @@
 import SVG from 'react-inlinesvg'
 
+const footerShapes = [
+  { primary: 'shapes/01.png', alt: ''},
+  { primary: 'shapes/02.png', alt: ''},
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: null, alt: null },
+  { primary: 'shapes/03.png', alt: ''},
+  { primary: 'shapes/04.png', alt: ''},
+  { primary: 'shapes/05.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/07.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/08.png', alt: ''},
+  { primary: 'shapes/09.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/10.png', alt: ''},
+  { primary: 'shapes/11.png', alt: ''},
+  { primary: 'shapes/12.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/05.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/07.png', alt: ''},
+  { primary: 'shapes/09.png', alt: ''},
+  { primary: 'shapes/06.png', alt: ''},
+  { primary: 'shapes/08.png', alt: ''},
+]
+
 const LandingPage = () => {
   return (
     <div>
@@ -54,9 +93,20 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <footer className="lp-footer w-full absolute left-0 mt-20 bg-offwhite">
+      <footer className="w-full absolute left-0 mt-20 bg-offwhite">
+        <div className="shape-grid">
+          {footerShapes.map((shape, index) => (
+            
+              <div key={index}>
+                {shape.primary &&
+                  <img src={shape.primary} alt={shape.alt} className="w-full h-full object-cover" />
+                } 
+              </div>
+            
+          ))}
+        </div>
 
-        <div className="flex py-6 justify-between">
+        <div className="lp-footer flex py-6 justify-between">
           <p className="text-sm text-gunmetal">&copy; 2024 Binius</p>
           <div className="flex">
             <a href="https://x.com/IrreducibleHW" target="_blank">

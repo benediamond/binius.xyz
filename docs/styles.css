@@ -23,8 +23,8 @@ p {
 
 h1 {
   font-family: 'Newsreader', serif;
-  font-size: 60px;
-  line-height: 60px;
+  font-size: 64px;
+  line-height: 64px;
   letter-spacing: -2px;
 }
 
@@ -73,7 +73,7 @@ h2 {
   content: url('logo-alt.svg');
 }
 
-.lp-footer {
+.lp-footer  {
   padding-left: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
   padding-right: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
 }
@@ -141,6 +141,14 @@ h2 {
 
 .vocs_Popover {
   background-color: #F7F6EC;
+}
+
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 }
 
 @media (max-width: 600px) {
