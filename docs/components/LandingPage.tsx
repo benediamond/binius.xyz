@@ -1,0 +1,60 @@
+import SVG from 'react-inlinesvg'
+
+const LandingPage = () => {
+  return (
+    <div>
+      <h1 className="text-center mt-24 mb-6">
+        Unlock the full potential of 
+        <br className="hidden sm:block" />
+        <em> high-performance ZK-proving </em>
+        <br className="hidden sm:block" />
+         with Binius
+        <br className="block sm:hidden" />
+      </h1>
+
+      <p className="text-center text-[20px]">
+        Explore detailed documentation, benchmarks, and resources
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-16">
+        <div className="bg-green p-8 flex flex-col h-full dark:text-slate">
+          <SVG src="blueprint-icon.svg" className="w-10 h-10 mb-6" />
+          <div className="flex flex-col gap-4 flex-grow">
+            <h2>Blueprint</h2>
+            <p className="mb-4">Learn how Binius proofs are generated and verified</p>
+          </div>
+          <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+        </div>
+
+        <div className="bg-orange p-8 flex flex-col h-full dark:text-slate">
+          <SVG src="power-button-icon.svg" className="w-10 h-10 mb-6" />
+          <div className="flex flex-col gap-4 flex-grow">
+            <h2>Getting Started</h2>
+            <p className="mb-4">Learn how to write a SNARK with Binius</p>
+          </div>
+          <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+        </div>
+
+        <div className="bg-blue p-8 flex flex-col h-full dark:text-slate">
+          <SVG src="chart-icon.svg" className="w-10 h-10 mb-6" />
+          <div className="flex flex-col gap-4 flex-grow">
+            <h2>Benchmarks</h2>
+            <p className="mb-4">Explore up-to-date comparative benchmarks</p>
+          </div>
+            <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+        </div>
+
+        <div className="bg-red text-white p-8 flex flex-col h-full">
+          <SVG src="books-icon.svg" className="w-10 h-10 mb-6" />
+          <div className="flex flex-col gap-4 flex-grow">
+            <h2>Educational Resources</h2>
+            <p className="mb-4">Understand Binius fundamentals and core concepts</p>
+          </div>
+            <SVG src="arrow-right.svg" className="w-6 h-6 fill-current text-white mt-auto" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LandingPage;

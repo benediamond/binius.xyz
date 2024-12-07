@@ -2,15 +2,7 @@
 layout: landing
 ---
 
-import { HomePage } from 'vocs/components'
+import '../styles.css';
+import LandingPage from '../components/LandingPage';
 
-<HomePage.Root>
-  <HomePage.Logo />
-  <HomePage.Tagline>Binius: Resources</HomePage.Tagline>
-  <HomePage.InstallPackage name="vocs" type="init" />
-  <HomePage.Description>This is a description of my documentation website.</HomePage.Description>
-  <HomePage.Buttons>
-    <HomePage.Button href="/introduction" variant="accent">Get started</HomePage.Button>
-    <HomePage.Button href="https://gitlab.com/IrreducibleOSS/binius/">GitHub</HomePage.Button>
-  </HomePage.Buttons>
-</HomePage.Root>
+<LandingPage />
