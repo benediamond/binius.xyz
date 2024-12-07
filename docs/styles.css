@@ -48,7 +48,7 @@ h2 {
   background-color: #1D272A; 
 }
 
-.vocs_DocsLayout_content, .vocs_Content {
+[data-layout="minimal"] .vocs_DocsLayout_content, [data-layout="minimal"] .vocs_Content {
   width: 896px;
   max-width: 896px;
 }
@@ -82,13 +82,66 @@ h2 {
   background-color: #1D272A;
 }
 
+.vocs_DocsLayout_gutterLeft, .vocs_Sidebar_logoWrapper {
+  background-color: #F7F6EC;
+}
+
+.vocs_Sidebar_logo {
+  margin: 0 0 40px 0;
+}
+
+.vocs_Sidebar_divider {
+  display: none;
+}
+
+.vocs_DocsLayout_content_withSidebar, 
+.vocs_DocsLayout_content_withSidebar .vocs_Content, 
+.vocs_DocsLayout_gutterRight, 
+.vocs_DocsLayout_gutterTop_offsetLeftGutter {
+  background: #fff;
+}
+
+.dark .vocs_DocsLayout_content_withSidebar, 
+.dark .vocs_DocsLayout_content_withSidebar .vocs_Content, 
+.dark .vocs_DocsLayout_gutterRight, 
+.dark .vocs_DocsLayout_gutterTop_offsetLeftGutter {
+  background: #1D272A;
+}
+
+.dark .vocs_DocsLayout_gutterLeft, .dark .vocs_Sidebar_logoWrapper {
+  background-color: #161D20;
+}
+
+.vocs_DocsLayout_gutterTopCurtain {
+  display: none;
+}
+
+.vocs_DocsLayout_content_withSidebar {
+  max-width: initial;
+}
+
+.vocs_Outline_heading {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.vocs_DocsLayout_gutterRight .vocs_Outline_nav {
+  border: none;
+}
+
+.vocs_H1 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+}
+
 @media (max-width: 600px) {
   h1 {
     font-size: 40px;
     line-height: 40px;
   }
 
-  .vocs_DocsLayout_content, .vocs_Content {
+  [data-layout="minimal"] .vocs_DocsLayout_content, [data-layout="minimal"] .vocs_Content {
     width: 100%;
     max-width: 100%;
   }
