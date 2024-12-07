@@ -53,6 +53,21 @@ const LandingPage = () => {
             <SVG src="arrow-right.svg" className="w-6 h-6 fill-current text-white mt-auto" />
         </div>
       </div>
+
+      <footer className="lp-footer w-full absolute left-0 mt-20 bg-offwhite">
+
+        <div className="flex py-6 justify-between">
+          <p className="text-sm text-gunmetal">&copy; 2024 Binius</p>
+          <div className="flex">
+            <a href="https://x.com/IrreducibleHW" target="_blank">
+              <SVG src="x-icon.svg" className="w-5 h-5 mr-6" />
+            </a>
+            <a href="https://github.com/IrreducibleOSS" target="_blank">
+              <SVG src="github-icon.svg" className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

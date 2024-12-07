@@ -4,13 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+:root, html, body {
   background-color: #F7F6EC; 
   color: #1D272A; 
   font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.dark body {
+.dark body, :root.dark {
   background-color: #1D272A; 
   color: #fff; 
 }
@@ -73,7 +73,16 @@ h2 {
   content: url('logo-alt.svg');
 }
 
-@media (max-width: 430px) {
+.lp-footer {
+  padding-left: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
+  padding-right: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
+}
+
+.dark .lp-footer {
+  background-color: #1D272A;
+}
+
+@media (max-width: 600px) {
   h1 {
     font-size: 40px;
     line-height: 40px;
@@ -91,5 +100,10 @@ h2 {
   .vocs_DesktopSearch_search {
     width: 100%;
     max-width: 100%;
+  }
+
+  /* Tailwind wasn't applying this on mobile with sm: for some reason */
+  .lp-footer {
+    padding: 0 20px;
   }
 }
