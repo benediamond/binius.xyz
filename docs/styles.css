@@ -112,8 +112,8 @@ h2 {
   background-color: #161D20;
 }
 
-.vocs_DocsLayout_gutterTopCurtain {
-  display: none;
+.vocs_DesktopTopNav_curtain {
+  background: none;
 }
 
 .vocs_DocsLayout_content_withSidebar {
@@ -133,6 +133,14 @@ h2 {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 40px;
   font-weight: 700;
+}
+
+.dark .vocs_Popover {
+  background-color: #161D20;
+}
+
+.vocs_Popover {
+  background-color: #F7F6EC;
 }
 
 @media (max-width: 600px) {
@@ -158,5 +166,18 @@ h2 {
   /* Tailwind wasn't applying this on mobile with sm: for some reason */
   .lp-footer {
     padding: 0 20px;
+  }
+
+  .dark .vocs_MobileTopNav_curtain {
+    background-color: #161D20;
+  }
+
+  .vocs_MobileTopNav_curtain {
+    background-color: #F7F6EC;
+  }
+
+  .vocs_DocsLayout_gutterTopCurtain {
+    height: 58px;
+    border-top: 1px solid #1D272A1A;
   }
 }
