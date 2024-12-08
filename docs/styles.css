@@ -1,3 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&family=Newsreader:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 @layer vocs_preflight { @tailwind base; }
 @tailwind components;
 @tailwind utilities;
+
+:root, html, body {
+  background-color: #F7F6EC; 
+  color: #1D272A; 
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.dark body, :root.dark {
+  background-color: #1D272A; 
+  color: #fff; 
+}
+
+p {
+  font-size: 16px;
+  line-height: 16px;
+  font-family: 'IBM Plex Sans', sans-serif; /* Ensure p uses IBM Plex Sans */
+}
+
+h1 {
+  font-family: 'Newsreader', serif;
+  font-size: 64px;
+  line-height: 64px;
+  letter-spacing: -2px;
+}
+
+h1 em {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+}
+
+h2 {
+  font-size: 20px;
+  font-family: 'IBM Plex Sans', sans-serif; /* Ensure p uses IBM Plex Sans */
+  font-weight: 700;
+}
+
+.vocs_DocsLayout_content, .vocs_Content, .vocs_DocsLayout_gutterTop, .vocs_MobileTopNav {
+  background-color: #F7F6EC; 
+  border: none;
+}
+
+.dark .vocs_DocsLayout_content, .dark .vocs_Content, .dark .vocs_DocsLayout_gutterTop, .dark .vocs_MobileTopNav {
+  background-color: #1D272A; 
+}
+
+[data-layout="minimal"] .vocs_DocsLayout_content, [data-layout="minimal"] .vocs_Content {
+  width: 896px;
+  max-width: 896px;
+}
+
+.vocs_DesktopSearch_search {
+  border: 1px solid #1D272A33;
+  border-radius: 0;
+  background: transparent;
+  width: 296px;
+  max-width: 296px;
+}
+
+.dark .vocs_DesktopSearch_search {
+  border: 1px solid #FFFFFF33;
+}
+
+.vocs_NavLogo_logoImage {
+  content: url('logo.svg'); 
+}
+
+.dark .vocs_NavLogo_logoImage {
+  content: url('logo-alt.svg');
+}
+
+.lp-footer  {
+  padding-left: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
+  padding-right: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
+}
+
+.dark .lp-footer {
+  background-color: #1D272A;
+}
+
+.vocs_DocsLayout_gutterLeft, .vocs_Sidebar_logoWrapper {
+  background-color: #F7F6EC;
+}
+
+.vocs_Sidebar_logo {
+  margin: 0 0 40px 0;
+}
+
+.vocs_Sidebar_divider {
+  display: none;
+}
+
+.vocs_DocsLayout_content_withSidebar, 
+.vocs_DocsLayout_content_withSidebar .vocs_Content, 
+.vocs_DocsLayout_gutterRight, 
+.vocs_DocsLayout_gutterTop_offsetLeftGutter {
+  background: #fff;
+}
+
+.dark .vocs_DocsLayout_content_withSidebar, 
+.dark .vocs_DocsLayout_content_withSidebar .vocs_Content, 
+.dark .vocs_DocsLayout_gutterRight, 
+.dark .vocs_DocsLayout_gutterTop_offsetLeftGutter {
+  background: #1D272A;
+}
+
+.dark .vocs_DocsLayout_gutterLeft, .dark .vocs_Sidebar_logoWrapper {
+  background-color: #161D20;
+}
+
+.vocs_DesktopTopNav_curtain {
+  background: none;
+}
+
+.vocs_DocsLayout_content_withSidebar {
+  max-width: initial;
+}
+
+.vocs_Outline_heading {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.vocs_DocsLayout_gutterRight .vocs_Outline_nav {
+  border: none;
+}
+
+.vocs_H1 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.dark .vocs_Popover {
+  background-color: #161D20;
+}
+
+.vocs_Popover {
+  background-color: #F7F6EC;
+}
+
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 40px;
+    line-height: 40px;
+  }
+
+  [data-layout="minimal"] .vocs_DocsLayout_content, [data-layout="minimal"] .vocs_Content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .vocs_Content {
+    padding: 0 20px;
+  }
+
+  .vocs_DesktopSearch_search {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Tailwind wasn't applying this on mobile with sm: for some reason */
+  .lp-footer {
+    padding: 0 20px;
+  }
+
+  .dark .vocs_MobileTopNav_curtain {
+    background-color: #161D20;
+  }
+
+  .vocs_MobileTopNav_curtain {
+    background-color: #F7F6EC;
+  }
+
+  .vocs_DocsLayout_gutterTopCurtain {
+    height: 58px;
+    border-top: 1px solid #1D272A1A;
+  }
+}

@@ -20,6 +20,7 @@ export default defineConfig({
       </>
     )
   },
+  logoUrl: 'logo.svg',
   markdown: {
     remarkPlugins: [
       remarkMath,
