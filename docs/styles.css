@@ -151,10 +151,28 @@ h2 {
   grid-row-gap: 0px;
 }
 
-.vocs_Callout {
+.vocs_Callout_note {
   background-color: #1D272A0A;
   border-color: #ddd;
   color: #000;
+}
+
+.dark .vocs_Callout_note {
+  background-color: #FFFFFF0A;
+  border-color: #FFFFFF0A;
+  color: #fff;
+}
+
+.vocs_Callout_info {
+  background-color: #F7F6EC;
+  color: #000;
+  border-color: #1D272A0A;
+}
+
+.dark .vocs_Callout_info {
+  background-color: #F45A2A1A;
+  color: #fff;
+  border-color: #443f3e;
 }
 
 @media (max-width: 600px) {

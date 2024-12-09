@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Chevron from '../public/chevron.svg'
 
 export default function Card({ children }: { children: React.ReactNode }) {
   const childrenArray = React.Children.toArray(children);
@@ -17,7 +16,12 @@ export default function Card({ children }: { children: React.ReactNode }) {
         onClick={() => {
           setIsOpen((isOpen) => !isOpen);
         }}>
-        <img src={Chevron} className={`transition-transform duration-300 ${isOpen ? '-rotate-90' : 'rotate-90'}`} />
+        
+        <div className={`transition-transform duration-300 ${isOpen ? '-rotate-90' : 'rotate-90'}`} >
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 11L6 6L1 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
       </div>
     </div>
   );}
