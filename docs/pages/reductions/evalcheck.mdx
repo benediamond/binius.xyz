@@ -5,7 +5,18 @@ Throughout the entirety of the [reductions](/reductions) site section thus far, 
 However, one complication remains: the multilinears which these claims pertain to are, in general, [virtual](/reductions/virtual). Almost by definition, virtual polynomials cannot be evaluated _directly_; rather, they must be "unwound": in order to process an evaluation claim on a virtual multilinear, the verifier must perform some further steps. These steps will entail some mix of succinct local computation, interaction with the prover, and so on; the end result will be a _further_ evaluation claim, this time on the polynomial or polynomials that underlie the virtual polynomial.
 
 :::info
-As a key representative example, we refer again to the _[shift](/reductions/virtual/shift)_ virtual polynomial. To resolve an evaluation claim of the form $s \stackrel{?}= \texttt{shift}_{b, o}(t)(r)$, the verifier must engage in an $\ell$-round _sumcheck_ with the prover, and then locally evaluate the _shift indicator polynomial_; only at this point, will it output a _further_ claim $s' \stackrel{?}= t(r')$. The point is that we've reduced a claim on something virtual to a claim on something committed.
+As a key representative example, we refer again to the _[shift](/reductions/virtual/shift)_ virtual polynomial. To resolve an evaluation claim of the form $s \stackrel{?}= \texttt{shift}_{b, o}(t)(r)$, the verifier must engage in an $\ell$-round _sumcheck_ with the prover, and then locally evaluate the _shift indicator polynomial_; only at this point it output a _further_ claim $s' \stackrel{?}= t(r')$. The point is that we've reduced a claim on something virtual to a claim on the thing underneath it.
 :::
 
-In certain cases, the ensuring claims will be on further polynomials that are _themselves_ virtual; in this case, the process must be repeated.
+In certain cases, the ensuing claims will be on further polynomials that are _themselves_ virtual; in this case, the process must be repeated.
+
+## The Polynomial DAG
+
+As we [hinted](/reductions/background) in this section's background page, Binius has a unique feature absent in prior SNARKs: _instance-dependent control flow_. In classical SNARKs, as the instance (i.e., problem description) varies, only basic parameters—like trace length and number of constraints (as well as of course the coefficients of these constraints)—vary; the basic sequence of steps _does not_. In our case, on the other hand, Binius's control flow (for both the prover and the verifier) is variable and instance-dependent.
+
+Why? Basically, because we heavily use [virtual polynomials](/reductions/virtual). These polynomials are allowed to depend on _other_ polynomials, which may _themselves_ be virtual, and so on. In practice, we get a _DAG_ (directed acyclic graph) of polynomials, in which each polynomial points to those upon which it depends. The terminal (or "sink") nodes in this DAG are the [committed and transparent](/reductions/virtual#terminal-examples) polynomials. We thus need a way for the prover and verifier to traverse this DAG "dynamically"—i.e., in a way which is sensitive to the instance at hand.
+
+This is essentially the job of evalcheck.
+
+## Evalcheck
+
