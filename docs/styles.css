@@ -151,6 +151,12 @@ h2 {
   grid-row-gap: 0px;
 }
 
+.vocs_Callout {
+  background-color: #1D272A0A;
+  border-color: #ddd;
+  color: #000;
+}
+
 @media (max-width: 600px) {
   h1 {
     font-size: 40px;
