@@ -1,12 +1,12 @@
-# Proving Collatz Orbits [Another toy example from elementary number theory]
+# Proving Collatz Orbits [Another example from elementary number theory]
 
-Here, we discuss another toy example, based on the famous _Collatz conjecture_. We use the word "toy" here since this thing isn't quite suitable to be used in a real-life M3 instance. The problem is that Binius doesn't have natural-number-valued datatypes (rather, everyting is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
+Here, we discuss another example, based on the famous _Collatz conjecture_. This thing isn't _quite_ suitable as written for a real-life M3 instance, since Binius doesn't have natural-number-valued datatypes (rather, everyting is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
 
 :::note
-In fact, it's _possible_ to refine this into a real-life example, by instead using unsigned integer datatypes and appropriately prohibiting overflows. We actually have an end-to-end Collatz example in Binius!
+It's _possible_ to refine this into a real-life example, by instead using fixed-width unsigned integer datatypes and appropriately rangechecking everything (i.e., prohibiting overflows). We actually have an end-to-end Collatz example implemented in Binius.
 :::
 
-The _[Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)_ would have it that for any starting integer $x \in \mathbb{N}$, the procedure which sends:
+The _[Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)_ would have it that for any starting positive integer $x \in \mathbb{N}$, the procedure which sends:
 
 $$
 x \mapsto \begin{cases}
@@ -15,7 +15,7 @@ x \mapsto \begin{cases}
 \end{cases}
 $$
 
-terminates eventually at 1. We're going to sketch an M3-based proof that some public number, say $x$, satisfies the hypothesis of the Collatz conjecture (that is, its orbit under the Collatz function eventually terminates at 1). For example, if we start with the number 6, we will end up with the sequence 6, 3, 10, 5, 16, 8, 4, 2, 1—which ends at 1, sure enough.
+eventually reaches 1. We're going to sketch an M3-based proof that some _particular_ public number, say $x$, satisfies the hypothesis of the Collatz conjecture (that is, its orbit under the Collatz function eventually terminates at 1). For example, if we start with the number 6, we will end up with the sequence 6, 3, 10, 5, 16, 8, 4, 2, 1—which ends at 1, sure enough.
 
 ## The Instance Specification
 
