@@ -20,7 +20,10 @@ export default defineConfig({
       </>
     )
   },
-  logoUrl: 'logo.svg',
+  logoUrl: {
+    light: '/logo-light.svg',
+    dark: '/logo-dark.svg',
+  },
   markdown: {
     remarkPlugins: [
       remarkMath,
