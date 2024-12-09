@@ -1,4 +1,9 @@
 import SVG from 'react-inlinesvg'
+import BlueprintIcon from '../public/blueprint-icon.svg'
+import PowerButtonIcon from '../public/power-button-icon.svg'
+import ChartIcon from '../public/chart-icon.svg'
+import BooksIcon from '../public/books-icon.svg'
+import ArrowIcon from './ArrowIcon'
 
 const footerShapes = [
   { primary: 'shapes/01.png', alt: ''},
@@ -57,39 +62,39 @@ const LandingPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-16">
         <div className="bg-green p-8 flex flex-col h-full dark:text-slate">
-          <SVG src="blueprint-icon.svg" className="w-10 h-10 mb-6" />
+          <img src={BlueprintIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
           <div className="flex flex-col gap-4 flex-grow">
             <h2>Blueprint</h2>
             <p className="mb-4">Learn how Binius proofs are generated and verified</p>
           </div>
-          <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+          <ArrowIcon />
         </div>
 
         <div className="bg-orange p-8 flex flex-col h-full dark:text-slate">
-          <SVG src="power-button-icon.svg" className="w-10 h-10 mb-6" />
+          <img src={PowerButtonIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
           <div className="flex flex-col gap-4 flex-grow">
             <h2>Getting Started</h2>
             <p className="mb-4">Learn how to write a SNARK with Binius</p>
           </div>
-          <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+          <ArrowIcon />
         </div>
 
         <div className="bg-blue p-8 flex flex-col h-full dark:text-slate">
-          <SVG src="chart-icon.svg" className="w-10 h-10 mb-6" />
+          <img src={ChartIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
           <div className="flex flex-col gap-4 flex-grow">
             <h2>Benchmarks</h2>
             <p className="mb-4">Explore up-to-date comparative benchmarks</p>
           </div>
-            <SVG src="arrow-right.svg" className="w-6 h-6 fill-current mt-auto" />
+            <ArrowIcon />
         </div>
 
         <div className="bg-red text-white p-8 flex flex-col h-full">
-          <SVG src="books-icon.svg" className="w-10 h-10 mb-6" />
+          <img src={BooksIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
           <div className="flex flex-col gap-4 flex-grow">
             <h2>Educational Resources</h2>
             <p className="mb-4">Understand Binius fundamentals and core concepts</p>
           </div>
-            <SVG src="arrow-right.svg" className="w-6 h-6 fill-current text-white mt-auto" />
+          <ArrowIcon />
         </div>
       </div>
 
