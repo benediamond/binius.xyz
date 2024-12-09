@@ -1,7 +1,24 @@
 const ArrowRightIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M2 11.25H21V12.75H2V11.25Z" fill="currentColor"/>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9395 4.99999L19.9395 12L12.9395 19L14.0001 20.0606L22.0608 12L14.0001 3.93933L12.9395 4.99999Z" fill="currentColor"/>
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="text-current"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M2 11.25H21V12.75H2V11.25Z"
+      fill="currentColor"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12.9395 4.99999L19.9395 12L12.9395 19L14.0001 20.0606L22.0608 12L14.0001 3.93933L12.9395 4.99999Z"
+      fill="currentColor"
+    />
   </svg>
 );
 

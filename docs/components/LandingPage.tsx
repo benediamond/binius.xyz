@@ -88,7 +88,7 @@ const LandingPage = () => {
             <ArrowIcon />
         </div>
 
-        <div className="bg-red text-white p-8 flex flex-col h-full">
+        <div className="bg-red text-white p-8 flex flex-col h-full dark:text-white">
           <img src={BooksIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
           <div className="flex flex-col gap-4 flex-grow">
             <h2>Educational Resources</h2>
