@@ -98,31 +98,29 @@ const LandingPage = () => {
         </div>
       </div>
 
-      <footer className="w-full absolute left-0 mt-2">
-        <div className="shape-grid">
-          {footerShapes.map((shape, index) => (
-            
-              <div key={index}>
-                {shape.primary &&
-                  <img src={shape.primary} alt={shape.alt} className="w-full h-full object-cover" />
-                } 
-              </div>
-            
-          ))}
-        </div>
-
-        <div className="lp-footer flex py-6 justify-between">
-          <p className="text-sm text-gunmetal">&copy; 2024 Binius</p>
-          <div className="flex">
-            <a href="https://x.com/IrreducibleHW" target="_blank">
-              <SVG src="x-icon.svg" className="w-5 h-5 mr-6" />
-            </a>
-            <a href="https://github.com/IrreducibleOSS" target="_blank">
-              <SVG src="github-icon.svg" className="w-5 h-5" />
-            </a>
+    <footer className="w-full absolute left-0 mt-20">
+      <div className="shape-grid">
+        {footerShapes.map((shape, index) => (
+          <div key={index} className={index < footerShapes.length - 10 ? 'hidden-mobile' : ''}>
+            {shape.primary && (
+              <img src={shape.primary} alt={shape.alt} className="w-full h-full object-cover" />
+            )}
           </div>
+        ))}
+      </div>
+
+      <div className="lp-footer flex py-6 justify-between my-8">
+        <p className="text-sm text-gunmetal">&copy; 2024 Binius</p>
+        <div className="flex">
+          <a href="https://x.com/IrreducibleHW" target="_blank">
+            <SVG src="x-icon.svg" className="w-5 h-5 mr-6" />
+          </a>
+          <a href="https://github.com/IrreducibleOSS" target="_blank">
+            <SVG src="github-icon.svg" className="w-5 h-5" />
+          </a>
         </div>
-      </footer>
+      </div>
+    </footer>
     </div>
   );
 };
