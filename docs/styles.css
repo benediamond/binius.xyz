@@ -65,14 +65,6 @@ h2 {
   border: 1px solid #FFFFFF33;
 }
 
-.vocs_NavLogo_logoImage {
-  content: url('logo.svg'); 
-}
-
-.dark .vocs_NavLogo_logoImage {
-  content: url('logo-alt.svg');
-}
-
 .lp-footer  {
   padding-left: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
   padding-right: calc(var(--vocs_DocsLayout_leftGutterWidth) - var(--vocs-sidebar_width));
