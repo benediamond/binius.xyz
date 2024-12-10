@@ -103,7 +103,7 @@ We will distinguish between _instances_, defined above, and _attempts_. An _atte
 We're finally ready to say what it means for an _attempt_ to satisfy an _instance_. To define satisfaction, we will go through the following algorithm.
 
 1. All of the instance's channels begin in the empty state.
-2. If called for by the instance specification, certain channels are prepulated with the appropriate statement-dependent data.
+2. If called for by the instance specification, certain channels are prepopulated with the appropriate statement-dependent data.
 3. All of the attempt's tables are flushed into the instance's channels, per the instance's flushing rules.
 4. The attempt _satisfies_ the instance if all of the instance's channels are now balanced.
 

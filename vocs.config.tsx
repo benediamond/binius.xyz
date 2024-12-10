@@ -45,7 +45,10 @@ export default defineConfig({
       text: "Mathematical Primer",
       link: "/primer"
     },
-
+    {
+      text: "The PIOP–PCS Boundary",
+      link: "/boundary"
+    },
     {
       text: 'Arithmetization',
       collapsed: false,
@@ -163,12 +166,12 @@ export default defineConfig({
       link: '/cryptography/',
       items: [
         {
-          text: "Ring-Switching",
-          link: "/cryptography/switching",
+          text: "Commitment",
+          link: "/cryptography/commitment"
         },
         {
-          text: "Rectangular Evaluations",
-          link: "/cryptography/rectangular",
+          text: "Ring-Switching",
+          link: "/cryptography/switching",
         },
         {
           text: "Batch Evaluation",

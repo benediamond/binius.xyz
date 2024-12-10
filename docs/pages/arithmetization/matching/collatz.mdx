@@ -1,6 +1,6 @@
 # Proving Collatz Orbits [Another example from elementary number theory]
 
-Here, we discuss another example, based on the famous _Collatz conjecture_. This thing isn't _quite_ suitable as written for a real-life M3 instance, since Binius doesn't have natural-number-valued datatypes (rather, everyting is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
+Here, we discuss another example, based on the famous _Collatz conjecture_. This thing isn't _quite_ suitable as written for a real-life M3 instance, since Binius doesn't have natural-number-valued datatypes (rather, everything is over binary tower fields). On the other hand, this is close to something that could be used, and conveys a clear idea.
 
 :::note
 It's _possible_ to refine this into a real-life example, by instead using fixed-width unsigned integer datatypes and appropriately rangechecking everything (i.e., prohibiting overflows). We actually have an end-to-end Collatz example implemented in Binius.
@@ -10,7 +10,7 @@ The _[Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)_ wou
 
 $$
 x \mapsto \begin{cases}
-\frac{x}{2} & \text{if $x$ is even} \\
+\frac{x}{2.} & \text{if $x$ is even} \\
 3 \cdot x + 1 & \text{if $x$ is odd}
 \end{cases}
 $$
@@ -19,7 +19,7 @@ eventually reaches 1. We're going to sketch an M3-based proof that some _particu
 
 ## The Instance Specification
 
-Here, we sketch the appropriate M3 instance, generally taking for granted [the defintion of M3](/arithmetization/matching/definition). Our statement looks like:
+Here, we sketch the appropriate M3 instance, generally taking for granted [the definition of M3](/arithmetization/matching/definition). Our statement looks like:
 
 :::note
 You are going to convince me that some given integer satisfies the hypothesis of the Collatz conjecture (that is, its orbit under the Collatz function terminates at 1).
