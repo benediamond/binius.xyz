@@ -50,7 +50,7 @@ Throughout, the verifier maintains some state:
 
 Greedy evalcheck works by processing the evaluation claims in multiple passes. The verifier has two alternate _types_ of pass, which it alternates between.
 
-**The traversal pass.** In this pass, the verifier does a depth-first traversal of the DAG, using the its evaluation claims list (1. above) as "source nodes" or entrypoints. At each node, the verifier does the following thing:
+**The traversal pass.** In this pass, the verifier does a depth-first traversal of the DAG, using the evaluation claims list (1. above) as "source nodes" or entrypoints. At each node, the verifier does the following thing:
 
 - _If_ the node is _not_ sumcheck-inducing, then run all requisite local checks.
   - If applicable, then recursively kick off traversals of any of the node's descendants.
@@ -65,10 +65,10 @@ At the end of this pass, all nodes have been traversed, except the sumcheck-indu
 
 ### The algorithm
 
-To run greedy evalcheck, the verifier simply repeatedly alternates between these two types of passes, beginning with a traversal pass. This process is repeated until the verifier completes a traversal pass during which _no new sumcheck claims_ ensue. At this point, the sumcheck pass becomes vacuous, and the procedure terminates. The output is the full list of output claims on _committed_ multilinears (3. above).
+To run greedy evalcheck, the verifier simply repeatedly alternates between these two types of passes, beginning with a traversal pass on the initial input list of claims. This process is repeated until the verifier completes a traversal pass during which _no new sumcheck claims_ ensue. At this point, the sumcheck pass becomes vacuous, and the procedure terminates. The output is the full list of output claims on _committed_ multilinears (3. above).
 
 ## Some Remarks
 
-While the _greedy evalcheck_ algorithm just described seems a bit tricky, we offer a heuristic justification. The point is that sumchecks need to be _batch-verified_; if it weren't for this fact, then a simple single-pass DAG traversal would presumably suffice just fine. As things stand, we have to instead "fence off" the DAG traversal at the sumcheck-inducing nodes—so that we can collect all available sumchecks. That is, we collect as many sumchecks as we're _currently prepared_ to execute—and no more—before proceeding.
+While the _greedy evalcheck_ algorithm just described seems a bit tricky, we offer a heuristic justification. The point is that sumchecks need to be _batch-verified_; if it weren't for this fact, then a simple single-pass DAG traversal would presumably suffice just fine. As things stand, we have to instead "fence off" the DAG traversal at the sumcheck-inducing nodes—so that we can collect all available sumchecks. That is, we collect as many sumchecks as we're _currently prepared_ to execute—and no more—before verifying them and unrolling further.
 
 We are actively thinking about if there are more sophisticated evalcheck algorithms than the greedy one.
