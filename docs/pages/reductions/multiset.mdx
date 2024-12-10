@@ -48,6 +48,6 @@ $$T = r + T^* = r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$.
 
 ## Miscellaneous Considerations
 
-In practice, there are a few power-of-2 issues that make our picture more complicated. For one, the _heights_ of the M3 tables we're interested in flushing might not be powers of 2. That issue creates a signfiicant—though surmountable—technical challenge; we gloss over it for now.
+In practice, there are a few power-of-2 issues that make our picture more complicated. For one, the _heights_ of the M3 tables we're interested in flushing might not be powers of 2. That issue creates a significant—though surmountable—technical challenge; we gloss over it for now.
 
 Separately, the _combined quantity_ of all tuples pushed or pulled (as the case may be) to any given channel might itself not be a power of 2. One fact that makes this easier to deal with is that product identities of the form given above—i.e., of the form $\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$—can be broken up. If $T$ is itself a concatenation of _multiple_ lists, which isn't itself of power-of-two size—or, for that matter, if its constituent lists are not even of _equal_ sizes—then it's enough to separately learn the grand products of each of its constituent sublists. These latter grand products can then be multiplied in the clear by the verifier.

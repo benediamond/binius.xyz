@@ -32,7 +32,7 @@ We begin by sketching the two most basic "virtual" polynomials. These are "degen
 - **Transparent polynomials.** A _transparent_ polynomial is one which the verifier may simply evaluate itself locally, with no help (and efficiently!). These are also "virtual", but again in a trivial way, since they don't depend on any underlying, committed polynomials.
 
 :::info
-Perhaps the most important transparent polynomial is the _[equality indicator polynomial](introduction#extistence-and-uniqueness)_ $\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1})$. While _general_ $2 \cdot \ell$-variate multilinear polynomials could take as much as $2^{2 \cdot \ell}$ work for the verifier to evaluate, the equality indicator is special: because of how it splits (i.e., into a product of $\ell$ factors) the verifier can evaluate it any point in just $O(\ell)$ work.
+Perhaps the most important transparent polynomial is the _[equality indicator polynomial](introduction#existence-and-uniqueness)_ $\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1})$. While _general_ $2 \cdot \ell$-variate multilinear polynomials could take as much as $2^{2 \cdot \ell}$ work for the verifier to evaluate, the equality indicator is special: because of how it splits (i.e., into a product of $\ell$ factors) the verifier can evaluate it any point in just $O(\ell)$ work.
 :::
 
 ## Nontrivial Examples
