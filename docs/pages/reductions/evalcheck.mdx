@@ -69,7 +69,7 @@ To run greedy evalcheck, the verifier simply repeatedly alternates between these
 
 ## Some Remarks
 
-The _greedy evalcheck_ algorithm just described, while a bit tricky seems ultimately natural. The point is that sumchecks need to be _batch-verified_; if it weren't for that fact, a simple single-pass DAG traversal would presumably be enough. As things stand, though, we have to "fence off" the DAG traversal at the sumcheck-inducing nodes, so that we can collect all sumchecks—that is, as many as possible right now!—before proceeding.
+While the _greedy evalcheck_ algorithm just described seems a bit tricky, we offer a heuristic justification. The point is that sumchecks need to be _batch-verified_; if it weren't for this fact, then a simple single-pass DAG traversal would presumably suffice just fine. As things stand, we have to instead "fence off" the DAG traversal at the sumcheck-inducing nodes—so that we can collect all available sumchecks. That is, we collect as many sumchecks as we're _currently prepared_ to execute—and no more—before proceeding.
 
 We are actively thinking about if there are more sophisticated evalcheck algorithms than the greedy one.
 
@@ -83,6 +83,6 @@ $$s_i \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} t_i(v) \cdot \widetilde{\textt
 
 The verifier may batch _the totality_ of such claims into just _one_ sumcheck claim—by sampling a univariate batching scalar $\alpha$ and combining these claims using its powers, for example. Having done this, the verifier may crank the sumcheck handle for $\ell$ rounds, thereby ultimately reducing everything to the _single_ batched evaluation claim:
 
-$$s^* \stackrel{?}= \sum_{i = 0}^{n - 1} \alpha^i \cdot \left( t_i(r^*) \cdot \widetilde{\texttt{eq}}(r^*, r_i) \right)$$,
+$$s^* \stackrel{?}= \sum_{i = 0}^{n - 1} \alpha^i \cdot t_i(r^*) \cdot \widetilde{\texttt{eq}}(r^*, r_i)$$,
 
 for some values $s^*$ and $r^*$ obtained during the sumcheck. The verifier can locally evaluate the various quantities $\widetilde{\texttt{eq}}(r^*, r_i)$; if the prover nondeterministically supplies the claimed evaluations $t_i(r^*)$, the verifier can morover (conditionally) check the above claim. The final output will thus be the claimed evalutions $t_i(r^*)$; note, though, that these all pertain to the single point $r^*$! We're thus done at this point.
