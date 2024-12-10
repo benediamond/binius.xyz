@@ -167,7 +167,19 @@ export default defineConfig({
       items: [
         {
           text: "Commitment",
-          link: "/cryptography/commitment"
+          link: "/cryptography/commitment",
+          collapsed: true,
+          items: [
+            {
+              text: "Error-Correcting Codes",
+              link: "/cryptography/commitment/codes"
+            },
+            {
+              text: "The Procedure",
+              link: "/cryptography/commitment/procedure"
+            }
+
+          ]
         },
         {
           text: "Ring-Switching",
