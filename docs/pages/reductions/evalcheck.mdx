@@ -22,7 +22,7 @@ Really, it's a "forest", in that the DAG is not in general connected.
 
 ## Evalcheck
 
-In Binius, _evalcheck_ is a generic name we've given to the problem of reducing evaluation claims on _possibly virtual_ multilinears to evaluation claims on _committed_ multilinears. The _input_ to the evalcheck phase consists of a list of _evaluation claims_—each specifying a (generally virtual) multilinear, an evaluation _point_, and a claimed value. The output is a _further_ list of claims, now all pertaining strictly to _committed_ multilinears.
+In Binius, _evalcheck_ is a generic name we've given to the problem of reducing evaluation claims on _possibly virtual_ multilinears to evaluation claims on _committed_ multilinears. The _input_ to the evalcheck phase consists of a list of _evaluation claims_—each specifying a (generally virtual) multilinear, an evaluation _point_, and a claimed _value_. The ultimate output will be a _further_ list of claims, now all pertaining strictly to _committed_ multilinears.
 
 Evalcheck works by progressively consuming evaluation claims on virtual things, and outputting claims on committed things. As we've already said, _each_ such reduction will involve some work on the verifier's part, as well as (in general) interaction with the prover.
 
@@ -42,7 +42,7 @@ In Binius, we solve the evalcheck problem using a particular approach we call _g
 
 Throughout, the verifier maintains some state:
 
-1. A list of evaluation claims on (generally virtual) multilinears, initialized to the initial claims list passed to evalcheck.
+1. A list of evaluation claims on (generally virtual) multilinears, initialized to the initial claims list fed into evalcheck.
 2. A list of running _sumcheck claims_, initialized to empty.
 3. A list of _output_ evaluation claims on _exclusively committed_ multilinears, initialized to empty.
 
@@ -54,10 +54,10 @@ Greedy evalcheck works by processing the evaluation claims in multiple passes. T
 
 - _If_ the node is _not_ sumcheck-inducing, then run all requisite local checks.
   - If applicable, then recursively kick off traversals of any of the node's descendants.
-  - The base case is formed by [terminal virtual polynomials](/reductions/virtual#terminal-examples).
+  - Otherwise, we're in the base case, formed by [terminal virtual polynomials](/reductions/virtual#terminal-examples).
     - If the node is _transparent_, the verifier just evaluates it directly and checks the claim.
     - If it's _committed_, the verifier appends the claim to its running output list (3. above).
-- _Otherwise_, if the node _is_ sumcheck-inducing, then _append_ the relevant sumcheck to the running list of outstanding sumcheck claims (2. above). Instead of traversing further, nip the traversal in the bud at this point, and return.
+- _Otherwise_, i.e. if the node _is_ sumcheck-inducing, then _append_ the relevant sumcheck to the running list of outstanding sumcheck claims (2. above). Instead of traversing further, nip the traversal in the bud at this point, and return.
 
 At the end of this pass, all nodes have been traversed, except those that spawned sumchecks.
 
@@ -65,4 +65,24 @@ At the end of this pass, all nodes have been traversed, except those that spawne
 
 ### The algorithm
 
-To run greedy evalcheck, the verifier simply alternates between these two types of passes, beginning with a traversal pass. This process is repeated until the verifier completes a traversal pass during which _no new sumcheck claims_ ensue.
+To run greedy evalcheck, the verifier simply repeatedly alternates between these two types of passes, beginning with a traversal pass. This process is repeated until the verifier completes a traversal pass during which _no new sumcheck claims_ ensue. At this point, the sumcheck pass becomes vacuous, and the procedure terminates. The output is the full list of output claims on _committed_ multilinears (3. above).
+
+## Some Remarks
+
+The _greedy evalcheck_ algorithm just described, while a bit tricky seems ultimately natural. The point is that sumchecks need to be _batch-verified_; if it weren't for that fact, a simple single-pass DAG traversal would presumably be enough. As things stand, though, we have to "fence off" the DAG traversal at the sumcheck-inducing nodes, so that we can collect all sumchecks—that is, as many as possible right now!—before proceeding.
+
+We are actively thinking about if there are more sophisticated evalcheck algorithms than the greedy one.
+
+## Unifying Output Claims
+
+Before evalcheck terminates, there is one last thing we need to do. As of this point, we have output claims on committed polynomials at _possibly different_ evaluation points—say, $t_i(r_i) \stackrel{?}= s_i$, for $i \in \{0, \ldots , n - 1\}$. In order to batch-evaluate these, for technical reasons, we need them all to pertain to the _same_ evaluation point.
+
+Here, we use a fairly standard technique, which appears in e.g. Rothblum and Ron-Zewi [[RR24](https://dl.acm.org/doi/10.1145/3661483)]. The idea is that, for _each individual_ $i \in \{0, \ldots , n - 1\}$, the evaluation claim $t_i(r_i) \stackrel{?}= s_i$ amounts to the sum claim:
+
+$$s_i \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} t_i(v) \cdot \widetilde{\texttt{eq}}(r_i, v)$$.
+
+The verifier may batch _the totality_ of such claims into just _one_ sumcheck claim—by sampling a univariate batching scalar $\alpha$ and combining these claims using its powers, for example. Having done this, the verifier may crank the sumcheck handle for $\ell$ rounds, thereby ultimately reducing everything to the _single_ batched evaluation claim:
+
+$$s^* \stackrel{?}= \sum_{i = 0}^{n - 1} \alpha^i \cdot \left( t_i(r^*) \cdot \widetilde{\texttt{eq}}(r^*, r_i) \right)$$,
+
+for some values $s^*$ and $r^*$ obtained during the sumcheck. The verifier can locally evaluate the various quantities $\widetilde{\texttt{eq}}(r^*, r_i)$; if the prover nondeterministically supplies the claimed evaluations $t_i(r^*)$, the verifier can morover (conditionally) check the above claim. The final output will thus be the claimed evalutions $t_i(r^*)$; note, though, that these all pertain to the single point $r^*$! We're thus done at this point.
