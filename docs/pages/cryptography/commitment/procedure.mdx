@@ -1,0 +1,13 @@
+# The Procedure [A description of our multilinear commitment scheme]
+
+_Stashing content here; this page is not done._
+
+## The Procedure
+
+Thus we will fix an integer $\ell \geq 0$, a huge tower field $\mathcal{T}_\tau$, and an $\ell$-variate multilinear $t(X_0, \ldots , X_{\ell - 1}) \in \mathcal{T}_\tau[X_0, \ldots , X_{\ell - 1}]^{\preceq 1}$.
+
+:::info
+In practice, we can freely imagine $\tau = 7$; thus, $\mathcal{T}_\tau = \mathcal{T}_7$ is isomorphic as a field to $\mathbb{F}_{2^{128}}$, the binary field of order $2^{128}$.
+:::
+
+Moreover, we are going to fix an integer _rate parameter_ $\mathcal{R} \geq 1$. $\mathcal{R}$ is a cryptographic parameter, whose full significance will not be manifest until [later](/cryptography/batching). For now, we can think of $\mathcal{R}$ as a "blowup factor": during the prover's commitment phase, he will "stretch" his polynomial $2^{\mathcal{R}}$-fold. Thus, if $\mathcal{R} = 1$, it will double in length; if $\mathcal{R} = 2$, it will quadruple in length, and so on. $\mathcal{R}$ mediates a tradeoff between _prover complexity_ and _verifier complexity_: as $\mathcal{R}$ grows, the prover's efficiency gets worse, while the verifier's gets better (but with highly diminishing returns!). In practice, we will usually take $\mathcal{R} = 1$ or $\mathcal{R} = 2$.

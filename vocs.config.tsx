@@ -175,6 +175,10 @@ export default defineConfig({
               link: "/cryptography/commitment/codes"
             },
             {
+              text: "The Additive NTT",
+              link: "/cryptography/commitment/additive"
+            },
+            {
               text: "The Procedure",
               link: "/cryptography/commitment/procedure"
             }
