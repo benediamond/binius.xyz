@@ -45,12 +45,12 @@ export default defineConfig({
     },
     {
       text: 'Benchmarks',
-      link: '/',
+      link: '/benchmarks',
       match: '/benchmarks'
     },
     {
       text: 'Educational Resources',
-      link: '/',
+      link: '/resources',
       match: '/resources'
     },
     {
@@ -234,8 +234,32 @@ export default defineConfig({
     ],
     "/usage": [
       {
-        text: "Introduction",
+        text: "Getting Started",
         link: "/usage",
+      },
+    ],
+    "/benchmarks": [
+      {
+        text: "Binius Benchmarks",
+        link: "/benchmarks",
+      },
+    ],
+    "/resources": [
+      {
+        text: "Introduction",
+        link: "/resources",
+      },
+      {
+        text: "Blog Posts",
+        link: "/resources/posts",
+      },
+      {
+        text: "Talks and Lectures",
+        link: "/resources/talks",
+      },
+      {
+        text: "External Resources",
+        link: "/resources/external",
       },
     ]
   },

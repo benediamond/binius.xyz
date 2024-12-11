@@ -2,8 +2,8 @@ import Collapsible from '../../components/Collapsible';
 
 import { Callout } from 'vocs/components';
 
- 
- # Binius [A SNARK protocol over towers of binary fields, implemented in Rust]
+
+# Introduction [A detailed blueprint of Binius, our binary-field-based SNARK]
 
 _Binius_ is a state-of-the-art noninteractive succinct proof. It comprises a theoretical cryptographic protocol (expounded in a sequence of recent technical manuscripts [[DP23](https://eprint.iacr.org/2023/1784)] [[DP24](https://eprint.iacr.org/2024/504)]), a production-grade [Rust implementation](https://gitlab.com/IrreducibleOSS/binius) of that protocol, and finally a documentation suite, featured on this very website.
 
@@ -19,7 +19,7 @@ Below, we sketch this site's main sub-areas in slightly more detail. Binius, in 
 
 <Callout type="note">
 <Collapsible>
-[**The arithmetization layer.**](/blueprint/arithmetization) In this layer—the outermost—we define abstract tools and objects which serve to efficiently capture _meaningful_ real-life statements and problems.
+[**The arithmetization layer.**](arithmetization) In this layer—the outermost—we define abstract tools and objects which serve to efficiently capture _meaningful_ real-life statements and problems.
 
 Binius's arithmetization scheme—called _M3_, short for _multi-multiset matching_—departs radically from those of other SNARKs. Like other schemes, M3 features PLONK-like _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed identically. Departing from other schemes, we link and connect our various tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
 
@@ -29,7 +29,7 @@ Our arithmetization scheme supports problems whose satisfaction corresponds exac
 
 <Callout type="note">
 <Collapsible>
-[**The cryptographic reductions.**](/blueprint/reductions) This layer contains a plurality of reduction techniques, aimed largely at progressively _simplifying_ and _unifying_ claims output by the arithmetization layer.
+[**The cryptographic reductions.**](reductions) This layer contains a plurality of reduction techniques, aimed largely at progressively _simplifying_ and _unifying_ claims output by the arithmetization layer.
 
 Indeed, our arithmetization layer serves to reduce _satisfiability_ problems to cryptographic claims, themselves either _multiset equality_ claims or _vanishing_ claims (these sorts of claims respectively correspond to the balancing of channels and to the satisfaction of gate constraints).
 
@@ -41,7 +41,7 @@ Our cryptographic reduction layer is described in detail [here](/blueprint/reduc
 
 <Callout type="note">
 <Collapsible>
-[**The polynomial commitment scheme.**](/blueprint/cryptography) Here reside the cryptographic protocols and algorithms which make it possible to securely commit to—and later, to evaluate—multilinear polynomials over tiny fields.
+[**The polynomial commitment scheme.**](cryptography) Here reside the cryptographic protocols and algorithms which make it possible to securely commit to—and later, to evaluate—multilinear polynomials over tiny fields.
 
 In this site section, we sketch in plain language Binius's approach to these complex cryptographic tasks—which itself implements the academic work [[DP24](https://eprint.iacr.org/2023/1784)]. Indeed, we summarize that work at a more-informal level of detail, and moreover discuss various practice-oriented considerations (around batching and whatnot).
 </Collapsible>
