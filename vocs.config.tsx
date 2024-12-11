@@ -33,8 +33,26 @@ export default defineConfig({
     ]
   },
   topNav: [
-    { text: 'Guide & API', link: '/docs/getting-started', match: '/docs' },
-    { text: 'Blog', link: '/blog' },
+    {
+      text: 'Blueprint',
+      link: '/introduction',
+      match: '/fix-me'
+    },
+    {
+      text: 'Getting Started',
+      link: '/',
+      match: '/fix-me'
+    },
+    {
+      text: 'Benchmarks',
+      link: '/',
+      match: '/fix-me'
+    },
+    {
+      text: 'Educational Resources',
+      link: '/',
+      match: '/fix-me'
+    },
     {
       text: "Abcdefgh.",
       items: [
