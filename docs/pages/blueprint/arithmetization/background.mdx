@@ -1,0 +1,21 @@
+# Background [Review of the status quo in arithmetization]
+
+Typical SNARKs handle arithmetization using what's called a _computational trace_—essentially a register dump over time.
+
+This means that we set up a virtual CPU or VM, with some _registers_—stateful places where data can be stored—and various _instructions_. Each _cycle_, we must mutate the registers, in whatever way the current instruction tells us to. We let our machine run for a couple million cycles. Finally, we're interested in peeking at our machine's initial and final states.
+
+The object that arises from this procedure is a _computational trace table_. Each _row_ of the table represents a clock cycle, a slice in time. Each _column_ represents some register (or represents the current instruction, say). Each _cell_, then, gives us the value of a certain register at a certain time. To check whether the trace is valid, we need to check whether the register state updates were performed correctly. That is, we must compare each positive-indexed row with the one before it, and check whether the relevant registers relate to each other in the right way, making reference to the instruction at hand. (We also need to handle instruction-fetching logic; we ignore this for now.) Mathematically, the above task amounts to writing down a polynomial constraint for _each_ instruction—which captures whether that instruction was applied correctly—and then "multiplexing" these constraints using selectors. This is roughly the flavor that Starkware's and Plonky3's _AIR_ (_Algebraic Intermediate Representation_) and Plonky2 and halo2's _PLONKish_ arithmetization schemes take.
+
+## Drawbacks
+
+While this paradigm is reasonably natural and conceptually straightforward, it has various important drawbacks, as we now argue. Roughly, the (multiplexed) constraint polynomial that results from the above recipe is liable to be complicated—with a huge number of variables, and maybe even a high degree. Indeed, this polynomial must, at once, handle _all possible_ instructions that the VM is capable of executing. This seems intuitively wasteful, since only one instruction will execute in each given cycle; on the other hand, we are being forced to "pay the cost" of _all instructions_ at each cycle.
+
+## Desiderata
+
+To give a faint hint of what's to come, we suggest a few desiderata that a "good" arithmetization scheme should possess.
+
+- **Separation of concerns.** It should allow different functionalities to be "broken apart" into different tables, themselves subject to _different_ polynomial constraints. (The problem, of course, is to securely and efficiently link these tables together, as we will soon see.)
+- **Elimination of multiplexing overhead.** We would like to entirely get rid of selectors, since they "needlessly" increase the degrees of our constraint polynomials.
+- **Flexibility.** We would rather not pick a CPU / VM architecture once and for all, and arithmetize that. That approach threatens to impose a sort of efficiency overhead whereby we must run all the programs we care about _through_ its fixed VM. Rather, we want a "meta-template" that yields direct, efficient arithmetizations for _many different_ problems of interest.
+
+Throughout the rest of this section—beginning with our [M3 page](/blueprint/arithmetization/matching)—we explain our approach to arithmetization, and why it achieves the above desiderata.

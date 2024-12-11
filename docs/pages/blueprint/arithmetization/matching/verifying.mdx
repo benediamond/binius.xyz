@@ -1,0 +1,47 @@
+# Verifying M3 Instances [How to actually solve M3 problems]
+
+As we've argued, M3 is a flexible _abstraction_ which lets us formulate and capture computational problems. On the other hand, M3 is only as useful as it is amenable to actual cryptographic treatment. How do we solve M3 problems, once we've formulated them? In this page, we discuss how both parties (i.e., prover and verifier) may _reduce_ the satisfaction of M3 instances to problems that our [cryptographic reductions](/blueprint/reductions) are capable of treating.
+
+We note that we have introduced, above, the roles of _prover_ and _verifier_, which were completely absent from the [abstract definition](/blueprint/arithmetization/matching/definition) of M3. In Binius, it will be the _verifier_ who is interested in assessing the adequacy of an M3 attempt by the _prover_. The _verifier_ will pre-seed all channels at hand with statement-specific data, and will orchestrate the execution of the instance's flushing rules. The _prover_ will be responsible for populating the instance's tables in the first place; i.e., he will do so with an eye towards getting the verifier's channels to balance (and cognizant all the while of the attempt's statement, and of the verifier's pre-seeding rules). The goal will be to do all this in such a way that is _succinct_ for the verifier, and moreover reasonably efficient for the prover.
+
+## Checking the Attempt
+
+Checking whether an M3 _attempt_ satisfies an M3 _instance_ entails a few main steps.
+
+### Constraint satisfaction
+
+Here, we need to check whether the the prover has populated the instance's various _tables_ in such a way that their _constraints_ are satisfied. The rough point here is that this constraint-satisfaction check amounts to a [zerocheck](/blueprint/reductions/zerocheck), and can be checked as such.
+
+As we've [explained already](/blueprint/primer), we have a duality between height-$2^\ell$ columns of $\mathcal{T}_\iota$-elements and $\ell$-variate multilinear polynomials over $\mathcal{T}_\iota$. In view of this identification, our first step is clear: our prover must _commit_ to all of the instance's table's columns, interpreting each as a multilinear (over the appropriate number of variables and over the appropriate field).
+
+:::note
+Here, we have a subtlety about the _heights_ of the attempt's tables: will they all be powers of 2? The answer in general is _no_; and this leads to an important source of technical complexity in our implementation. For our purposes now, we suppress this issue.
+:::
+
+To make this slightly more formal, we introduce notation. We fix a particular table, populated during a prover attempt in such a way that it has $2^\ell$ rows, let's say. We write $t_0, \ldots t_{n - 1}$ for this table's _columns_, suitably reinterpreted as multilinears; here, each $t_i(X_0, \ldots , X_{\ell - 1})$ is an $\ell$-variate multilinear over an appropriate field (i.e., the field of definition of the relevant column). Finally, we write $c_0, \ldots , c_{m - 1}$ for the table's _constraints_. Each of these is a $n$-variate polynomial, defined over the indeterminates $Z_0, \ldots , Z_{n - 1}$, say. The table's satisfaction of its constraints amounts to the condition whereby, for each constraint $j \in \{0, \ldots , m - 1\}$, the $\ell$-variate multivariate polynomial
+
+$$C_j(t_0(X_0, \ldots , X_{\ell - 1}), \ldots, t_{n - 1}(X_0, \ldots , X_{\ell - 1}))$$
+
+vanishes identically on the cube $\mathcal{B}_\ell$.
+
+This is _precisely_ the scenario that the [zerocheck](/blueprint/reductions/zerocheck) is designed to treat. The zerocheck serves to reduce identical vanishing claims of the above form to _evaluation_ claims. That is, by executing a certain sumcheck, the verifier may reduce the vanishing claim above to further _evaluation claims_—that is, to claims of the form $t_i(r) \stackrel{?}= s_i$ (where the evaluation point $r$ and the claimed values $s_i$ arise during the zerocheck). Evaluation claims of this latter form are directly amenable to treatment at the hands of our [polynomial commitment scheme](/blueprint/cryptography).
+
+### Channel balancing
+
+As we hinted at when we [defined](/blueprint/arithmetization/matching/definition) M3, channels, under the hood, are _essentially_ pairs of dueling "multisets". A _multiset_ is a list of elements, in which the unique items are counted, as is the _number_ of times each item appears (its _multiplicity_), but the order of the elements is not counted.
+
+To check whether any given channel balances, then, it's enough to simply running a _multiset-check_. As we [explain](/blueprint/reductions/multiset) in our reductions section, we know exactly how to evaluate these checks—or more precisely, how to reduce them to grand-product claims, themselves amenable to our GKR-based [grand-product argument](/blueprint/reductions/gpa).
+
+### Flushing rules
+
+The catch is that the _particular_ multisets involved in each channel-balancing check will _not_—in almost all interesting cases—be simple committed multilinears. Rather, they will be populated by flushing rules. Indeed, in general, each multiset at hand will contain not just elements but _tuples_; moreover, it will have "received" its tuples from _many different_ sources, at the hands of _many different_ flushing rules. That is, in general, _many different_ flushing rules will contribute elements to each given, particular multiset (by _pushing_ or _pulling_ to that multiset's channel, as the case may be).
+
+Thus, we need a way of constituting large, virtual multilinears, themselves built as "concatenations" of many individual, smaller things. This is essentially the _merge_ virtual polynomial, a construction we discuss in our [subsection](/blueprint/reductions/virtual/merge) about virtual polynomials.
+
+:::note
+The real picture is slightly more complicated, since the respective contributions of the different tables at hand to a given, particular multiset may be differently sized. In practice, we use a "white-box" sort of multiset-check, which is sensitive to the different sizes of the multiset's constituents. That is, we directly reduce it to _individual_ grand products on these components.
+:::
+
+## Stepping Back
+
+In each of the above steps, we reduced the relevant M3 component to a cryptographic problem, treatable using [our tools](/blueprint/reductions) for those problems. The point though is that, after _those reductions themselves_ are fully unwound, the work will be succinct for the verifier, and efficient (say, quasilinear) for the prover. This means that we can use M3 as our "lingua franca"—that is, as the top-level arithmetization language in which we capture our problems—assured all the while that we will be able to efficiently evaluate its instances.
