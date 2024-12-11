@@ -1,6 +1,6 @@
 # GKR-Based Grand Product [A grand-product protocol with no commitment overhead]
 
-As we learned in the context of the [multiset-check](/reductions/multiset), in order for the verifier to assess multiset-equality claims, it's in turn enough for the verifier to assess _grand product claims_. These are claims of the form
+As we learned in the context of the [multiset-check](/blueprint/reductions/multiset), in order for the verifier to assess multiset-equality claims, it's in turn enough for the verifier to assess _grand product claims_. These are claims of the form
 
 $$\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$$;
 
@@ -44,4 +44,4 @@ Thus we've gotten what we wanted: our new evaluation claim is that $T_{k + 1}(r_
 
 By proceeding this way throughout $\ell$ rounds, the verifier may thus reduce its initial claim $a \stackrel{?}= T_0(\varnothing) = \prod_{v \in \mathcal{B}_\ell} T(v)$ to the evaluation claim $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$. Since $T$ is virtual, we agreed already that the verifier will have a way of evaluating it.
 
-Evaluating a virtual polynomial can be complicated, though: a fact which brings us to our next page, [evalcheck](/reductions/evalcheck).
+Evaluating a virtual polynomial can be complicated, though: a fact which brings us to our next page, [evalcheck](/blueprint/reductions/evalcheck).

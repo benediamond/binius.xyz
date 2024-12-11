@@ -1,4 +1,4 @@
-import Collapsible from '../components/Collapsible';
+import Collapsible from '../../components/Collapsible';
 
 import { Callout } from 'vocs/components';
 
@@ -11,7 +11,7 @@ Binius's underlying cryptographic protocol operates natively over _towers of bin
 
 ## Getting Started
 
-For a first, high-level look, please start with our [overview page](/overview).
+For a first, high-level look, please start with our [overview page](/blueprint/overview).
 
 ## Site Directory
 
@@ -19,29 +19,29 @@ Below, we sketch this site's main sub-areas in slightly more detail. Binius, in 
 
 <Callout type="note">
 <Collapsible>
-[**The arithmetization layer.**](/arithmetization) In this layer—the outermost—we define abstract tools and objects which serve to efficiently capture _meaningful_ real-life statements and problems.
+[**The arithmetization layer.**](/blueprint/arithmetization) In this layer—the outermost—we define abstract tools and objects which serve to efficiently capture _meaningful_ real-life statements and problems.
 
 Binius's arithmetization scheme—called _M3_, short for _multi-multiset matching_—departs radically from those of other SNARKs. Like other schemes, M3 features PLONK-like _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed identically. Departing from other schemes, we link and connect our various tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
 
-Our arithmetization scheme supports problems whose satisfaction corresponds exactly to the _balancing_ of a plurality of channels, themselves populated according to flushing rules from pre-arranged tables. Indeed, the _balancedness_ of any particular channel may be expressed as a multiset-equality problem; for this reason, we call our channel-based paradigm _multi-multiset matching_. For more on arithmetization, start [here](/arithmetization).
+Our arithmetization scheme supports problems whose satisfaction corresponds exactly to the _balancing_ of a plurality of channels, themselves populated according to flushing rules from pre-arranged tables. Indeed, the _balancedness_ of any particular channel may be expressed as a multiset-equality problem; for this reason, we call our channel-based paradigm _multi-multiset matching_. For more on arithmetization, start [here](/blueprint/arithmetization).
 </Collapsible>
 </Callout>
 
 <Callout type="note">
 <Collapsible>
-[**The cryptographic reductions.**](/reductions) This layer contains a plurality of reduction techniques, aimed largely at progressively _simplifying_ and _unifying_ claims output by the arithmetization layer.
+[**The cryptographic reductions.**](/blueprint/reductions) This layer contains a plurality of reduction techniques, aimed largely at progressively _simplifying_ and _unifying_ claims output by the arithmetization layer.
 
 Indeed, our arithmetization layer serves to reduce _satisfiability_ problems to cryptographic claims, themselves either _multiset equality_ claims or _vanishing_ claims (these sorts of claims respectively correspond to the balancing of channels and to the satisfaction of gate constraints).
 
 Our _reduction layer_ serves to progressively unroll, simplify, and unify these sorts of cryptographic claims. More specifically, the layer's goal is to reduce these cryptographic claims—which amount to complex predicates on _committed_ and _virtual_ polynomials—to simple _evaluation claims_. An _evaluation claim_, by definition, entails that a particular committed multilinear, at a particular point, evaluates to a particular value. These are the sorts of claims that are amenable to direct evaluation by our PCS. More specifically, our goal is to _further_ reduce our initial claim to a plurality of evaluation claims.
 
-Our cryptographic reduction layer is described in detail [here](/reductions).
+Our cryptographic reduction layer is described in detail [here](/blueprint/reductions).
 </Collapsible>
 </Callout>
 
 <Callout type="note">
 <Collapsible>
-[**The polynomial commitment scheme.**](/cryptography) Here reside the cryptographic protocols and algorithms which make it possible to securely commit to—and later, to evaluate—multilinear polynomials over tiny fields.
+[**The polynomial commitment scheme.**](/blueprint/cryptography) Here reside the cryptographic protocols and algorithms which make it possible to securely commit to—and later, to evaluate—multilinear polynomials over tiny fields.
 
 In this site section, we sketch in plain language Binius's approach to these complex cryptographic tasks—which itself implements the academic work [[DP24](https://eprint.iacr.org/2023/1784)]. Indeed, we summarize that work at a more-informal level of detail, and moreover discuss various practice-oriented considerations (around batching and whatnot).
 </Collapsible>

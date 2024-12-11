@@ -35,8 +35,8 @@ export default defineConfig({
   topNav: [
     {
       text: 'Blueprint',
-      link: '/introduction',
-      match: '/fix-me'
+      link: '/blueprint',
+      match: '/blueprint'
     },
     {
       text: 'Getting Started',
@@ -67,168 +67,170 @@ export default defineConfig({
       ],
     },
   ],
-  sidebar: [
-    {
-      text: 'Introduction',
-      link: '/introduction',
-    },
-    {
-      text: 'Overview',
-      link: '/overview',
-    },
-    {
-      text: "Mathematical Primer",
-      link: "/primer"
-    },
-    {
-      text: "The PIOP–PCS Boundary",
-      link: "/boundary"
-    },
-    {
-      text: 'Arithmetization',
-      collapsed: false,
-      link: '/arithmetization/',
-      items: [
-        {
-          text: "Background",
-          link: "/arithmetization/background"
-        },
-        {
-          text: "Multi-Multiset Matching",
-          link: "/arithmetization/matching",
-          collapsed: true,
-          items: [
-            {
-              text: "A Toy Example",
-              link: "/arithmetization/matching/example"
-            },
-            {
-              text: "Definition of M3",
-              link: "/arithmetization/matching/definition"
-            },
-            {
-              text: "Verifying M3 Instances",
-              link: "/arithmetization/matching/verifying"
-            },
-            {
-              text: "Proving Collatz Orbits",
-              link: "/arithmetization/matching/collatz"
-            },
+  sidebar: {
+    "/blueprint": [
+      {
+        text: "Introduction",
+        link: "/blueprint",
+      },
+      {
+        text: "Overview",
+        link: "/blueprint/overview",
+      },
+      {
+        text: "Mathematical Primer",
+        link: "/blueprint/primer"
+      },
+      {
+        text: "The PIOP–PCS Boundary",
+        link: "/blueprint/boundary"
+      },
+      {
+        text: 'Arithmetization',
+        collapsed: false,
+        link: '/blueprint/arithmetization/',
+        items: [
+          {
+            text: "Background",
+            link: "/blueprint/arithmetization/background"
+          },
+          {
+            text: "Multi-Multiset Matching",
+            link: "/blueprint/arithmetization/matching",
+            collapsed: true,
+            items: [
+              {
+                text: "A Toy Example",
+                link: "/blueprint/arithmetization/matching/example"
+              },
+              {
+                text: "Definition of M3",
+                link: "/blueprint/arithmetization/matching/definition"
+              },
+              {
+                text: "Verifying M3 Instances",
+                link: "/blueprint/arithmetization/matching/verifying"
+              },
+              {
+                text: "Proving Collatz Orbits",
+                link: "/blueprint/arithmetization/matching/collatz"
+              },
 
-          ]
-        },
-        {
-          text: "M3 Examples",
-          link: "/arithmetization/examples",
-          collapsed: true,
-          items: [
-            {
-              text: "Lasso Lookup",
-              link: "/arithmetization/examples/lasso"
-            },
-            {
-              text: "RAM",
-              link: "/arithmetization/examples/ram"
-            },
-            {
-              text: "Merkle–Patricia Inclusion",
-              link: "/arithmetization/examples/mpt"
-            },
-          ]
-        },
-      ]
-    },
-    {
-      text: 'Reductions',
-      collapsed: false,
-      link: '/reductions/',
-      items: [
-        {
-          text: "Background",
-          link: "/reductions/background",
-        },
-        {
-          text: "Virtual Polynomials",
-          link: "/reductions/virtual",
-          collapsed: true,
-          items: [
-            {
-              text: "Merging",
-              link: "/reductions/virtual/merge"
-            },
-            {
-              text: "Shifting",
-              link: "/reductions/virtual/shift"
-            }
-          ]
-        },
-        {
-          text: "Zerocheck",
-          link: "/reductions/zerocheck",
-          collapsed: true,
-          items: [
-            {
-              text: "Review",
-              link: "/reductions/zerocheck/review"
-            },
-            {
-              text: "Univariate Skip",
-              link: "/reductions/zerocheck/univariate"
-            },
-            {
-              text: "The Rest",
-              link: "/reductions/zerocheck/rest"
-            }
-          ]
-        },
-        {
-          text: "Multiset Check",
-          link: "/reductions/multiset",
-        },
-        {
-          text: "GKR-Based Grand Product",
-          link: "/reductions/gpa",
-        },
-        {
-          text: "Evalcheck",
-          link: "/reductions/evalcheck",
-        }
-      ],
-    },
-    {
-      text: 'Cryptography',
-      collapsed: false,
-      link: '/cryptography/',
-      items: [
-        {
-          text: "Commitment",
-          link: "/cryptography/commitment",
-          collapsed: true,
-          items: [
-            {
-              text: "Error-Correcting Codes",
-              link: "/cryptography/commitment/codes"
-            },
-            {
-              text: "The Additive NTT",
-              link: "/cryptography/commitment/additive"
-            },
-            {
-              text: "The Procedure",
-              link: "/cryptography/commitment/procedure"
-            }
+            ]
+          },
+          {
+            text: "M3 Examples",
+            link: "/blueprint/arithmetization/examples",
+            collapsed: true,
+            items: [
+              {
+                text: "Lasso Lookup",
+                link: "/blueprint/arithmetization/examples/lasso"
+              },
+              {
+                text: "RAM",
+                link: "/blueprint/arithmetization/examples/ram"
+              },
+              {
+                text: "Merkle–Patricia Inclusion",
+                link: "/blueprint/arithmetization/examples/mpt"
+              },
+            ]
+          },
+        ]
+      },
+      {
+        text: 'Reductions',
+        collapsed: false,
+        link: '/blueprint/reductions/',
+        items: [
+          {
+            text: "Background",
+            link: "/blueprint/reductions/background",
+          },
+          {
+            text: "Virtual Polynomials",
+            link: "/blueprint/reductions/virtual",
+            collapsed: true,
+            items: [
+              {
+                text: "Merging",
+                link: "/blueprint/reductions/virtual/merge"
+              },
+              {
+                text: "Shifting",
+                link: "/blueprint/reductions/virtual/shift"
+              }
+            ]
+          },
+          {
+            text: "Zerocheck",
+            link: "/blueprint/reductions/zerocheck",
+            collapsed: true,
+            items: [
+              {
+                text: "Review",
+                link: "/blueprint/reductions/zerocheck/review"
+              },
+              {
+                text: "Univariate Skip",
+                link: "/blueprint/reductions/zerocheck/univariate"
+              },
+              {
+                text: "The Rest",
+                link: "/blueprint/reductions/zerocheck/rest"
+              }
+            ]
+          },
+          {
+            text: "Multiset Check",
+            link: "/blueprint/reductions/multiset",
+          },
+          {
+            text: "GKR-Based Grand Product",
+            link: "/blueprint/reductions/gpa",
+          },
+          {
+            text: "Evalcheck",
+            link: "/blueprint/reductions/evalcheck",
+          }
+        ],
+      },
+      {
+        text: 'Cryptography',
+        collapsed: false,
+        link: '/blueprint/cryptography/',
+        items: [
+          {
+            text: "Commitment",
+            link: "/blueprint/cryptography/commitment",
+            collapsed: true,
+            items: [
+              {
+                text: "Error-Correcting Codes",
+                link: "/blueprint/cryptography/commitment/codes"
+              },
+              {
+                text: "The Additive NTT",
+                link: "/blueprint/cryptography/commitment/additive"
+              },
+              {
+                text: "The Procedure",
+                link: "/blueprint/cryptography/commitment/procedure"
+              }
 
-          ]
-        },
-        {
-          text: "Ring-Switching",
-          link: "/cryptography/switching",
-        },
-        {
-          text: "Batch Evaluation",
-          link: "/cryptography/batching",
-        },
-      ]
-    }
-  ],
+            ]
+          },
+          {
+            text: "Ring-Switching",
+            link: "/blueprint/cryptography/switching",
+          },
+          {
+            text: "Batch Evaluation",
+            link: "/blueprint/cryptography/batching",
+          },
+        ]
+      },
+    ],
+  },
 })

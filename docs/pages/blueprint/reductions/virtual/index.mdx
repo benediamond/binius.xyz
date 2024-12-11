@@ -1,8 +1,8 @@
 # Virtual Polynomials [Polynomials algebraically derived from committed ones]
 
-_Virtual polynomials_ play an essential role in Binius, account for the bulk of [this subsection](/reductions)'s complexity.
+_Virtual polynomials_ play an essential role in Binius, account for the bulk of [this subsection](/blueprint/reductions)'s complexity.
 
-All [prior, DEEP-ALI-based](/reductions/background) SNARKS involve tables (or AIR instances) whose columns are _exclusively committed_. Throughout Binius, we secure enormous gains by refraining, when possible, from committing to "derived columns". That is, many of the columns _we want_ to put into our tables happen to depend—in simple, algebraic ways—upon other columns. Instead of committing to _all of them_—and then constraining _post facto_ that the various columns relate to each other in the required way—we may instead commit _only_ to the "independent"  or "fundamental" polynomials, and then materialize the further ones as virtual derivates of the these original things.
+All [prior, DEEP-ALI-based](/blueprint/reductions/background) SNARKS involve tables (or AIR instances) whose columns are _exclusively committed_. Throughout Binius, we secure enormous gains by refraining, when possible, from committing to "derived columns". That is, many of the columns _we want_ to put into our tables happen to depend—in simple, algebraic ways—upon other columns. Instead of committing to _all of them_—and then constraining _post facto_ that the various columns relate to each other in the required way—we may instead commit _only_ to the "independent"  or "fundamental" polynomials, and then materialize the further ones as virtual derivates of the these original things.
 
 :::info
 As a simple example, let's take a _linear combination_. Given underlying multilinears $t_0$ and $t_1$ and scalars $\alpha_0$ and $\alpha_1$, we might be interested in the linear combination $t^* \coloneqq \alpha_0 \cdot t_0 + \alpha_1 \cdot t_1$, let's say. (That is, $t^*$'s entries are given element-wise as a linear combination of $t_0$'s and $t_1$'s entries.)
@@ -22,13 +22,13 @@ The thorough reference for this site subsection is [[DP23](https://eprint.iacr.o
 
 ## Multilinears and Lists
 
-We've [already seen](/primer) that _multilinear polynomials_ and _lists of values_ are two sides of the same coin. These two worlds are equivalent to each other, and can be mathematically connected. Thus, when we talk about constructing multilinears, we can feel free to work on both sides of this divide. What often happens is that we will first talk about the _desired_ construction in the language of lists; then, when it comes time to actually construct that thing, we will need to supply a mathematical construction in the language of multilinears. If you need a primer on this duality, start [here](/primer).
+We've [already seen](/blueprint/primer) that _multilinear polynomials_ and _lists of values_ are two sides of the same coin. These two worlds are equivalent to each other, and can be mathematically connected. Thus, when we talk about constructing multilinears, we can feel free to work on both sides of this divide. What often happens is that we will first talk about the _desired_ construction in the language of lists; then, when it comes time to actually construct that thing, we will need to supply a mathematical construction in the language of multilinears. If you need a primer on this duality, start [here](/blueprint/primer).
 
 ## Terminal Examples
 
 We begin by sketching the two most basic "virtual" polynomials. These are "degenerate" examples—which barely deserve to be called virtual polynomials—but which are important nonetheless. Indeed, they will serve as our atomic building blocks when we get into more complex constructions.
 
-- **Committed polynomials.** These polynomials are not virtual at all, but actually committed to. [We already agreed](/boundary)—i.e., by definition of a PIOP—that the verifier may evaluate these things "in a single instruction" by just asking the oracle. Thus, they paradoxically count as (trivial) virtual polynomials.
+- **Committed polynomials.** These polynomials are not virtual at all, but actually committed to. [We already agreed](/blueprint/boundary)—i.e., by definition of a PIOP—that the verifier may evaluate these things "in a single instruction" by just asking the oracle. Thus, they paradoxically count as (trivial) virtual polynomials.
 - **Transparent polynomials.** A _transparent_ polynomial is one which the verifier may simply evaluate itself locally, with no help (and efficiently!). These are also "virtual", but again in a trivial way, since they don't depend on any underlying, committed polynomials.
 
 :::info

@@ -1,6 +1,6 @@
 # Shifting [A virtual polynomial that circularly rotates a committed one]
 
-As we've [already seen](/primer), we can think of _multilinears_ as _lists_. Often, it's convenient to _specify_ a virtual polynomial on the _list_ side of things, and then to later recapture that operation on the algebraic side.
+As we've [already seen](/blueprint/primer), we can think of _multilinears_ as _lists_. Often, it's convenient to _specify_ a virtual polynomial on the _list_ side of things, and then to later recapture that operation on the algebraic side.
 
 Describing how shifting operates on lists is not hard. Roughly, if we start with a list $(t_i)_{i = 0}^{2^\ell - 1}$, we want to _circularly rotate_ that thing downwards by $o$ steps, let's say. So the resulting list will be $(t_{i - o \pmod{2^\ell}})_{i = 0}^{2^\ell - 1}$.
 
@@ -15,7 +15,7 @@ If our initial multilinear is $t$, we will write $\texttt{shift}_{b, o}(t)$ for 
 
 Now, this is a perfectly valid description of something to do with a list. The much-harder question is: will the verifier have a way of evaluating $\texttt{shift}_{b, o}(t)$ efficiently? That is, let's _assume_ that the verifier has the ability to efficiently evaluate $t(r')$ for any given point $r' \in \mathcal{T}_\tau^\ell$ (for example, $t$ is simply committed). Can we devise a means by which the verifier might bootstrap $t$-evaluation into $\texttt{shift}_{b, o}(t)$-evaluation? That is, how might the verifier efficiently ascertain $\texttt{shift}_{b, o}(t)(r)$, given the ability to evaluate the underlying polynomial $t$?
 
-Note here that we are already using the [duality](/primer) between lists and multilinears. At first, when we _defined_ $\texttt{shift}_{b, o}(t)$, we did so as a list. Just above though, we're already understanding it as a multilinear polynomial. Indeed, how else would we make sense of evaluating it at a _random_ $r \in \mathcal{T}_\tau^\ell$ (i.e., which isn't necessarily in the cube)?
+Note here that we are already using the [duality](/blueprint/primer) between lists and multilinears. At first, when we _defined_ $\texttt{shift}_{b, o}(t)$, we did so as a list. Just above though, we're already understanding it as a multilinear polynomial. Indeed, how else would we make sense of evaluating it at a _random_ $r \in \mathcal{T}_\tau^\ell$ (i.e., which isn't necessarily in the cube)?
 
 So the first thing we need to do is write down an algebraic expression for $\texttt{shift}_{b, o}(t)$. In principle, this isn't hard, since we already know its values on the cube (we can just take its MLE). The problem though, will be to do this in such a way that the verifier may evaluate it efficiently.
 
@@ -75,12 +75,12 @@ This completes the description of $\texttt{shift}_{b, o}(t)$ _as a virtual polyn
 
 ## Then What?
 
-What do we get out of this construction? In short, shifting lets us _link_ distinct rows of our [tables](/arithmetization/matching/definition#tables-and-constraints). Occasionally, it happens that we want to "spread" a computation across multiple rows. When we do this, we often want to "link" the end of one row with the beginning of the next. In fact, this sort of looks like how classical [AIR](/arithmetization/background) works.
+What do we get out of this construction? In short, shifting lets us _link_ distinct rows of our [tables](/blueprint/arithmetization/matching/definition#tables-and-constraints). Occasionally, it happens that we want to "spread" a computation across multiple rows. When we do this, we often want to "link" the end of one row with the beginning of the next. In fact, this sort of looks like how classical [AIR](/blueprint/arithmetization/background) works.
 
 Of course, we will not _always_ want to do this, and our use of M3 vastly reduces the frequency that we want to use this kind of thing. On the other hand, it can be useful to have.
 
 :::info
-For example, one key M3 table—used in an essential way in our [MPT arithmetization](/arithmetization/examples/mpt)—is the _Keccak-f_ table. It's possible to write down a table that does an _entire_ 24-round $\text{Keccak-}f$ permutation in just a single row. In that setting, shifting isn't necessary.
+For example, one key M3 table—used in an essential way in our [MPT arithmetization](/blueprint/arithmetization/examples/mpt)—is the _Keccak-f_ table. It's possible to write down a table that does an _entire_ 24-round $\text{Keccak-}f$ permutation in just a single row. In that setting, shifting isn't necessary.
 
 On the other hand, there are subtle efficiency tradeoffs that affect the widths of tables. In certain circumstances, it winds up being _more_ efficient rather to spread _each_ $\text{Keccak-}f$ permutation across 3 rows (so, only 8 rounds get done per row, instead of all 24). In this case, we need to "preserve" our internal sponge state so that we can "carry it over" from the end of one row to the beginning of the next. Shifting turns out to be a key way to do this.
 :::
