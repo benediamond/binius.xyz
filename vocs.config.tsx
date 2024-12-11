@@ -40,18 +40,18 @@ export default defineConfig({
     },
     {
       text: 'Getting Started',
-      link: '/',
-      match: '/fix-me'
+      link: '/usage',
+      match: '/usage'
     },
     {
       text: 'Benchmarks',
       link: '/',
-      match: '/fix-me'
+      match: '/benchmarks'
     },
     {
       text: 'Educational Resources',
       link: '/',
-      match: '/fix-me'
+      match: '/resources'
     },
     {
       text: "Abcdefgh.",
@@ -232,5 +232,11 @@ export default defineConfig({
         ]
       },
     ],
+    "/usage": [
+      {
+        text: "Introduction",
+        link: "/usage",
+      },
+    ]
   },
 })
