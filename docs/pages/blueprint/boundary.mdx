@@ -1,6 +1,6 @@
 # The PIOP–PCS Boundary [Separating the use of secure evaluation from its implementation]
 
-Binius has clasically had a strong PIOP–PCS separation. In short, a _PCS_ (polynomial commitment scheme) is a protocol between the prover and the verifier by the aid of which the prover might _commit_ to a multilinear polynomial and the verifier might later _evaluate_ it at arbitrary points. The pithy way of saying this is:
+Binius has classically had a strong PIOP–PCS separation. In short, a _PCS_ (polynomial commitment scheme) is a protocol between the prover and the verifier by the aid of which the prover might _commit_ to a multilinear polynomial and the verifier might later _evaluate_ it at arbitrary points. The pithy way of saying this is:
 
 :::note
 If the PCS is secure, then the parties may view it as a blackbox—i.e., as an abstract, third-party _oracle machine_. The prover simply hands the polynomial directly to the oracle machine, who sits on it. Later, when the verifier wants to query the polynomial, he simply asks the oracle machine for its value at the desired point. The oracle machine is assumed to be perfectly honest and reliable.
