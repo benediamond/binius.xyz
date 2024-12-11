@@ -32,6 +32,23 @@ export default defineConfig({
       rehypeKatex,
     ]
   },
+  topNav: [
+    { text: 'Guide & API', link: '/docs/getting-started', match: '/docs' },
+    { text: 'Blog', link: '/blog' },
+    {
+      text: "Abcdefgh.",
+      items: [
+        {
+          text: 'Changelog',
+          link: 'https://github.com/wevm/vocs/blob/main/src/CHANGELOG.md',
+        },
+        {
+          text: 'Contributing',
+          link: 'https://github.com/wevm/vocs/blob/main/.github/CONTRIBUTING.md',
+        },
+      ],
+    },
+  ],
   sidebar: [
     {
       text: 'Introduction',
