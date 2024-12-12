@@ -209,8 +209,11 @@ export default defineConfig({
               {
                 text: "The Procedure",
                 link: "/blueprint/cryptography/commitment/procedure"
-              }
-
+              },
+              {
+                text: "Batch Commitment",
+                link: "/blueprint/cryptography/commitment/batched"
+              },
             ]
           },
           {
