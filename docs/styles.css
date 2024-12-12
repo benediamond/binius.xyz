@@ -23,6 +23,7 @@ p, ul, li {
 
 h1 {
   font-family: 'Newsreader', serif;
+  font-weight: 400;
   font-size: 64px;
   line-height: 64px;
   letter-spacing: -2px;
