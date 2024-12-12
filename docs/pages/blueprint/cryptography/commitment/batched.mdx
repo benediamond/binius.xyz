@@ -24,9 +24,9 @@ As a concrete example, we can take $n = 3$, and the size parameters
 
 $$(\ell_0, \ell_1, \ell_2) = (2, 1, 0)$$.
 
-Here, after concatenating all the lists, we get a master list of size $n^* = 2^2 + 2^1 + 2^0 = 7$. We thus append one zero to get a power of 2, and wind up with $\ell^* = 3$. We thus have a cube's worth of values to fill.
+Here, after concatenating all the lists, we get a master list of size $n^* = 2^2 + 2^1 + 2^0 = 7$. We thus append one zero to get the power of two $8 = 2^3$, and wind up with $\ell^* = 3$. We thus have a cube's worth of values to fill.
 
-To represent $t_0(X_0, X_1)$'s values, we need a two-dimensional cube, or a _square_. We can thus write these values into the _bottom face_ of our cube—i.e., where $X_2 = 0$ (and $X_0$ and $X_1$ are arbitrary). The 1-variate multilinear $t_1(X_0)$ takes up just a 1-dimensional cube, or an _edge_. We can inscribe these two values into the next available edge, which resides where $X_2 = 1$ and $X_1 = 0$ (and $X_0$ is arbitrary). Finally, the 0-variate multilinear takes just a 0-dimensional cube, or a _point_. We can inscribe its single value in the next available point, namely where $X_2 = 1$, $X_1 = 1$, and $X_0 = 0$. Finally, we write a 0 into the very final point, at $(1, 1, 1)$.
+To represent $t_0(X_0, X_1)$'s values, we need a two-dimensional cube, or a _square_. We can thus write these values into the _bottom face_ of our cube—i.e., where $X_2 = 0$ (and $X_0$ and $X_1$ are arbitrary). The 1-variate multilinear $t_1(X_0)$ takes up just a 1-dimensional cube, or an _edge_. We can inscribe these two values into the next available edge, which resides where $X_2 = 1$ and $X_1 = 0$ (and $X_0$ is arbitrary). Finally, the 0-variate multilinear takes just a 0-dimensional cube, or a _point_. We can inscribe its single value in the next available point, namely where $X_2 = 1$, $X_1 = 1$, and $X_0 = 0$. Finally, we write a zero into the very final point, at $(1, 1, 1)$.
 
 Doing this gives us a mapping from $\mathcal{B}_{\ell^*} = \mathcal{B}_3$ to $\mathcal{T}_\tau$, which is exactly the kind of thing we're prepared to commit to.
 :::

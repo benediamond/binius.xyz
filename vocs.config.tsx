@@ -219,6 +219,21 @@ export default defineConfig({
           {
             text: "Ring-Switching",
             link: "/blueprint/cryptography/switching",
+            collapsed: true,
+            items: [
+              {
+                text: "The Refinement Polynomial",
+                link: "/blueprint/cryptography/switching/refinement"
+              },
+              {
+                text: "The Tensor Algebra",
+                link: "/blueprint/cryptography/switching/tensor"
+              },
+              {
+                text: "The Procedure",
+                link: "/blueprint/cryptography/switching/procedure"
+              },
+            ]
           },
           {
             text: "Batch Evaluation",

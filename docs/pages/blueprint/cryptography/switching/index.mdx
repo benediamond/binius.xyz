@@ -1,0 +1,13 @@
+# Ring-Switching [Reducing small-field evaluation claims to big-field sum claims]
+
+Thus far, when discussing [commitment](/blueprint/cryptography/commitment), we have imposed throughout the restriction whereby everything be defined over the _huge_ field $\mathcal{T}_\tau$. This might rightly seem like a problem, since many of the polynomials we're interested in will be defined over small tower subfields $\mathcal{T}_\iota \subset \mathcal{T}_\tau$.
+
+In this subsection, we describe a key cryptographic technique—introduced in the academic work [[DP24](https://eprint.iacr.org/2024/504.pdf)]—called _ring-switching_. Ring-switching allows us to "materialize" small-field polynomials out of large-field one—essentially using a [virtual polynomial](/blueprint/reductions/virtual) construction analogous to those we've already seen. This allows small-field polynomials to be treated. Indeed, small-field and large-field polynomials are related to each other by reciprocal processes called [packing and refinement](refinement). If we're interested in a small-field polynomial, we can just commit to its packing. Later, we can evaluate that packing's refinement—i.e., the original polynomial we started with—using ring-switching.
+
+## Subsection Directory
+
+This subsection contains the following pages:
+
+- [**The Refinement Polynomial.**](refinement) Here, we introduce the relatively straightforward mathematical notions of _refinement and packing_. These are essential even to understand what ring-switching _does_, forget about how it does it.
+- [**The Tensor Algebra.**](tensor) Here, we drop a crash-course on a mathematical object called the _tensor algebra_, introduced in [[DP24](https://eprint.iacr.org/2024/504.pdf)]. This algebraic object manages to exactly capture the "bookkeeping" needed to make ring-switching work.
+- [**The Procedure.**](procedure) At this point, we have enough mathematical preliminaries ready to describe the actual algorithm of ring-switching.
