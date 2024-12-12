@@ -54,7 +54,7 @@ export default defineConfig({
       match: '/benchmarks'
     },
     {
-      text: 'Educational Resources',
+      text: 'Resources',
       link: '/resources',
       match: '/resources'
     },
