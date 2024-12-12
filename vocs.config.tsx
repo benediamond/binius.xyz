@@ -209,17 +209,35 @@ export default defineConfig({
               {
                 text: "The Procedure",
                 link: "/blueprint/cryptography/commitment/procedure"
-              }
-
+              },
+              {
+                text: "Batch Commitment",
+                link: "/blueprint/cryptography/commitment/batched"
+              },
             ]
           },
           {
             text: "Ring-Switching",
             link: "/blueprint/cryptography/switching",
+            collapsed: true,
+            items: [
+              {
+                text: "The Refinement Polynomial",
+                link: "/blueprint/cryptography/switching/refinement"
+              },
+              {
+                text: "The Tensor Algebra",
+                link: "/blueprint/cryptography/switching/tensor"
+              },
+              {
+                text: "The Procedure",
+                link: "/blueprint/cryptography/switching/procedure"
+              },
+            ]
           },
           {
             text: "Batch Evaluation",
-            link: "/blueprint/cryptography/batching",
+            link: "/blueprint/cryptography/evaluation",
           },
         ]
       },
