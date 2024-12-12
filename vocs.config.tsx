@@ -58,19 +58,6 @@ export default defineConfig({
       link: '/resources',
       match: '/resources'
     },
-    {
-      text: "Abcdefgh.",
-      items: [
-        {
-          text: 'Changelog',
-          link: 'https://github.com/wevm/vocs/blob/main/src/CHANGELOG.md',
-        },
-        {
-          text: 'Contributing',
-          link: 'https://github.com/wevm/vocs/blob/main/.github/CONTRIBUTING.md',
-        },
-      ],
-    },
   ],
   sidebar: {
     "/blueprint": [
