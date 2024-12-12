@@ -4,7 +4,7 @@ The most important code we come across in SNARKs is the _[Reed–Solomon code](h
 
 As we've [suggested](/blueprint/cryptography/commitment/codes), error-correcting codes have two desirable properties—_distance_ and _rate_—which are at odds with each other in general. Indeed, a mathematical result called the _[Singleton bound](https://en.wikipedia.org/wiki/Singleton_bound#Linear_codes)_ formalizes the precise way in which these desiderata are in tension. Reed–Solomon codes _meet_ the Singleton bound, in the sense that the inequality becomes an equality; they thus negotiate the tension between these attributes as favorably as it is possible to do.
 
-Reed–Solomon codes are not _just_ coding-theoretically nice. They also support an extremely rich set of auxiliary protocols, designed to achieve such ends as _proximity testing_ (determining whether a supplied _word_ is close to a codeword or not, by just reading from it at a few places). The crucial protocol here is _[FRI](https://eccc.weizmann.ac.il/report/2017/134/)_ (short for _fast Reed–Solomon interactive oracle proof of proximity_), due to Ben-Sasson, Bentov, Horesh and Riabzev.
+Reed–Solomon codes are not _just_ coding-theoretically nice. They also support an extremely rich set of auxiliary protocols, designed to achieve such ends as _proximity testing_ (determining whether a supplied _word_ is close to a codeword or not, by just reading from it at a few places). The crucial protocol here is _[FRI](https://eccc.weizmann.ac.il/report/2017/134/)_ (short for _fast Reed–Solomon interactive oracle proof of proximity_), due to Ben-Sasson, Bentov, Horesh and Riabzev. We will use FRI in our [evaluation protocol](/blueprint/cryptography/evaluation).
 
 ## Review of Reed–Solomon Codes
 

@@ -237,7 +237,7 @@ export default defineConfig({
           },
           {
             text: "Batch Evaluation",
-            link: "/blueprint/cryptography/batching",
+            link: "/blueprint/cryptography/evaluation",
           },
         ]
       },

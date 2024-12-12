@@ -2,7 +2,7 @@
 
 We [now know](/blueprint/cryptography/commitment/procedure) how to commit to an $\ell$-variate multilinear polynomial $t(X_0, \ldots, X_{\ell - 1})$ over the huge field $\mathcal{T}_\tau$. In practical applications, on the other hand, we will have _many different_ multilinear polynomials at play. For the sake of concrete efficiency, it is crucial that we commit to these in a _batched way_, which allows, in particular, these polynomials' respective evaluation protocols to also be batched.
 
-Of course, we haven't even yet seen how to evaluate a _single_ polynomial, let alone many. For now, then, we will just record our batched commitment procedure, acknowledging all the while that it will appear unmotivated. We will refer back to this page when we discuss evaluation (see in particular [this page](/blueprint/cryptography/batching)).
+Of course, we haven't even yet seen how to evaluate a _single_ polynomial, let alone many. For now, then, we will just record our batched commitment procedure, acknowledging all the while that it will appear unmotivated. We will refer back to this page when we discuss evaluation (see in particular [this page](/blueprint/cryptography/evaluation)).
 
 Things are a bit easier when the number $\mu$ of polynomials at hand is a power of 2, and all the polynomials are of the same number of variables $\ell$. In real life, this assumption is too simplifying. Here, we fix an arbitrary number $n$ of polynomials $t_0, \ldots , t_{n - 1}$, of arbitrary _different_ sizes $\ell_0, \ldots, \ell_{n - 1}$. We _still_ require for now that these all be defined over the big field $\mathcal{T}_\tau$ (we will [show shortly](/blueprint/cryptography/switching) how this restriction gets relaxed).
 
