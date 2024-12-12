@@ -23,6 +23,7 @@ p, ul, li {
 
 h1 {
   font-family: 'Newsreader', serif;
+  font-weight: 400;
   font-size: 64px;
   line-height: 64px;
   letter-spacing: -2px;
@@ -165,6 +166,14 @@ h2 {
   background-color: #F45A2A1A;
   color: #fff;
   border-color: #443f3e;
+}
+
+.vocs_MobileTopNav_navigation_compact {
+  padding-top: 5px;
+}
+
+.vocs_DesktopTopNav_withLogo {
+  padding-left: calc(((100% - var(--vocs-content_width)) / 2) + -3rem);
 }
 
 @media (max-width: 600px) {
