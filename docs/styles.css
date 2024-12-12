@@ -172,6 +172,10 @@ h2 {
   padding-top: 5px;
 }
 
+.vocs_DesktopTopNav_withLogo {
+  padding-left: calc(((100% - var(--vocs-content_width)) / 2) + -3rem);
+}
+
 @media (max-width: 600px) {
   h1 {
     font-size: 40px;
