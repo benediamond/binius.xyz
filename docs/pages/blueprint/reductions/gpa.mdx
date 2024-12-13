@@ -2,7 +2,9 @@
 
 As we learned in the context of the [multiset-check](/blueprint/reductions/multiset), in order for the verifier to assess multiset-equality claims, it's in turn enough for the verifier to assess _grand product claims_. These are claims of the form
 
-$$\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$$;
+$$
+\begin{equation*}\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a;\end{equation*}
+$$
 
 here, $T$ is $\ell$-variate and _virtual_ in general, and $a$ is held explicitly by the verifier. Here, we explain how we process these sorts of claims—that is, how we reduce them to _evaluation claims_ on $T$.
 
@@ -24,17 +26,23 @@ Following this idea to its root (pardon the pun), we see easily that the _root_ 
 
 Now this hasn't gotten us much so far. The key point, though, is that the verifier can use the sumcheck to reduce a claim about _one_ layer to a claim about _the layer below it_. The master claim that the verifier wants to check is a claim about the very top, 0th layer (namely, that $T_0(\varnothing) \stackrel{?}= a$). If the verifier has the ability to repeatedly unwind claims like this, then it may proceed straight down to the leaf layer, at which point it will arrive upon an evaluation claim about $T$ itself, which is what we wanted.
 
-The fact that saves us is that the relationship between each layer and the one below it is _algebraic_. Thus, for each $k \in \{0, \ldots , \ell - 1\}$, since, for each $v \in \mathcal{B}_k$, $T_k(v) = T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1)$ holds by _fiat_, $T_k$'s multilinear extension satisfies:
+The fact that saves us is that the relationship between each layer and the one below it is _algebraic_. Thus, for each $k \in \{0, \ldots , \ell - 1\}$, since, for each $v \in \mathcal{B}_k$, $T_k(v) = T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1)$ holds by _fiat_, $T_k$'s multilinear extension $T_k(X_0, \ldots , X_{k - 1})$ equals:
 
-$$T_k(X_0, \ldots , X_{k - 1}) = \sum_{v \in \mathcal{B}_k} T_{k + 1}(v_0, \ldots , v_{k - 1}, 0) \cdot T_{k + 1}(v_0, \ldots , v_{k - 1}, 1) \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{k - 1}, X_0, \ldots , X_{k - 1})$$.
+$$
+\begin{equation*}\sum_{v \in \mathcal{B}_k} T_{k + 1}(v_0, \ldots , v_{k - 1}, 0) \cdot T_{k + 1}(v_0, \ldots , v_{k - 1}, 1) \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{k - 1}, X_0, \ldots , X_{k - 1}).\end{equation*}
+$$
 
 Each evaluation claim of the form $T_k(r_k) \stackrel{?}= a_k$, say, thus amounts to a _sum claim_ on the $k$-variate, degree-3 multivariate polynomial:
 
-$$T_{k + 1}(X_0, \ldots , X_{k - 1}, 0) \cdot T_{k + 1}(X_0, \ldots , X_{k - 1}, 1) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{k - 1}, r_{k, 0}, \ldots , r_{k, k - 1})$$.
+$$
+\begin{equation*}T_{k + 1}(X_0, \ldots , X_{k - 1}, 0) \cdot T_{k + 1}(X_0, \ldots , X_{k - 1}, 1) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{k - 1}, r_{k, 0}, \ldots , r_{k, k - 1}).\end{equation*}
+$$
 
 This is exactly the kind of thing we can sumcheck; upon doing so, the verifier will reduce the initial claim $T_k(r_k) \stackrel{?}= a_k$ to a _further_ claim of the form
 
-$$b_k \stackrel{?}= T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 0) \cdot T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 1) \cdot \widetilde{\texttt{eq}}(r'_k, r_k)$$
+$$
+\begin{equation*}b_k \stackrel{?}= T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 0) \cdot T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 1) \cdot \widetilde{\texttt{eq}}(r'_k, r_k)\end{equation*}
+$$
 
 for some point $r'_k = (r'_{k, 0}, \ldots , r'_{k, k - 1}) \in \mathcal{T}_\tau^k$ sampled during the sumcheck. The verifier may evaluate $\widetilde{\texttt{eq}}(r'_k, r_k)$ itself. As for the others, up to nondeterministically receiving _claimed_ evaluations $s_0 = T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 0)$ and $s_1 = T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k - 1}, 1)$ from the prover, the verifier can sample a further random challenge $r'_{k, k} \gets \mathcal{T}_\tau$, and output the reduced evaluation claim $T_{k + 1}(r'_{k, 0}, \ldots , r'_{k, k}) \stackrel{?}= a_{k + 1} \coloneqq (1 - r'_k) \cdot s_0 + r'_k \cdot s_1$.
 

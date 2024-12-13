@@ -23,7 +23,9 @@ In the next couple steps, we discuss going in the _reverse direction_ (i.e., fro
 
 We begin by recording a key polynomial. For each fixed $\ell \geq 0$, the $2 \cdot \ell$-variate _equality indicator polynomial_ $\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1})$ is defined to be:
 
-$$\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1}) \coloneqq \prod_{i = 0}^{\ell - 1} \left( (1 - X_i) \cdot (1 - Y_i) + X_i \cdot Y_i \right)$$.
+$$
+\begin{equation*}\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1}) \coloneqq \prod_{i = 0}^{\ell - 1} \left( (1 - X_i) \cdot (1 - Y_i) + X_i \cdot Y_i \right).\end{equation*}
+$$
 
 This polynomial, on the one hand, is multilinear in its $2 \cdot \ell$ variables. On the other hand, its _restriction_ to the cube $\mathcal{B}_\ell \times \mathcal{B}_\ell$ recovers the _equality indicator function_, the function which, on two bitstrings $u$ and $v$, equals 1 if and only if $u = v$ and 0 otherwise.
 
@@ -38,7 +40,11 @@ As we'll argue now, the association between the list items 1. and 2. above is _b
 
 It turns out that the desired multilinear $t(X_0, \ldots , X_{\ell - 1})$:
 
-- **Exists.** Indeed, to recover $t(X_0, \ldots , X_{\ell - 1})$, we reverse the process above. Beginning with the ordered list $\left( t_i \right)_{i = 0}^{2^\ell - 1}$, we can arrange the list elements onto the cube vertices by taking $\left( t_{\{v\}} \right)_{v \in \mathcal{B}_\ell}$. Next, we need to "extend" this mapping into a polynomial. It turns out we can use the _Lagrange basis polynomials_ just introduced. That is, we can take the combination $t(X_0, \ldots , X_{\ell - 1}) \coloneqq \sum_{v \in \mathcal{B}_\ell} t_{\{v\}} \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{\ell - 1}, X_0, \ldots , X_{\ell - 1})$. You can check that this candidate $t(X_0, \ldots , X_{\ell - 1})$ indeed fulfills our desideratum: namely, its values on the cube satisfy $t(v) = t_{\{v\}}$ for each $v \in \mathcal{B}_\ell$.
+- **Exists.** Indeed, to recover $t(X_0, \ldots , X_{\ell - 1})$, we reverse the process above. Beginning with the ordered list $\left( t_i \right)_{i = 0}^{2^\ell - 1}$, we can arrange the list elements onto the cube vertices by taking $\left( t_{\{v\}} \right)_{v \in \mathcal{B}_\ell}$. Next, we need to "extend" this mapping into a polynomial. It turns out we can use the _Lagrange basis polynomials_ just introduced. That is, we can take the combination
+  $$
+  \begin{equation*}t(X_0, \ldots , X_{\ell - 1}) \coloneqq \sum_{v \in \mathcal{B}_\ell} t_{\{v\}} \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{\ell - 1}, X_0, \ldots , X_{\ell - 1}).\end{equation*}
+  $$
+  You can check that this candidate $t(X_0, \ldots , X_{\ell - 1})$ indeed fulfills our desideratum: namely, its values on the cube satisfy $t(v) = t_{\{v\}}$ for each $v \in \mathcal{B}_\ell$.
 - **Is unique.** The slightly trickier part is to argue that the multilinear polynomial $t(X_0, \ldots , X_{\ell - 1})$ is _unique_—that is, it's the _only possible_ multilinear whose restriction to the cube equals $\left( t_i \right)_{i = 0}^{2^\ell - 1}$. To show this, it's enough to argue that if a multilinear vanishes identically on the cube, then it must actually be the 0 polynomial. This proof is elementary but a bit delicate (and pretty interesting); it is carried out for example in Thaler [[Tha23](https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf), Fact 3.5.].
 
 Thus, not only can we associate to each multilinear $t(X_0, \ldots , X_{\ell - 1})$ a list of values $\left( t_i \right)_{i = 0}^{2^\ell - 1}$, but this association is reversible: to each list $\left( t_i \right)_{i = 0}^{2^\ell - 1}$, we get _a unique_ multilinear whose evaluations on the cube recover that list.

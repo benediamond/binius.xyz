@@ -9,10 +9,12 @@ It's _possible_ to refine this into a real-life example, by instead using fixed-
 The _[Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)_ would have it that for any starting positive integer $x \in \mathbb{N}$, the procedure which sends:
 
 $$
+\begin{equation*}
 x \mapsto \begin{cases}
 \frac{x}{2.} & \text{if $x$ is even} \\
 3 \cdot x + 1 & \text{if $x$ is odd}
 \end{cases}
+\end{equation*}
 $$
 
 eventually reaches 1. We're going to sketch an M3-based proof that some _particular_ public number, say $x$, satisfies the hypothesis of the Collatz conjecture (that is, its orbit under the Collatz function eventually terminates at 1). For example, if we start with the number 6, we will end up with the sequence 6, 3, 10, 5, 16, 8, 4, 2, 1—which ends at 1, sure enough.
