@@ -230,6 +230,10 @@ export default defineConfig({
                 link: "/blueprint/cryptography/switching/tensor"
               },
               {
+                text: "Motivational Remarks",
+                link: "/blueprint/cryptography/switching/motivation"
+              },
+              {
                 text: "The Procedure",
                 link: "/blueprint/cryptography/switching/procedure"
               },
