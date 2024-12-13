@@ -8,7 +8,9 @@ Indeed, remember that each channel, in general, will receive pushes and pulls at
 
 In any case, we ignore for now how these $T_i$s and $U_i$s are constructed, and just note for now that they're virtual. The equality we're interested in checking is:
 
-$$\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\}$$,
+$$
+\begin{equation*}\left\{ (T_0(v), \ldots , T_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ (U_0(v), \ldots , U_{\mu - 1}(v)) \mid v \in \mathcal{B}_\ell \right\},\end{equation*}
+$$
 
 where both sides of the above equality are understood as _multisets_ (i.e., with _multiplicity_ counted).
 
@@ -20,7 +22,9 @@ Indeed, it is shown in [[DP23](https://eprint.iacr.org/2023/1784.pdf), Prot. 4.2
 
 Unrolling this, we see that our claim is now the equality of $1$-ary multisets:
 
-$$\left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot T_i(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot U_i(v) \mid v \in \mathcal{B}_\ell \right\}$$.
+$$
+\begin{equation*}\left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot T_i(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ \sum_{i = 0}^{\mu - 1} s^i \cdot U_i(v) \mid v \in \mathcal{B}_\ell \right\}.\end{equation*}
+$$
 
 The point here is that we've made progress, since these are multisets of singletons, instead of multisets of tuples. We can abbreviate $T^* \coloneqq \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$ and $U^* \coloneqq \sum_{i = 0}^{\mu - 1} s^i \cdot U_i$.
 
@@ -28,23 +32,31 @@ The point here is that we've made progress, since these are multisets of singlet
 
 It thus remains to check whether two _single_ columns $T$ and $U$ yield equal multisets. Here, we follow [[DP23](https://eprint.iacr.org/2023/1784.pdf), Prot. 4.17]. To reiterate, we're interested in checking whether
 
-$$\left\{ T^*(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ U^*(v) \mid v \in \mathcal{B}_\ell \right\}$$.
+$$
+\begin{equation*}\left\{ T^*(v) \mid v \in \mathcal{B}_\ell \right\} \stackrel{?}= \left\{ U^*(v) \mid v \in \mathcal{B}_\ell \right\}.\end{equation*}
+$$
 
 as multisets.
 
 The key mathematical fact is that it's secure (again, up to a small error) for the verifier to sample a random challenge $r \gets \mathcal{T}_\tau$, and to check instead whether the two products
 
-$$\prod_{v \in \mathcal{B}_\ell} r + T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} r + U^*(v)$$
+$$
+\begin{equation*}\prod_{v \in \mathcal{B}_\ell} r + T^*(v) \stackrel{?}= \prod_{v \in \mathcal{B}_\ell} r + U^*(v)\end{equation*}
+$$
 
 are equal. Here, on the two sides of this product identity, we have more linear combination virtual polynomials: now, the much-simpler ones $r + T^*$ and $r + U^*$ (these are valid linear combination virtual polynomials nonetheless).
 
 Product claims of this form are exactly what our [grand product argument](/blueprint/reductions/gpa) are capable of treating. More precisely, that argument serves to treat claims of the form
 
-$$\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a$$,
+$$
+\begin{equation*}\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a,\end{equation*}
+$$
 
 where $T$ is virtual and $a$ is supplied nondeterministically to the verifier. Here, we want to imagine
 
-$$T = r + T^* = r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i$$.
+$$
+\begin{equation*}T = r + T^* = r + \sum_{i = 0}^{\mu - 1} s^i \cdot T_i.\end{equation*}
+$$
 
 ## Miscellaneous Considerations
 

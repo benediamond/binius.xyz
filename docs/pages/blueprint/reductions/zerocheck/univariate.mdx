@@ -15,7 +15,9 @@ As always, we are going to fix an $\ell$-variate composite polynomial $C(X_0, \l
 :::info
 As a basic example, $c$ might just multiply all the multilinears together. In this case, we have $c(Z_0, \ldots , Z_{n - 1}) = Z_0 \cdot \cdots \cdot Z_{n - 1}$, and moreover:
 
-$$C(X_0, \ldots , X_{\ell - 1}) = t_0(X_0, \ldots , X_{\ell - 1}) \cdot \cdots \cdot t_{n - 1}(X_0, \ldots , X_{\ell - 1})$$.
+$$
+\begin{equation*}C(X_0, \ldots , X_{\ell - 1}) = t_0(X_0, \ldots , X_{\ell - 1}) \cdot \cdots \cdot t_{n - 1}(X_0, \ldots , X_{\ell - 1}).\end{equation*}
+$$
 
 The resulting thing is $\ell$-variate, and of degree at most $n$ in each individual variable $X_0, \ldots , X_{\ell - 1}$.
 :::
@@ -32,7 +34,9 @@ Thus we fix a skipping parameter $k \geq 1$ (in practice, $k$ will be around 7).
 
 We—that is, both the prover and the verifier—are now going to simply "pretend" that the initial multilinears $t_0, \ldots , t_{n - 1}$, and so also the composite $C(X_0, \ldots , X_{\ell - 1})$, were defined to begin with on $D \times \mathcal{B}_{\ell - k}$, instead of on $\mathcal{B}_\ell$. This isn't a problem, conceptually: since our initial multilinears essentially amount to [lists](/blueprint/primer#multilinears-and-lists) of $2^\ell$ elements, we can always decide to identify these lists with $D \times \mathcal{B}_{\ell - k}$ instead of with $\mathcal{B}_\ell$. Thus, instead of multilinears $t_i(X_0, \ldots , X_{\ell - 1})$, we now have _polynomials_ $\widehat{t}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ of degree less than $2^k$ in $Y$ and linear their subsequent variables. The defining property of these rectangularizations $\hat{t}_i$ is that for each $u \in \mathcal{B}_k$,
 
-$$\hat{t}_i(\{u\}, X_0, \ldots , X_{\ell - k - 1}) = t(u_0, \ldots , u_{k - 1}, X_0, \ldots , X_{\ell - k - 1})$$
+$$
+\begin{equation*}\hat{t}_i(\{u\}, X_0, \ldots , X_{\ell - k - 1}) = t(u_0, \ldots , u_{k - 1}, X_0, \ldots , X_{\ell - k - 1})\end{equation*}
+$$
 
 as $\ell - k$-variate multilinears. Here, we write $\{ \cdot \} : \mathcal{B}_k \to D$ for a the natural injection which sends $(u_0, \ldots , u_{k - 1}) \mapsto \sum_{i = 0}^{k - 1} u_i \cdot \beta_i$ (here, $\beta_0, \ldots , \beta_{k - 1}$ is an $\mathbb{F}_2$-basis of $D$).
 
@@ -48,17 +52,23 @@ We _want_ to check whether the rectangularized composite polynomial $\widehat{C}
 
 We get an expression for $\widetilde{C}$ in the following way:
 
-$$\widetilde{C}(Y, X_0, \ldots , X_{\ell - k - 1}) = \sum_{(u, v) \in D \times \mathcal{B}_{\ell - k}} C(u, v) \cdot \delta_D(u, Y) \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{\ell - k - 1}, X_0, \ldots , X_{\ell - k - 1})$$.
+$$
+\begin{equation*}\widetilde{C}(Y, X_0, \ldots , X_{\ell - k - 1}) = \sum_{(u, v) \in D \times \mathcal{B}_{\ell - k}} C(u, v) \cdot \delta_D(u, Y) \cdot \widetilde{\texttt{eq}}(v_0, \ldots , v_{\ell - k - 1}, X_0, \ldots , X_{\ell - k - 1}).\end{equation*}
+$$
 
 Specializing this thing to $(s, r_0, \ldots , r_{\ell - k - 1})$, we see that it's enough to run a _rectangular sumcheck_ on the product polynomial
 
-$$C(Y, X_0, \ldots , X_{\ell - 1}) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r_0, \ldots , r_{\ell - k - 1})$$.
+$$
+\begin{equation*}C(Y, X_0, \ldots , X_{\ell - 1}) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - k - 1}, r_0, \ldots , r_{\ell - k - 1}).\end{equation*}
+$$
 
 That is, it's enough for the verifier to check whether the sum of _this thing_ over the domain $D \times \mathcal{B}_{\ell - k}$ equals 0 or not.
 
 The protocol for this exactly follows the script of the normal sumcheck. In particular, the prover will start by sending the 0th univariate _round polynomial_
 
-$$g(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \widehat{C}(Y, v) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r)$$.
+$$
+\begin{equation*}g(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \widehat{C}(Y, v) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).\end{equation*}
+$$
 
 The verifier will first check that $\sum_{u \in D} g(u) \stackrel{?}= 0$ holds. Then, the verifier will sample $s' \gets \mathcal{T}_\tau$, and update its running sum claim to $g(s')$, and send $s'$ to the prover. Finally, the prover will locally specialize the indeterminate $Y$ of its underlying polynomials $\widehat{t}_i$ to $s'$, and fold everything. From that point onwards, things will look [essentially](/blueprint/reductions/zerocheck/rest) like a normal zerocheck.
 

@@ -21,14 +21,20 @@ Thus it's complete and sound for the verifier to sample a random $r \gets \mathc
 
 How can the verifier do this efficiently? The trick is to write down a polynomial expression for $\widetilde{C}(X_0, \ldots , X_{\ell - 1})$. We've [already seen](/blueprint/primer#multilinear-extensions) how to construct multilinear extensions:
 
-$$\widetilde{C}(X_0, \ldots , X_{\ell - 1}) = \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, v_0, \ldots , v_{\ell - 1})$$.
+$$
+\begin{equation*}\widetilde{C}(X_0, \ldots , X_{\ell - 1}) = \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, v_0, \ldots , v_{\ell - 1}).\end{equation*}
+$$
 
 We now see that the verifier's main question $\widetilde{C}(r) \stackrel{?}= 0$ in turn amounts to the sum claim
 
-$$0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, v_0, \ldots , v_{\ell - 1})$$.
+$$
+\begin{equation*}0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, v_0, \ldots , v_{\ell - 1}).\end{equation*}
+$$
 
 This is exactly the kind of thing we can sumcheck; indeed, by sumchecking the multivariate product
 
-$$(X_0, \ldots , X_{\ell - 1}) \mapsto C(X_0, \ldots , X_{\ell - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, X_0, \ldots , X_{\ell - 1})$$,
+$$(
+\begin{equation*}X_0, \ldots , X_{\ell - 1}) \mapsto C(X_0, \ldots , X_{\ell - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, X_0, \ldots , X_{\ell - 1}),\end{equation*}
+$$
 
 the verifier may reduce the above sum claim to two _evaluation claims_ at some random point $r' \in \mathcal{T}_\tau^\ell$—namely, to claims about the evaluations $t(r')$ and $\widetilde{\texttt{eq}}(r, r')$. To resolve the first of these, the verifier may simply query $t$ directly. To resolve the second, the verifier may compute $\widetilde{\texttt{eq}}(r, r')$ locally (since the equality indicator polynomial is transparent!).

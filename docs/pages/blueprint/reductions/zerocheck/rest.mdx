@@ -4,7 +4,9 @@ As of the end of the [univariate skip](/blueprint/reductions/zerocheck/univariat
 
 Moreover, the claim we're interested in checking is simply that:
 
-$$S_0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} \widehat{C}(s', v_0, \ldots , v_{\ell - k - 1}) \cdot \delta_D(s', s) \cdot \widetilde{\texttt{eq}}(v, r)$$.
+$$
+\begin{equation*}S_0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} \widehat{C}(s', v_0, \ldots , v_{\ell - k - 1}) \cdot \delta_D(s', s) \cdot \widetilde{\texttt{eq}}(v, r).\end{equation*}
+$$
 
 This is mechanically identical to a _normal, rectangular_ sumcheck claim, pertaining now to the $\ell - k$-variate multilinears $\widehat{t}_i(s', X_0, \ldots , X_{\ell - k - 1})$ and the usual composition polynomial $c(Z_0, \ldots , Z_{n - 1})$. The prover and verifier may thus process it accordingly, by running the sumcheck protocol for $\ell - k$ rounds.
 
@@ -16,13 +18,17 @@ Where this gets tricky is that our evaluation claims on the initial input polyno
 
 There are a couple ways to proceed from this point. Here, we sketch one, which is currently implemented in Binius. The idea is to express the desired, rectangularized evaluations $\hat{t}_i(s', r'_0, \ldots , r'_{\ell - k - 1})$ _in terms of_ statements about the underlying, standard multilinears $t_i$:
 
-$$\hat{t}_i(s', r'_0, \ldots , r'_{\ell - k - 1}) = \sum_{u \in \mathcal{B}_k} \delta_D(\{u\}, s') \cdot t_i(u_0, \ldots , u_{k - 1}, r'_0, \ldots , r'_{\ell - k - 1})$$.
+$$
+\begin{equation*}\hat{t}_i(s', r'_0, \ldots , r'_{\ell - k - 1}) = \sum_{u \in \mathcal{B}_k} \delta_D(\{u\}, s') \cdot t_i(u_0, \ldots , u_{k - 1}, r'_0, \ldots , r'_{\ell - k - 1}).\end{equation*}
+$$
 
 Indeed, this identity holds essentially by definition of the rectangularizations $\hat{t}_i$.
 
 The next step is to observe that the above thing can be sumchecked! That is, the parties may run a $k$-round sumcheck on the $k$-variate product of multilinears
 
-$$(X_0, \ldots , X_{k - 1}) \mapsto \delta_{D, s'}(X_0, \ldots , X_{k - 1}) \cdot t_i(X_0, \ldots , X_{k - 1}, r'_0, \ldots , r'_{\ell - k - 1})$$;
+$$
+\begin{equation*}(X_0, \ldots , X_{k - 1}) \mapsto \delta_{D, s'}(X_0, \ldots , X_{k - 1}) \cdot t_i(X_0, \ldots , X_{k - 1}, r'_0, \ldots , r'_{\ell - k - 1});\end{equation*}
+$$
 
 here, $\delta_{D, s'}(X_0, \ldots , X_{k - 1})$ is the multilinear which, for each cube point $u \in \mathcal{B}_k$, sends $u \mapsto \delta_D(\{u\}, s')$. (This is a perfectly good multilinear; we have specified it by giving its table of values on the cube.)
 

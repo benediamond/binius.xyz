@@ -1,4 +1,4 @@
-# Batch Commitment [Committing to many, differently-sized polynomials]
+# Batched Commitment [Committing to many, differently-sized polynomials]
 
 We [now know](/blueprint/cryptography/commitment/procedure) how to commit to an $\ell$-variate multilinear polynomial $t(X_0, \ldots, X_{\ell - 1})$ over the huge field $\mathcal{T}_\tau$. In practical applications, on the other hand, we will have _many different_ multilinear polynomials at play. For the sake of concrete efficiency, it is crucial that we commit to these in a _batched way_, which allows, in particular, these polynomials' respective evaluation protocols to also be batched.
 
@@ -22,7 +22,9 @@ While the description above is valid and correct, it's a tiny bit unsatisfying, 
 :::info
 As a concrete example, we can take $n = 3$, and the size parameters
 
-$$(\ell_0, \ell_1, \ell_2) = (2, 1, 0)$$.
+$$
+\begin{equation*}(\ell_0, \ell_1, \ell_2) = (2, 1, 0).\end{equation*}
+$$
 
 Here, after concatenating all the lists, we get a master list of size $n^* = 2^2 + 2^1 + 2^0 = 7$. We thus append one zero to get the power of two $8 = 2^3$, and wind up with $\ell^* = 3$. We thus have a cube's worth of values to fill.
 
