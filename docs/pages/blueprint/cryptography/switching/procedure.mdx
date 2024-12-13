@@ -1,20 +1,23 @@
 # The Procedure [Expressing small-field claims using tensors and sums]
 
-Here, without further ado, we describe the steps of ring-switching.
+Here, without further ado, we describe the steps of ring-switching. Here, we have an $\ell$-variate polynomial $t(X_0, \ldots, X_{\ell - 1})$ fixed and [committed to](/blueprint/cryptography/commitment); we are going to give a protocol to evaluate its $\kappa$-fold _[refinement](/blueprint/cryptography/switching/refinement)_ $t'(X_0, \ldots, X_{\ell + \kappa - 1})$—specifically, to process an _evaluation claim_ of the form $s \stackrel{?}= t'(r_0, \ldots, r_{\ell + \kappa - 1})$.
+
+Our goal will be to reduce that initial evaluation claim to a sum claim on $t(X_0, \ldots , X_{\ell - 1})$—i.e., of the form $s_0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} t(v) \cdot A(v)$, where $A(X_0, \ldots , X_{\ell - 1})$ is some further, transparent, multilinear.
 
 ## The Steps
 
-Here are the steps to reduce the problem of checking $s \stackrel{?}= t'(r_0, \ldots, r_{\ell + \kappa - 1})$ to that of learning $t(X_\kappa, \ldots, X_{\ell + \kappa - 1})$ at some other point.
-- By [embedding](/blueprint/cryptography/switching/tensor#the-algebraic-side) the original packed polynomial $t(X_0, \ldots , X_{\ell - 1})$ componentwise _horizontally_ into $A$, we can express it as a polynomial over $A$—$\varphi_1(t)$, let's say. The prover computes and sends to the verifier
+Here is the algorithm.
+
+- By [embedding](/blueprint/cryptography/switching/tensor#the-algebraic-side) the original (packed) multilinear $t(X_0, \ldots , X_{\ell - 1})$ componentwise _horizontally_ into $A$, we can express it as an $\ell$-variate multilinear over $A$—$\varphi_1(t)$, let's say. The prover computes and sends to the verifier
 
   $$
   \begin{equation*}\hat{s} \coloneqq \varphi_1(t)(\varphi_0(r_\kappa), \ldots, \varphi_0(r_{\ell + \kappa - 1})).\end{equation*}
   $$
   - The element $\hat{s}$ is an _algebra element_, since the entire evaluation above takes place in the algebra. Thus, concretely, $\hat{s}$ looks like a $2^\kappa \times 2^\kappa$ array of $\mathcal{T}_\iota$-elements.
-  - It is a bit tricky, but a very important and doable exercise, to study concretely what $\hat{s}$ looks like. In fact, its _columns_, indexed by boolean elements $v \in \mathcal{B}_\kappa$, will look like $\hat{s}_v = t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1})$. Roughly, this is because the vertically embedded elements $\varphi_0(r_\kappa), \ldots, \varphi_0(r_{\ell + \kappa - 1})$ act "slice-wise" on the cells of the coefficients $\varphi_1(t)(w)$, for $w \in \mathcal{B}_\ell$ (recall that these coefficients are _horizontally_ embedded). We prove this fact rigorously in our paper (see [[DP24](https://eprint.iacr.org/2024/504), Thm. 4.2]).
+  - It is a bit tricky, but a very important and doable exercise, to study concretely what $\hat{s}$ looks like. In fact, its _columns_ $\left( \hat{s}_v \right)_{v \in \mathcal{B}_\kappa}$ will be exactly the _partial evaluations_ $\hat{s}_v = t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1})$. Roughly, this is because the vertically embedded elements $\varphi_0(r_\kappa), \ldots, \varphi_0(r_{\ell + \kappa - 1})$ will act "slice-wise" on the cells of the coefficients $\varphi_1(t)(w)$, for $w \in \mathcal{B}_\ell$ (recall that these coefficients are _horizontally_ embedded). We prove this fact rigorously in our paper (see [[DP24](https://eprint.iacr.org/2024/504), Thm. 4.2]).
 - Writing $\left( \hat{s}_v \right)_{v \in \mathcal{B}_\kappa}$ for $\hat{s}$'s columns, the verifier checks:
 
   $$
   \begin{equation*}s \stackrel{?}= \sum_{v \in \mathcal{B}_\kappa} \hat{s}_v \cdot \widetilde{\texttt{eq}}(r_0, \ldots, r_{\kappa - 1}, v_0, \ldots , v_{\kappa - 1}).\end{equation*}
   $$
-  - By the discussion just above, we can see why this check is complete. Indeed, taking on faith for now that $\hat{s}_v = t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1})$ will hold, for each $v \in \mathcal{B}_\kappa$, if the prover is honest, we thus see that the right-hand side above will equal $\sum_{v \in \mathcal{B}_\kappa} t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots, r_{\kappa - 1}, v_0, \ldots , v_{\kappa - 1}) = t'(r_0, \ldots , r_{\ell + \kappa - 1})$, which will equal $s$ just when the prover's initial claim is valid.
+  - By the discussion just above, we can immediately see why this check is complete. Indeed, taking on faith for now that $\hat{s}_v = t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1})$ will hold for each $v \in \mathcal{B}_\kappa$ if the prover is honest, we thus see that the right-hand side above will equal $\sum_{v \in \mathcal{B}_\kappa} t'(v_0, \ldots, v_{\kappa - 1}, r_\kappa, \ldots , r_{\ell + \kappa - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots, r_{\kappa - 1}, v_0, \ldots , v_{\kappa - 1}) = t'(r_0, \ldots , r_{\ell + \kappa - 1})$, which equals $s$ precisely when the prover's initial evaluation claim is true.
