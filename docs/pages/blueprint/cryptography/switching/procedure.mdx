@@ -76,6 +76,20 @@ $$
 
 The right-hand factor above is succinct: the verifier can compute it by doing $O(\ell)$ operations in $A$ (in fact, $2 \cdot \ell$ $\mathcal{T}_\tau$-operations are enough, as we argue in our paper [[DP24](https://eprint.iacr.org/2024/504.pdf), Rem. 4.4]). The left-hand factor, on the other hand, is $\varphi_1(t)(\varphi_1(r'_0), \ldots , \varphi_1(r'_{\ell - 1})) = \varphi_1\left( t(r'_0, \ldots , r'_{\ell - 1}) \right)$. But this is just the same as learning $t(r'_0, \ldots , r'_{\ell - 1})$! We thus successfully reduced to an evaluation of $t(X_0, \ldots , X_{\ell - 1})$, which is what we wanted.
 
-### Row-batching
+### Row-combination
 
 Now, for _purely efficiency reasons_, we can get some gains by batching the rows of the above sumcheck, and running it over $\mathcal{T}_\tau$, as opposed to over $A$ itself. It turns out that this batching process is secure, for standard reasons. So, the sum claim we _actually_ output in the ring-switching reduction above is nothing other than that which we obtain from the $A$-valued sum claim $\hat{s} \stackrel{?}= \sum_{w \in \mathcal{B}_\ell} \varphi_1(t)(w) \cdot \widetilde{\texttt{eq}}(\varphi_0(r_\kappa), \ldots , \varphi_0(r_{\ell + \kappa - 1}), w_0, \ldots , w_{\ell - 1})$ above upon batching that claim's rows (i.e., using the batching scalars $(r''_0, \ldots , r''_{\kappa - 1})$). As for the left-hand side, we saw already that $s_0 \coloneqq \sum_{u \in \mathcal{B}_\kappa} \hat{s}_u \cdot \widetilde{\texttt{eq}}(r''_0, \ldots , r''_{\kappa - 1}, u_0, \ldots , u_{\kappa - 1})$, so that's not hard. The trickier claim is that the multilinear $A(X_0, \ldots , X_{\ell - 1})$ we defined above comes from _row-batching_ the $A$-valued multilinear $\widetilde{\texttt{eq}}(\varphi_0(r_\kappa), \ldots , \varphi_0(r_{\ell + \kappa - 1}), X_0, \ldots , X_{\ell - 1})$. But even this fact becomes relatively explainable if you stare long enough at how the multilinear $A(X_0, \ldots , X_{\ell - 1})$ is constructed.
+
+## Efficiency
+
+If you stare at what's written above, you'll see that the amount of work for the verifier is actually _very little_. In fact, the verifier has only to receive the $A$-element $\hat{s}$, which takes $2^\iota \cdot 2^{2 \cdot \kappa} = 2^\tau \cdot 2^\kappa$ bits to represent (a few kilobytes in the worst case). Moreover, the verifier has to compute _two different_ combinations of $\hat{s}$: a column-combination and a row-combination. Both combination vectors are _tensors_ (i.e., of $(r_0, \ldots , r_{\kappa - 1})$ and $(r''_0, \ldots , r''_{\kappa - 1})$, respectively). Each of these tensors takes $\Theta(2^\kappa)$ work to compute; the combinations themselves each amount to $\Theta(2^\kappa)$ multiplications in the tower field $\mathcal{T}_\tau$.
+
+:::info
+For example, taking $\tau = 7$, $\kappa = 4$, and $\iota = 7 - 4 = 3$, as usual, we see that $\hat{s}$ is a $16 \times 16$ array, each of whose elements is a byte. Its total size is thus just about 2 kilobytes. The verifier's column-combinations and row-combinations each amount to 16 multiplications in the 128-bit tower field $\mathcal{T}_\tau$.
+:::
+
+## Batching
+
+We've already discussed _[batched commitment](/blueprint/cryptography/commitment/batched)_ in the context of our commitment scheme. The interesting part about the ring-switching reduction is that we don't have to batch yet: we can carry out the above procedure _independently_ for many polynomials, even ones of different lengths _and over different fields_. In this way, we end up _outputting_ many different sum claims—now all over the huge field $\mathcal{T}_\tau$, albeit still pertaining to polynomials of _unequal lengths_.
+
+In our [next step](/blueprint/cryptography/evaluation), we will that we can batch process _all_ of these sum claims, provided that the underlying polynomials $t_0, \ldots , t_{n - 1}$ were themselves committed to using the batched commitment procedure we [already described](/blueprint/cryptography/commitment/batched).
