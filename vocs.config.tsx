@@ -242,6 +242,17 @@ export default defineConfig({
           {
             text: "Batch Evaluation",
             link: "/blueprint/cryptography/evaluation",
+            collapsed: true,
+            items: [
+              {
+                text: "FRI-Binius",
+                link: "/blueprint/cryptography/evaluation/frib"
+              },
+              {
+                text: "The Batched Case",
+                link: "/blueprint/cryptography/evaluation/batched"
+              },
+            ]
           },
         ]
       },
