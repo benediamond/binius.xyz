@@ -74,8 +74,8 @@ export default defineConfig({
         link: "/blueprint/primer"
       },
       {
-        text: "The PIOP–PCS Boundary",
-        link: "/blueprint/boundary"
+        text: "The PIOP and IOP Models",
+        link: "/blueprint/models"
       },
       {
         text: 'Arithmetization',
