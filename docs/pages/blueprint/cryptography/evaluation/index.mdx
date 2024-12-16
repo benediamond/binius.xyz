@@ -1,18 +1,14 @@
 # Batch Evaluation [Batch-evaluating big-field sum claims of unequal sizes]
 
-We've officially arrived at the very last step in the protocol. As of this point, thanks to our [ring-switching](/blueprint/cryptography/switching) reduction, we have brought our outstanding claims down to a list of _sum claims_ pertaining to various polynomials over the huge field $\mathcal{T}_\tau$. That is, for some list length $n$, we have a sequence of claims of the form
+We've officially arrived at the very last step in the protocol. As of this point, thanks to our [ring-switching](/blueprint/cryptography/switching) reduction, we have brought the outstanding content we _still need to prove_ down to a list of _sum claims_ pertaining to various polynomials—all defined over the single, huge field $\mathcal{T}_\tau$, though generally of _different_ numbers of variables.
 
-$$
-\begin{equation*}s_{i, 0} \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell_i}} t_i(v) \cdot A_i(v).\end{equation*}
-$$
+In this subsection, we describe how to _batch-process_ sum claims of this form. Our technique is an extension of that described in the academic work [[DP24](https://eprint.iacr.org/2024/504.pdf)]. Indeed, that work only describes the commitment of a single polynomial. To extend that work to the batched setting—and in particular, to handle polynomials of _unequal sizes_—we need to exert some extra effort.
 
-Here, the individual polynomials $t_i(X_0, \ldots , X_{\ell_i - 1})$ are all defined over the huge field $\mathcal{T}_\tau$, though their numbers of variables $\ell_i$ are not necessarily the same; the $A_i(X_0, \ldots , X_{\ell_i - 1})$ are further _transparent_ polynomials that arise during the ring-switching reduction.
-
-In this subsection, we describe how to batch-process sum claims of this form. Our technique is an _extension_ of that described in the academic work [[DP24](https://eprint.iacr.org/2024/504.pdf)]. Indeed, that work only describes the commitment of a single polynomial. To extend that work to the batched setting—and in particular, to handle polynomials of _unequal sizes_—we need to do exert some extra effort.
+The essential efficiency property will be that we will only need to run FRI _once_ (on a single committed polynomial—namely, that described in our [batch commitment](/blueprint/cryptography/commitment/batched) procedure).
 
 ## Subsection Directory
 
 This subsection contains the following pages:
 
-- [**FRI-Binius.**](frib) Here, we discuss our polynomial commitment scheme for _single_ multilienar polynomials—namely, that given in the work [[DP24](https://eprint.iacr.org/2024/504.pdf)].
-- [**The Batched Case.**](batched) Here, we describe how to extend the single-polynomial scheme to the batched case—_including_ when the polynomials at hand are not of equal sizes.
+- [**Review of FRI.**](fri) Here, we drop a crash course on the _FRI_ protocol, a crucial proximity test for Reed–Solomon codes. We also describe a _particular instantiation_ of that protocol—due to [[DP24](https://eprint.iacr.org/2024/504.pdf)]—designed to play nicely with the [additive NTT](/blueprint/cryptography/commitment/additive).
+- [**The Procedure.**](procedure) Here, we describe our main evaluation procedure, which combines a "front-loaded sumcheck" with FRI folding.

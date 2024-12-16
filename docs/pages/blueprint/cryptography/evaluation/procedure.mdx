@@ -1,0 +1,16 @@
+# The Procedure [Our protocol for batch evaluation of sum claims]
+
+Here, we get to the technically hardest section of the site. Our setup is a list of polynomials $t_0, \ldots , t_{n - 1}$, respectively of sizes $\ell_0, \ldots , \ell_{n - 1}$, all defined over $\mathcal{T}_\tau$, and _jointly committed_ as prescribed by our [batch commitment](/blueprint/cryptography/commitment/batched) procedure. That is, we've _actually_ committed to just a single, massive, piecewise polynomial $t^*(X_0, \ldots , X_{\ell^* - 1})$, which takes the values that the individual polynomials $t_0, \ldots , t_{n - 1}$ respectively do on various _subcubes_ of $\mathcal{B}_{\ell^*}$ (and zero-fills the remaining vertices).
+
+We moreover fix a list of _sum claims_, each of the form
+$$
+\begin{equation*}s_{i, 0} \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell_i}} t_i(v) \cdot A_i(v).\end{equation*}
+$$
+
+Here, the $A_i(X_0, \ldots , X_{\ell_i - 1})$ are further _transparent_ polynomials that arise during the ring-switching reduction. We don't need to worry what these polynomials _even are_ for the purposes of this page; we merely need the fact that they're transparent (i.e., efficiently evaluable by the verifier at any given point). Our goal in this page will be to jointly evaluate all of these sum claims.
+
+## The Steps
+
+We now record our evaluation protocol. We drop a slightly simplified variant in which the _oracle skipping_ optimization is omitted.
+
+To start with, the prover writes $f^{(0)} : S \to \mathcal{T}_\tau$ for the result of its initial commitment. Here, $S \subset \mathcal{T}_\tau$ is a _Reed–Solomon domain_ of size $2^{\ell^* + \mathcal{R}}$. They moreover write $S^{(0)}, \ldots , S^{(\ell^*)}$ for a sequence of FRI domains.
