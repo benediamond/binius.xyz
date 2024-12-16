@@ -22,11 +22,47 @@ Finally, the committed word $(b_0, \ldots , b_{2^{\ell + \mathcal{R}} - 1})$, wh
 
 ## Rough Idea of FRI
 
-The FRI protocol proceeds over $\ell$ rounds. For each round index $i \in \{0, \ldots , \ell - 1\}$,
+The FRI protocol proceeds over $\ell$ rounds. We start with the prover's initial committed word $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$. For each round index $i \in \{0, \ldots , \ell - 1\}$,
 
 - The verifier samples a random scalar $r_i \gets \mathcal{T}_\tau$, and sends it to the prover.
-- The prover, using its existing oracle $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ and $r_i$, conducts a procedure called "FRI folding", which depends on both $f^{(i)}$ _and_ $r_i$. In this way, it comes up with a _further_ word $f^{(i + 1)} : S^{(i + 1)} \to \mathcal{T}_\tau$. It commits this word to the oracle.
+- The prover, using its existing oracle $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ and $r_i$, carries out a procedure called "FRI folding", which depends on both $f^{(i)}$ _and_ $r_i$. Using this procedure, the prover comes up with a _further_ word $f^{(i + 1)} : S^{(i + 1)} \to \mathcal{T}_\tau$. It commits this word to the oracle.
 
-The exception is the very final round, the $\ell$th. In this round, instead of committing to $f^{(\ell)}$, the prover just sends a single constant to the verifier. Finally, the verifier kicks off its _querying phase_.
+The exception is the very final round, the $\ell$th. In this round, instead of committing to $f^{(\ell)}$, the prover just sends a single constant to the verifier. Finally, the verifier kicks off its _querying phase_. At the end of this phase, the verifier either _accepts_ or _rejects_.
 
-The key idea necessary to understand FRI is _closeness to the Reed–Solomon code_. If the prover is honest, then, for each $i \in \{0, \ldots , \ell - 1\}$, the committed word $f^{(i)}$ will be a _codeword_ in the Reed–Solomon code $\mathsf{RS}_{S^{(i)}, \mathcal{T}_\tau}[2^{\ell - i}, 2^{\ell + \mathcal{R} - i}]$. That is, it will arise as the _evaluations_ of some polynomial of degree less than $2^{\ell - i}$ on the domain $S^{(\ell - i)}$ of size $2^{\ell + \mathcal{R} - i}$.
+The key idea necessary to understand FRI is _closeness to the Reed–Solomon code_. If the prover is honest, then, for each $i \in \{0, \ldots , \ell - 1\}$, the committed word $f^{(i)}$ will be a _codeword_ in the Reed–Solomon code $\mathsf{RS}_{S^{(i)}, \mathcal{T}_\tau}[2^{\ell - i}, 2^{\ell + \mathcal{R} - i}]$. That is, it will arise as the _evaluations_ of some polynomial of degree less than $2^{\ell - i}$ on the size-$2^{\ell + \mathcal{R} - i}$ domain $S^{(\ell - i)}$.
+
+On the other hand, if the prover is dishonest, then its oracles might not be codewords; they might even be _far_ from the code, in the sense that they don't even reside _near any_ codeword, forget about equalling one. Here, the notion "far from the code" is fairly tricky. Roughly, we can say that $f^{(0)}$ is _far_ from $C$ if $d(f^{(0)}, C) \geq \frac{d}{2}$, in the sense that, for _each_ codeword $\overline{f}{}^{(0)} \in C$, $d(f^{(0)}, \overline{f}{}^{(0)}) \geq \frac{d}{2}$ holds. Here, $d = n - k + 1 = 2^{\ell + \mathcal{R}} - 2^\ell + 1$ is the _distance_ of the Reed–Solomon code $\mathsf{RS}_{S, \mathcal{T}_\tau}[2^\ell, 2^{\ell + \mathcal{R}}]$. The right-hand side $\frac{d}{2}$ represents $C$'s _unique decoding radius_. If $f^{(0)}$'s distance from $C$ is _less than_ $\frac{d}{2}$, then there exists a codeword $\overline{f}{}^{(0)} \in C$ such that $d(f^{(0)}, \overline{f}{}^{(0)}) < \frac{d}{2}$ holds, and moreover $\overline{f}{}^{(0)}$ is unique. Otherwise, the codeword $\overline{f}{}^{(0)}$ won't exist.
+
+FRI's security guarantee entails that if the prover's _initial_ word $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$ is far from the initial code $C := \mathsf{RS}_{S, \mathcal{T}_\tau}[2^\ell, 2^{\ell + \mathcal{R}}]$, then the verifier will reject during its querying phase with overwhelming probability. This is true regardless of how the prover constructs its positive-indexed oracles $f^{(1)}, \ldots , f^{(\ell - 1)}$.
+
+Thus, stepping back, we see why FRI is called a _proximity test_: its overall purpose is to detect whether some committed word $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$ is _close_ or not. If the thing is not close, then the verifier will reject.
+
+## The NTT-Friendly Specialization
+
+As we've mentioned, we use the [additive NTT](/blueprint/cryptography/commitment/additive) to encode our initial Reed–Solomon codeword $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$. As it happens, we are going to moreover want to choose the FRI folding maps $q^{(0)} : S^{(0)} \to \mathcal{T}_\tau$ in a _particular_ way, in order to make those maps work "compatibly" with the additive NTT.
+
+The particular sort of "compatibility" we're after here is pretty complicated, and we are going to essentially punt to [[DP24](https://eprint.iacr.org/2024/504), § 3.1] for the full treatment. Here, we give an extremely rough sketch.
+
+We've already mentioned that, _if_ the prover is honest, then each word $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ will be a codeword in $\mathsf{RS}_{S, \mathcal{T}_\tau}[2^\ell, 2^{\ell + \mathcal{R}}]$—that is, an evaluation of some polynomial $P^{(i)}(X)$ of degree less than $2^{\ell - i}$ on $S^{(i)}$. But _which polynomial_? In the case of $i = 0$, we already know, by definition of our [commitment scheme](/blueprint/cryptography/commitment/procedure): that is, it will be nothing other than
+
+$$
+\begin{equation*}P^{(0)}(X) \coloneqq a_0 + a_1 \cdot X_1(X) + \cdots + a_{2^\ell - 1} \cdot X_{2^\ell - 1}(X),\end{equation*}
+$$
+
+where $(a_0, \ldots , a_{2^\ell - 1})$ are the (flattened) coefficients of our initial multilinear. This is simply the definition of our commitment scheme. What about for positive $i > 0$?
+
+In the work BaseFold [[ZCF23](https://eprint.iacr.org/2023/1705.pdf)], it is noted that _in the prime-field setting_, FRI folding acts in a "predictable" way upon the coefficients of the polynomial $P^{(i)}(X)$ underlying $f^{(i)}(X)$. That is, if $P^{(i)}(X)$'s coefficients are
+
+$$
+\begin{equation*}(a^{(i)}_0, \ldots , a^{(i)}_{2^{\ell - i} - 1}),\end{equation*}
+$$
+
+let's say, then $f^{(i + 1)} = \mathsf{fold}(f^{(i)}, r_i)$ will be the evaluation on $S^{(i + 1)}$ of the polynomial $P^{(i + 1)}(X)$ with coefficients
+
+$$
+\begin{equation*}(a^{(i)}_0 + r_i \cdot a^{(i)}_1, \ldots , a^{(i)}_{2^{\ell - i} - 2} + r_i \cdot a^{(i)}_{2^{\ell - i} - 1}).\end{equation*}
+$$
+
+That is, _in the coefficient domain_, FRI folding amounts to an even–odd folding of adjacent pairs of elements, using the random challenge $r_i$.
+
+In [[DP24](https://eprint.iacr.org/2024/504), § 3.1], we describe a _particular_ construction of the maps $q^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ which causes this behavior to re-emerge in the binary setting.
