@@ -1,11 +1,32 @@
 # Review of FRI [A crash course on the classic proximity test]
 
-As we've [already mentioned](/blueprint/cryptography/commitment/additive), our commitment scheme uses _Reed–Solomon codes_, and particular binary ones. Here, we will begin to sketch _why_ our use of codes pays off. The crucial underlying mathematical tool turns out to be _[FRI](https://eccc.weizmann.ac.il/report/2017/134/)_—short for _fast Reed–Solomon interactive oracle proof of proximity_—a key protocol developed by Ben-Sasson, Bentov, Horesh and Riabzev.
+As we've [already mentioned](/blueprint/cryptography/commitment/additive), our commitment scheme uses _Reed–Solomon codes_, and particular binary ones. Here, we will begin to sketch _why_ our use of codes pays off. The crucial underlying mathematical tool turns out to be _FRI_—short for _fast Reed–Solomon interactive oracle proof of proximity_—a key protocol developed by Ben-Sasson, Bentov, Horesh and Riabzev [[BBHR18](https://eccc.weizmann.ac.il/report/2017/134/)].
 
-FRI is an extremely complicated topic, and we will simply not be able to cover all of its ins and outs here. In short, FRI is a _proximity test_—an interactive protocol, between a prover and a verifier—pertaining to a committed _word_. The verifier's goal is to determine whether the word is _close to a codeword_—that is, whether it differs from the codeword at just a few positions, or at many; in the process, the verifier would like to query as few positions of the committed word as possible. A key aspect of the protocol is _interaction_: during the protocol, the prover and verifier interact over the course of a logarithmic number of rounds (in the length of the initial committed word). In each successive round, the prover commits to a _further_ word, and the verifier samples and sends a random challenge. In the end, the verifier runs a testing procedure known as _querying_.
+FRI is an extremely complicated topic, and we will simply not be able to cover all of its ins and outs here. In short, FRI is a _proximity test_—an interactive protocol, between a prover and a verifier—pertaining to a committed _word_. The verifier's goal is to determine whether the word is _close to a codeword_—that is, whether it differs from the codeword at just a few positions, or at many; in the process, the verifier would like to query as few positions of the committed word as possible. FRI resides firmly in the [IOP model](/blueprint/models#the-iop-model). A key aspect of the protocol is _interaction_: during the protocol, the prover and verifier interact over the course of a logarithmic number of rounds (in the length of the initial committed word). In each successive round, the prover commits a _further_ word to the string oracle, and the verifier samples and sends a random challenge. In the end, the verifier runs a testing procedure known as _querying_, during which it reads the prover's various committed strings at various points.
 
-Here, we describe FRI in the _binary setting_—the setting, in fact, in which most of that protocol's [original treatment](https://eccc.weizmann.ac.il/report/2017/134/) was carried out. On the other hand, we moreover _specialize_ binary FRI in a key way, itself introduced in [[DP24](https://eprint.iacr.org/2024/504), § 3.1]. Our specialization is designed to make FRI compatible with the [additive NTT](/blueprint/cryptography/commitment/additive).
+We conduct our overview of FRI in the _binary setting_—the setting, in fact, in which most of that protocol's [original treatment](https://eccc.weizmann.ac.il/report/2017/134/) was carried out. On the other hand, we moreover specialize binary-field FRI _itself_ in a key way, following [[DP24](https://eprint.iacr.org/2024/504), § 3.1]. Our specialization is designed to make FRI compatible with the [additive NTT](/blueprint/cryptography/commitment/additive).
 
 ## Some Mathematical Objects
 
-_To complete._
+During our description of the [additive NTT](/blueprint/cryptography/commitment/additive), we worked with a binary field $\mathcal{T}_\tau$ and size parameters $\ell$ and $\mathcal{R}$. Our encoding algorithm, on input a list $(a_0, \ldots , a_{2^{\ell - 1}})$, gave us a further list $(b_0, \ldots , b_{2^{\ell + \mathcal{R}} - 1})$, which arose as the _evaluations_ of a certain polynomial $P(X)$ of degree less than $2^\ell$ on $S \subset \mathcal{T}_\tau$; here, $S$ is a _domain_ of order $2^{\ell + \mathcal{R}}$. In fact, we chose $S$ to be an $\mathbb{F}_2$-vector subspace of $\mathcal{T}_\tau$ (specifically, the span of the basis prefix $\left< \beta_0, \ldots , \beta_{\ell + \mathcal{R} - 1} \right>$). Our [commitment procedure](/blueprint/cryptography/commitment/procedure) ended by sending the codeword $(b_0, \ldots , b_{2^{\ell + \mathcal{R}}})$ to the string oracle.
+
+In FRI, the domain $S^{(0)} \coloneqq S$ becomes just the first in a _sequence_ of domains $S^{(0)}, S^{(1)}, \ldots , S^{(\ell)}$. Each of these shrinks by exactly one dimension; in particular, $S^{(\ell)}$ is just $\mathcal{R}$-dimensional as an $\mathbb{F}_2$-vector subspace of $\mathcal{T}_\tau$. In fact, we link up these domains using a series of $\mathbb{F}_2$-linear maps:
+
+$$
+\begin{equation*}S^{(0)} \xrightarrow{q^{(0)}} S^{(1)} \xrightarrow{q^{(1)}} S^{(2)} \xrightarrow{q^{(2)}} \cdots \xrightarrow{q^{(\ell - 1)}} S^{(\ell)}.\end{equation*}
+$$
+
+Here, each map $q^{(i)} : S^{(i)} \to S^{(i + 1)}$ is linear, with a _one-dimensional_ kernel. In particular, $q^{(i)}$ vanishes on a 1-dimensional subspace of $S^{(i)}$; moreover, the image of its restriction to $S^{(i)}$ is exactly $S^{(i + 1)}$, a subspace whose dimension is exactly one less than $S^{(i)}$'s.
+
+Finally, the committed word $(b_0, \ldots , b_{2^{\ell + \mathcal{R}} - 1})$, which we view as a function $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$, becomes just _the first_ in a series of smaller and smaller words $f^{(1)}, \ldots , f^{(\ell - 1)}$ committed to by the prover. Each committed word $f^{(i)}$ is a function on $S^{(i)}$. To describe these further words, we need to describe the structure of the FRI protocol.
+
+## Rough Idea of FRI
+
+The FRI protocol proceeds over $\ell$ rounds. For each round index $i \in \{0, \ldots , \ell - 1\}$,
+
+- The verifier samples a random scalar $r_i \gets \mathcal{T}_\tau$, and sends it to the prover.
+- The prover, using its existing oracle $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ and $r_i$, conducts a procedure called "FRI folding", which depends on both $f^{(i)}$ _and_ $r_i$. In this way, it comes up with a _further_ word $f^{(i + 1)} : S^{(i + 1)} \to \mathcal{T}_\tau$. It commits this word to the oracle.
+
+The exception is the very final round, the $\ell$th. In this round, instead of committing to $f^{(\ell)}$, the prover just sends a single constant to the verifier. Finally, the verifier kicks off its _querying phase_.
+
+The key idea necessary to understand FRI is _closeness to the Reed–Solomon code_. If the prover is honest, then, for each $i \in \{0, \ldots , \ell - 1\}$, the committed word $f^{(i)}$ will be a _codeword_ in the Reed–Solomon code $\mathsf{RS}_{S^{(i)}, \mathcal{T}_\tau}[2^{\ell - i}, 2^{\ell + \mathcal{R} - i}]$. That is, it will arise as the _evaluations_ of some polynomial of degree less than $2^{\ell - i}$ on the domain $S^{(\ell - i)}$ of size $2^{\ell + \mathcal{R} - i}$.
