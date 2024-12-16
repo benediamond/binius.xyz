@@ -13,7 +13,7 @@ The simplest description of our batched scheme proceeds as follows:
 - Up to a reindexing, we freely assume that the input polynomials $t_0, \ldots , t_{n - 1}$ are sorted in such a way that $\ell_0 \geq \cdots \geq \ell_{n - 1}$.
 - Collect the input polynomials' respective _individual_, flattened lists $\left( t_{0, i} \right)_{i = 0}^{2^{\ell_0} - 1}, \ldots , \left( t_{n - 1, i} \right)_{i = 0}^{2^{\ell_{n - 1}} - 1}$ of Lagrange coefficient vectors. Concatenate these lists into a huge master list, say $\left( t^*_i \right)_{i = 0}^{n^* - 1}$.
 - By possibly padding this list with trailing zeros, extend it until it becomes of power-of-2 size—say, $\left( t^*_i \right)_{i = 0}^{2^{\ell^*} - 1}$.
-- Commit to _this list_ [exactly as if](/blueprint/cryptography/commitment/procedure) it were a single polynomial on its own right. That is, additive-NTT the list $\left( t^*_i \right)_{i = 0}^{2^{\ell^*} - 1}$, and Merklize the result (a list of length $2^{\ell^* + \mathcal{R}}$).
+- Commit to _this list_ [exactly as if](/blueprint/cryptography/commitment/procedure) it were a single polynomial on its own right. That is, additive-NTT the list $\left( t^*_i \right)_{i = 0}^{2^{\ell^*} - 1}$, and send the _result_—a list of length $2^{\ell^* + \mathcal{R}}$—to the string oracle.
 
 ## A Piecewise Description
 
