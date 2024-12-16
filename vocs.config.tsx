@@ -245,12 +245,12 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "FRI-Binius",
-                link: "/blueprint/cryptography/evaluation/frib"
+                text: "Review of FRI",
+                link: "/blueprint/cryptography/evaluation/fri"
               },
               {
-                text: "The Batched Case",
-                link: "/blueprint/cryptography/evaluation/batched"
+                text: "The Procedure",
+                link: "/blueprint/cryptography/evaluation/procedure"
               },
             ]
           },

@@ -90,6 +90,6 @@ For example, taking $\tau = 7$, $\kappa = 4$, and $\iota = 7 - 4 = 3$, as usual,
 
 ## Batching
 
-We've already discussed _[batched commitment](/blueprint/cryptography/commitment/batched)_ in the context of our commitment scheme. The interesting part about the ring-switching reduction is that we don't have to batch yet: we can carry out the above procedure _independently_ for many polynomials, even ones of different lengths _and over different fields_. In this way, we end up _outputting_ many different sum claims—now all over the huge field $\mathcal{T}_\tau$, albeit still pertaining to polynomials of _unequal lengths_.
+We've already discussed [batching](/blueprint/cryptography/commitment/batched) in the context of our commitment scheme. The interesting part about the ring-switching reduction is that we don't have to batch yet: we can carry out the above procedure _independently_ for many polynomials, even ones of different lengths _and over different fields_. (Note how efficient it is.) In this way, we end up outputting many different sum claims—now all over the huge field $\mathcal{T}_\tau$, albeit still pertaining to polynomials of _unequal lengths_.
 
 In our [next step](/blueprint/cryptography/evaluation), we will that we can batch process _all_ of these sum claims, provided that the underlying polynomials $t_0, \ldots , t_{n - 1}$ were themselves committed to using the batched commitment procedure we [already described](/blueprint/cryptography/commitment/batched).
