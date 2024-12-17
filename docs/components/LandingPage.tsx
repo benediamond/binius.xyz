@@ -55,12 +55,18 @@ const LandingPage = () => {
     };
 
     checkDarkMode();
-    window.addEventListener("DOMContentLoaded", checkDarkMode);
-    window.addEventListener("change", checkDarkMode);
+
+    const observer = new MutationObserver(() => {
+      checkDarkMode();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
 
     return () => {
-      window.removeEventListener("DOMContentLoaded", checkDarkMode);
-      window.removeEventListener("change", checkDarkMode);
+      observer.disconnect();
     };
   }, []);
 
