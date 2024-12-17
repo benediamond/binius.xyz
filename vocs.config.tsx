@@ -70,7 +70,7 @@ export default defineConfig({
         link: "/basics/overview",
       },
       {
-        text: 'Arithmetization',
+        text: 'Binius\'s Arithmetization',
         collapsed: false,
         link: '/basics/arithmetization/',
         items: [
@@ -94,10 +94,6 @@ export default defineConfig({
               {
                 text: "Definition of M3",
                 link: "/basics/arithmetization/matching/definition"
-              },
-              {
-                text: "Verifying M3 Instances",
-                link: "/basics/arithmetization/matching/verifying"
               },
               {
                 text: "Proving Collatz Orbits",
@@ -186,7 +182,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "Reductions",
+        text: "The Reductions",
         link: "/blueprint/reductions/",
         collapsed: false,
         items: [
@@ -243,7 +239,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Cryptography',
+        text: 'The Cryptographic Layer',
         collapsed: false,
         link: '/blueprint/cryptography/',
         items: [

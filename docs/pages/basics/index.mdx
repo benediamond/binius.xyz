@@ -9,42 +9,30 @@ _Binius_ is a state-of-the-art noninteractive succinct proof. It comprises a the
 
 Binius's underlying cryptographic protocol operates natively over _towers of binary fields_, mathematical objects which, on the one hand, efficiently arithmetize natural problems of interest (like standard hash functions), and, on the other, admit extremely efficient implementations in both software and hardware. Binius's full codebase resides on GitLab at [`IrreducibleOSS / binius`](https://gitlab.com/IrreducibleOSS/binius/). That codebase contains not just Binius's core prover and verifier logic, but moreover various examples which serve to exhibit that system's end-to-end behavior on tasks of essential interest (like Merkle–Patricia trie inclusion proving).
 
-In this section of the site, we collect basic resources, designed to jump-start those planning to build on Binius. Here, we mainly focus on Binius's API and on the [arithmetization](/basics/arithmetization) scheme we use to capture real-life statements and problems. We defer Binius's cryptographic inner-workings to our [blueprint](/blueprint) section.
+In this area of the site, we collect basic resources, designed to jump-start those planning to build on Binius. Here, we mainly focus on Binius's API and on the [arithmetization](/basics/arithmetization) scheme we use to capture real-life statements and problems. We defer Binius's cryptographic inner-workings to our [blueprint](/blueprint) section.
 
 ## Getting Started
 
-For some general, introductory content, start with our [overview page](/basics/overview).
+For some general introductory content, start with our [overview page](/basics/overview).
 
 ## Site Directory
 
-Below, we sketch this site's main sub-areas in slightly more detail. Binius, in sum, spans roughly three separate layers of abstraction, which we outline now.
+Below, we sketch this site area's sections in slightly more detail. Here, we focus on _usage_ and on basic concepts, deferring all cryptographic content to our [blueprint](/blueprint).
 
 <Callout type="note">
 <Collapsible>
-[**The arithmetization layer.**](arithmetization) In this layer—the outermost—we define abstract tools and objects which serve to efficiently capture _meaningful_ real-life statements and problems.
+[**Binius's Arithmetization.**](arithmetization) In this section, we define abstract tools and objects which let us efficiently capture _meaningful_ real-life statements and problems.
 
-Binius introduces a new arithmetization scheme, called _M3_ (short for _multi-multiset matching_). M3 features a plurality of AIR-like _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed. We moreover link and connect these tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
+Binius introduces a new arithmetization scheme, called _M3_ (short for _multi-multiset matching_). M3 features a plurality of _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed. We moreover link and connect these tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
 
-Our arithmetization scheme supports problems whose satisfaction corresponds exactly to the _balancing_ of a plurality of channels, themselves populated according to flushing rules from pre-arranged tables. Indeed, the _balancedness_ of any particular channel may be expressed as a multiset-equality problem; for this reason, we call our channel-based paradigm _multi-multiset matching_. For more on arithmetization, start [here](/basics/arithmetization).
+As it turns out, many essential problems, like [Merkle–Patricia trie inclusion](/basics/arithmetization/examples/mpt), can be captured as M3 instances. For more on arithmetization, start [here](/basics/arithmetization).
 </Collapsible>
 </Callout>
 
 <Callout type="note">
 <Collapsible>
-[**The cryptographic reductions.**](reductions) This layer contains a plurality of reduction techniques, aimed largely at progressively _simplifying_ and _unifying_ claims output by the arithmetization layer.
+[**Further Resources.**](resources) Here, we collect various Binius-related resources from the broader internet.
 
-Indeed, our arithmetization layer serves to reduce _satisfiability_ problems to cryptographic claims, themselves either _multiset equality_ claims or _vanishing_ claims (these sorts of claims respectively correspond to the balancing of channels and to the satisfaction of gate constraints).
-
-Our _reduction layer_ serves to progressively unroll, simplify, and unify these sorts of cryptographic claims. More specifically, the layer's goal is to reduce these cryptographic claims—which amount to complex predicates on _committed_ and _virtual_ polynomials—to simple _evaluation claims_. An _evaluation claim_, by definition, entails that a particular committed multilinear, at a particular point, evaluates to a particular value. These are the sorts of claims that are amenable to direct evaluation by our PCS. More specifically, our goal is to _further_ reduce our initial claim to a plurality of evaluation claims.
-
-Our cryptographic reduction layer is described in detail [here](/blueprint/reductions).
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**The polynomial commitment scheme.**](cryptography) Here reside the cryptographic protocols and algorithms which make it possible to securely commit to—and later, to evaluate—multilinear polynomials over tiny fields.
-
-In this site section, we sketch in plain language Binius's approach to these complex cryptographic tasks—which itself implements the academic work [[DP24](https://eprint.iacr.org/2023/1784)]. Indeed, we summarize that work at a more-informal level of detail, and moreover discuss various practice-oriented considerations (around batching and whatnot).
+Indeed, we lay out separate sections for Binius-related Irreducible blog posts, talks given by Irreducible team members, and external content.
 </Collapsible>
 </Callout>

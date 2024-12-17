@@ -8,7 +8,7 @@ As we've repeatedly mentioned, the multivariate composition polynomials we're in
 
 The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds.
 
-## The Status Quo
+## The Standard Zerocheck
 
 As always, we are going to fix an $\ell$-variate composite polynomial $C(X_0, \ldots , X_{\ell - 1})$; our goal is to check that $C(v) = 0$ for each $v \in \mathcal{B}_\ell$. As usual, we will obtain $C$ itself from underlying $\ell$-variate multilinears $t_0, \ldots , t_{n - 1}$, by subjecting those multilinears to some $n$-variate _composition polynomial_ $c(Z_0, \ldots , Z_{n - 1})$.
 
