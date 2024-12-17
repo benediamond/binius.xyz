@@ -39,24 +39,24 @@ export default defineConfig({
   },
   topNav: [
     {
+      text: 'Basics',
+      link: '/basics',
+      match: '/basics'
+    },
+    {
+      text: 'Building',
+      link: '/building',
+      match: '/building'
+    },
+    {
       text: 'Blueprint',
       link: '/blueprint',
       match: '/blueprint'
     },
     {
-      text: 'Getting Started',
-      link: '/usage',
-      match: '/usage'
-    },
-    {
       text: 'Benchmarks',
       link: '/benchmarks',
       match: '/benchmarks'
-    },
-    {
-      text: 'Resources',
-      link: '/resources',
-      match: '/resources'
     },
   ],
   sidebar: {
