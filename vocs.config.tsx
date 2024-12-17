@@ -60,9 +60,102 @@ export default defineConfig({
     },
   ],
   sidebar: {
+    "/basics": [
+      {
+        text: "Basics",
+        link: "/basics",
+      },
+      {
+        text: "Overview",
+        link: "/basics/overview",
+      },
+      {
+        text: 'Arithmetization',
+        collapsed: false,
+        link: '/basics/arithmetization/',
+        items: [
+          {
+            text: "Background",
+            link: "/basics/arithmetization/background"
+          },
+          {
+            text: "Data Types",
+            link: "/basics/arithmetization/types"
+          },
+          {
+            text: "Multi-Multiset Matching",
+            link: "/basics/arithmetization/matching",
+            collapsed: true,
+            items: [
+              {
+                text: "A Toy Example",
+                link: "/basics/arithmetization/matching/example"
+              },
+              {
+                text: "Definition of M3",
+                link: "/basics/arithmetization/matching/definition"
+              },
+              {
+                text: "Verifying M3 Instances",
+                link: "/basics/arithmetization/matching/verifying"
+              },
+              {
+                text: "Proving Collatz Orbits",
+                link: "/basics/arithmetization/matching/collatz"
+              },
+
+            ]
+          },
+          {
+            text: "M3 Examples",
+            link: "/basics/arithmetization/examples",
+            collapsed: true,
+            items: [
+              {
+                text: "Lasso Lookup",
+                link: "/basics/arithmetization/examples/lasso"
+              },
+              {
+                text: "RAM",
+                link: "/basics/arithmetization/examples/ram"
+              },
+              {
+                text: "Merkle–Patricia Inclusion",
+                link: "/basics/arithmetization/examples/mpt"
+              },
+            ]
+          },
+        ],
+      },
+      {
+        text: "Further Resources",
+        link: "/basics/resources",
+        collapsed: false,
+        items: [
+          {
+            text: "Blog Posts",
+            link: "/basics/resources/posts",
+          },
+          {
+            text: "Talks and Lectures",
+            link: "/basics/resources/talks",
+          },
+          {
+            text: "External Resources",
+            link: "/basics/resources/external",
+          },    
+        ]
+      }
+    ],
+    "/building": [
+      {
+        text: "Building",
+        link: "/building",
+      },
+    ],
     "/blueprint": [
       {
-        text: "Introduction",
+        text: "Blueprint",
         link: "/blueprint",
       },
       {
@@ -70,75 +163,32 @@ export default defineConfig({
         link: "/blueprint/overview",
       },
       {
-        text: "Mathematical Primer",
-        link: "/blueprint/primer"
+        text: "Mathematizing M3 Instances",
+        link: "/blueprint/mathematizing",
       },
       {
-        text: "The PIOP and IOP Models",
-        link: "/blueprint/models"
-      },
-      {
-        text: "Binary Towers",
-        link: "/blueprint/towers",
-      },
-      {
-        text: 'Arithmetization',
+        text: "Mathematical Background",
+        link: "/blueprint/background",
         collapsed: false,
-        link: '/blueprint/arithmetization/',
         items: [
           {
-            text: "Background",
-            link: "/blueprint/arithmetization/background"
+            text: "Multilinear Polynomials",
+            link: "/blueprint/background/multilinears"
           },
           {
-            text: "Multi-Multiset Matching",
-            link: "/blueprint/arithmetization/matching",
-            collapsed: true,
-            items: [
-              {
-                text: "A Toy Example",
-                link: "/blueprint/arithmetization/matching/example"
-              },
-              {
-                text: "Definition of M3",
-                link: "/blueprint/arithmetization/matching/definition"
-              },
-              {
-                text: "Verifying M3 Instances",
-                link: "/blueprint/arithmetization/matching/verifying"
-              },
-              {
-                text: "Proving Collatz Orbits",
-                link: "/blueprint/arithmetization/matching/collatz"
-              },
-
-            ]
+            text: "The PIOP and IOP Models",
+            link: "/blueprint/background/models"
           },
           {
-            text: "M3 Examples",
-            link: "/blueprint/arithmetization/examples",
-            collapsed: true,
-            items: [
-              {
-                text: "Lasso Lookup",
-                link: "/blueprint/arithmetization/examples/lasso"
-              },
-              {
-                text: "RAM",
-                link: "/blueprint/arithmetization/examples/ram"
-              },
-              {
-                text: "Merkle–Patricia Inclusion",
-                link: "/blueprint/arithmetization/examples/mpt"
-              },
-            ]
+            text: "Binary Towers",
+            link: "/blueprint/background/towers",
           },
-        ]
+        ],
       },
       {
-        text: 'Reductions',
+        text: "Reductions",
+        link: "/blueprint/reductions/",
         collapsed: false,
-        link: '/blueprint/reductions/',
         items: [
           {
             text: "Background",
@@ -151,11 +201,11 @@ export default defineConfig({
             items: [
               {
                 text: "Merging",
-                link: "/blueprint/reductions/virtual/merge"
+                link: "/blueprint/reductions/virtual/merge",
               },
               {
                 text: "Shifting",
-                link: "/blueprint/reductions/virtual/shift"
+                link: "/blueprint/reductions/virtual/shift",
               }
             ]
           },
@@ -261,35 +311,11 @@ export default defineConfig({
         ]
       },
     ],
-    "/usage": [
-      {
-        text: "Getting Started",
-        link: "/usage",
-      },
-    ],
     "/benchmarks": [
       {
-        text: "Binius Benchmarks",
+        text: "Benchmarks",
         link: "/benchmarks",
       },
     ],
-    "/resources": [
-      {
-        text: "Introduction",
-        link: "/resources",
-      },
-      {
-        text: "Blog Posts",
-        link: "/resources/posts",
-      },
-      {
-        text: "Talks and Lectures",
-        link: "/resources/talks",
-      },
-      {
-        text: "External Resources",
-        link: "/resources/external",
-      },
-    ]
   },
 })

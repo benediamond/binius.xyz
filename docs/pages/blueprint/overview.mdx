@@ -1,6 +1,6 @@
 # High-Level Overview [A summary of Binius's steps, from the verifier's perspective]
 
-In this page, we present an overview of our verifier's steps and stages. These stages reduce an initial statement into progressively simpler mathematical claims, culminating in claims about the evaluations of certain multilinear polynomials.
+Here, we present a high-level overview of our backend. These stages reduce an input M3 instance into progressively simpler mathematical claims, culminating in claims about the evaluations of certain multilinear polynomials.
 
 In this overview, we take the verifier's perspective, and not the prover's. The verifier's view attests to a protocol's soundness, while the prover's view attests to its completness (both views reflect its efficiency!).
 
@@ -14,9 +14,7 @@ Our protocol's respective phases can be viewed as cryptographic _reductions_. Ea
 
 ## The M3 Instance
 
-Before beginning any given Binius proof, the prover and verifier must agree in advance on the structure of the statement being proved. Binius operates in the _M3_ arithmetization paradigm, which we explain at great length in our [arithmetization section](/blueprint/arithmetization). For now, we simply sketch the objects upon which the prover and verifier must agree.
-
-Each M3 instance is captured by a concrete object called a _constraint system_. Each constraint system entails a set of _oracles_, abstract handles that represent multilinear polynomials, as well as multivariate polynomial _constraints_, which these oracles must satisfy in any acceptable proof. Finally, the system establishes _flushing rules_, which dictate how exactly oracles should be flushed to any among a number of abstract objects called _channels_. As we explain when we [define M3](/blueprint/arithmetization/matching/definition), the M3 instance is _satisfied_ if and only if the prover manages to populate the instance's tables in such a way as to cause all channels to balance. As we further argue in that section, M3 is an extremely rich and flexible paradigm, and serves to _efficiently_ capture statements of critical real-life interest.
+Before beginning any given Binius proof, the prover and verifier must formalize the structure of the statement being proved. Binius operates in the [M3](/basics/arithmetization/matching) arithmetization paradigm, as we've already explained. For our purposes now, the prover and verifier must agree on the instance at hand—that is, on its tables, constraints, channels and flushing rules. As we will [see shortly](/blueprint/mathematizing), it is not difficult to reexpress all of these objects in mathematical terms, using objects like [multilinear polynomials](/blueprint/background/multilinears), [multisets](/blueprint/reductions/multiset) and [vanishing claims](/blueprint/reductions/zerocheck).
 
 Taking for granted the M3 abstraction, we proceed into verifier's algorithms proper. In what follows, we sketch the steps by which the verifier may evaluate whether the prover's M3 instance is satisfying, by reducing its satisfaction to successively simpler claims.
 
@@ -42,7 +40,7 @@ $$
 \begin{equation*}\widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, Y_0, \ldots , Y_{\ell - 1}) \coloneqq \prod_{i = 0}^{\ell - 1} \left( (1 - X_i) \cdot (1 - Y_i) + X_i \cdot Y_i \right)\end{equation*}
 $$
 
-is the _[equality indicator polynomial](/blueprint/primer#the-equality-indicator-polynomial)_, the unique, $2 \cdot \ell$-variate multilinear polynomial whose restriction to $\mathcal{B}_\ell \times \mathcal{B}_\ell$ is the equality indicator function. More precisely, the _sumcheck protocol_ reduces the above sum claim—that is, $0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r, v)$—to an _evaluation claim_ on the underlying polynomial $C$ (that is, to a claim of the form $C(r') \stackrel{?}= s$, where the values $r'$ and $s$ arise during the sumcheck protocol).
+is the _[equality indicator polynomial](/blueprint/background/multilinears#the-equality-indicator-polynomial)_, the unique, $2 \cdot \ell$-variate multilinear polynomial whose restriction to $\mathcal{B}_\ell \times \mathcal{B}_\ell$ is the equality indicator function. More precisely, the _sumcheck protocol_ reduces the above sum claim—that is, $0 \stackrel{?}= \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(r, v)$—to an _evaluation claim_ on the underlying polynomial $C$ (that is, to a claim of the form $C(r') \stackrel{?}= s$, where the values $r'$ and $s$ arise during the sumcheck protocol).
 
 Because we work over small fields, we in fact adopt a rather sophisticated variant of the zerocheck, called the [_univariate skip_](/blueprint/reductions/zerocheck/univariate). Very roughly, this zerocheck treats the 0th round in a special way, and moves as much work as possible into that round.
 

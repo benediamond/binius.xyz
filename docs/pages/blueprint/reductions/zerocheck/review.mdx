@@ -19,7 +19,7 @@ Thus it's complete and sound for the verifier to sample a random $r \gets \mathc
 
 ## The Sumcheck
 
-How can the verifier do this efficiently? The trick is to write down a polynomial expression for $\widetilde{C}(X_0, \ldots , X_{\ell - 1})$. We've [already seen](/blueprint/primer#multilinear-extensions) how to construct multilinear extensions:
+How can the verifier do this efficiently? The trick is to write down a polynomial expression for $\widetilde{C}(X_0, \ldots , X_{\ell - 1})$. We've [already seen](/blueprint/background/multilinears#multilinear-extensions) how to construct multilinear extensions:
 
 $$
 \begin{equation*}\widetilde{C}(X_0, \ldots , X_{\ell - 1}) = \sum_{v \in \mathcal{B}_\ell} C(v) \cdot \widetilde{\texttt{eq}}(X_0, \ldots , X_{\ell - 1}, v_0, \ldots , v_{\ell - 1}).\end{equation*}

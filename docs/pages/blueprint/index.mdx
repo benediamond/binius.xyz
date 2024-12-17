@@ -3,11 +3,11 @@ import Collapsible from '../../components/Collapsible';
 import { Callout } from 'vocs/components';
 
 
-# Introduction [A detailed blueprint of Binius, our binary-field-based SNARK]
+# Blueprint [A detailed blueprint of Binius]
 
-_Binius_ is a state-of-the-art noninteractive succinct proof. It comprises a theoretical cryptographic protocol (expounded in a sequence of recent technical manuscripts [[DP23](https://eprint.iacr.org/2023/1784)] [[DP24](https://eprint.iacr.org/2024/504)]), a production-grade [Rust implementation](https://gitlab.com/IrreducibleOSS/binius) of that protocol, and finally a documentation suite, featured on this very website.
+In our _[basics](/basics)_ site section, we recorded a high-level overview of Binius, generally taking the user's perspective. We described Binius's frontend [arithmetization](/basics/arithmetization) scheme, M3 and how that scheme captures real-life problems.
 
-Binius's underlying cryptographic protocol operates natively over _towers of binary fields_, mathematical objects which, on the one hand, efficiently arithmetize natural problems of interest (like standard hash functions), and, on the other, admit extremely efficient implementations in both software and hardware. Binius's full codebase resides on GitLab at [`IrreducibleOSS / binius`](https://gitlab.com/IrreducibleOSS/binius/). That codebase contains not just Binius's core prover and verifier logic, but moreover various examples which serve to exhibit that system's end-to-end behavior on tasks of essential interest (like Merkle–Patricia trie inclusion proving).
+In this site section, we explain the cryptographic inner-workings of Binius—that is, its _backend_.
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ Below, we sketch this site's main sub-areas in slightly more detail. Binius, in 
 
 Binius introduces a new arithmetization scheme, called _M3_ (short for _multi-multiset matching_). M3 features a plurality of AIR-like _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed. We moreover link and connect these tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
 
-Our arithmetization scheme supports problems whose satisfaction corresponds exactly to the _balancing_ of a plurality of channels, themselves populated according to flushing rules from pre-arranged tables. Indeed, the _balancedness_ of any particular channel may be expressed as a multiset-equality problem; for this reason, we call our channel-based paradigm _multi-multiset matching_. For more on arithmetization, start [here](/blueprint/arithmetization).
+Our arithmetization scheme supports problems whose satisfaction corresponds exactly to the _balancing_ of a plurality of channels, themselves populated according to flushing rules from pre-arranged tables. Indeed, the _balancedness_ of any particular channel may be expressed as a multiset-equality problem; for this reason, we call our channel-based paradigm _multi-multiset matching_. For more on arithmetization, start [here](/basics/arithmetization).
 </Collapsible>
 </Callout>
 
