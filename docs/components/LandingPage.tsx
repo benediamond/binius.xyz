@@ -67,16 +67,11 @@ const LandingPage = () => {
   return (
     <div>
       <h1 className="text-center mt-24 mb-6">
-        Unlock the full potential of
-        <br className="hidden sm:block" />
-        <em> high-performance ZK-proving </em>
-        <br className="hidden sm:block" />
-        with Binius
-        <br className="block sm:hidden" />
+        Binary Proofs, <br className="lg:hidden"/>Blazing Fast
       </h1>
 
       <p className="text-center text-[20px]">
-        Explore detailed documentation, benchmarks, and resources
+        Unlock the full potential of high-performance ZK with Binius      
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-16">

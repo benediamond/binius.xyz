@@ -21,6 +21,10 @@ p, ul, li {
   font-family: 'IBM Plex Sans', sans-serif; /* Ensure p uses IBM Plex Sans */
 }
 
+p {
+  line-height: 1.2;
+}
+
 h1 {
   font-family: 'Newsreader', serif;
   font-weight: 400;
@@ -178,8 +182,8 @@ h2 {
 
 @media (max-width: 600px) {
   h1 {
-    font-size: 40px;
-    line-height: 40px;
+    font-size: 60px;
+    line-height: 60px;
   }
 
   [data-layout="minimal"] .vocs_DocsLayout_content, [data-layout="minimal"] .vocs_Content {
