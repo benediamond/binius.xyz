@@ -2,9 +2,9 @@
 
 We've officially arrived at the very last step in the protocol. As of this point, thanks to our [ring-switching](/blueprint/cryptography/switching) reduction, we have brought the outstanding content we _still need to prove_ down to a list of _sum claims_ pertaining to various polynomials—all defined over the single, huge field $\mathcal{T}_\tau$, though generally of _different_ numbers of variables.
 
-In this subsection, we describe how to _batch-process_ sum claims of this form. Our technique is an extension of that described in the academic work [[DP24](https://eprint.iacr.org/2024/504.pdf)]. Indeed, that work only describes the commitment of a single polynomial. To extend that work to the batched setting—and in particular, to handle polynomials of _unequal sizes_—we need to exert some extra effort.
+In this subsection, we describe how to _batch-process_ sum claims of this form. Our technique is an extension of that described in the academic work [[DP24](https://eprint.iacr.org/2024/504.pdf)]. Indeed, that work only describes the commitment of a single polynomial. To extend that work to the batched setting—and in particular, to handle many polynomials, of _unequal sizes_—we need to exert some extra effort.
 
-The essential efficiency property will be that we will only need to run FRI _once_ (on a single committed polynomial—namely, that described in our [batch commitment](/blueprint/cryptography/commitment/batched) procedure).
+The essential efficiency property will be that we will only need to run FRI _once_, on a single committed polynomial (namely, that described in our [batch commitment](/blueprint/cryptography/commitment/batched) procedure).
 
 ## Subsection Directory
 

@@ -92,7 +92,7 @@ In the case $\tau = 7$, $\kappa = 7$ and $\iota = 0$—the size for which $\hat{
 
 ## Batching
 
-We've already discussed [batching](/blueprint/cryptography/commitment/batched) in the context of our commitment scheme. Ring-switching has its own batching story, which is quite complicated. As a conceptual starting point, we can imagine a non-batched version, in which the parties carry out the above procedure _independently_ for each refined evaluation claim at issue (the prover sends _all_ resulting tensor algebra elements to the verifier). Upon processing each of these tensor algebra elements independently, the verifier would thus output _many_ sum claims (all pertaining to huge-field polynomials of different lengths).
+We've already discussed [batching](/blueprint/cryptography/commitment/batched) in the context of our commitment scheme. Ring-switching has its own batching story, which is quite complicated. As a conceptual starting point, we can imagine a non-batched version, in which the parties carry out the above procedure _independently_ for each refined evaluation claim at issue (the prover sends _all_ resulting tensor algebra elements to the verifier). Upon processing each of these tensor algebra elements independently, the verifier would then output _many_ sum claims (all pertaining to huge-field polynomials of different lengths).
 
 Even in this non-batched version, our [next step](/blueprint/cryptography/evaluation) will certainly be batched. That is, provided that underlying polynomials $t_0, \ldots , t_{n - 1}$ were committed to using our batched commitment [procedure](/blueprint/cryptography/commitment/batched), we will have [a way](/blueprint/cryptography/evaluation) to process _all_ of the resulting sum claims in one go.
 

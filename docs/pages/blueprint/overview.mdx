@@ -1,8 +1,8 @@
 # High-Level Overview [A summary of Binius's steps, from the verifier's perspective]
 
-In this page, we dump a self-contained, high-level, end-to-end overview of our verifier's steps and stages. These stages serve to reduce an initial statement—say, pertaining to the validity of an Ethereum block—into progressively simpler mathematical claims, culminating in claims about the evaluations of certain multilinear polynomials.
+In this page, we present an overview of our verifier's steps and stages. These stages reduce an initial statement into progressively simpler mathematical claims, culminating in claims about the evaluations of certain multilinear polynomials.
 
-We conduct this overview with a view towards the _verifier's_ perspective, and not the prover's. Indeed, the verifier's view attests to a protocol's soundness, while the prover's view attests to its completness (and both views reflect its efficiency!). Here, we aim merely to sketch why Binius delivers a sound proof. Throughout, we roughly follow the structure of Binius's [main verification file](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/constraint_system/verify.rs?ref_type=heads).
+In this overview, we take the verifier's perspective, and not the prover's. The verifier's view attests to a protocol's soundness, while the prover's view attests to its completness (both views reflect its efficiency!).
 
 ## Interaction, _Fiat–Shamir_, and Reductions
 
