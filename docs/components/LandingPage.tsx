@@ -1,72 +1,98 @@
-import SVG from 'react-inlinesvg'
-import BlueprintIcon from '../public/blueprint-icon.svg'
-import PowerButtonIcon from '../public/power-button-icon.svg'
-import ChartIcon from '../public/chart-icon.svg'
-import BooksIcon from '../public/books-icon.svg'
-import ArrowIcon from './ArrowIcon'
+import { useEffect, useState } from "react";
+
+import ArrowIcon from "./ArrowIcon";
+import BlueprintIcon from "../public/blueprint-icon.svg";
+import BooksIcon from "../public/books-icon.svg";
+import ChartIcon from "../public/chart-icon.svg";
+import PowerButtonIcon from "../public/power-button-icon.svg";
+import SVG from "react-inlinesvg";
 
 const footerShapes = [
-  { primary: 'shapes/01.png', alt: ''},
-  { primary: 'shapes/02.png', alt: ''},
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: null, alt: null },
-  { primary: 'shapes/03.png', alt: ''},
-  { primary: 'shapes/04.png', alt: ''},
-  { primary: 'shapes/05.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/07.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/08.png', alt: ''},
-  { primary: 'shapes/09.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/10.png', alt: ''},
-  { primary: 'shapes/11.png', alt: ''},
-  { primary: 'shapes/12.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/05.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/07.png', alt: ''},
-  { primary: 'shapes/09.png', alt: ''},
-  { primary: 'shapes/06.png', alt: ''},
-  { primary: 'shapes/08.png', alt: ''},
-]
+  { primary: "01.png", alt: "01-dark.png", hiddenMobile: false },
+  { primary: "02.png", alt: "02-dark.png", hiddenMobile: false },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: null, alt: null, hiddenMobile: true },
+  { primary: "03.png", alt: "03-dark.png", hiddenMobile: false },
+  { primary: "04.png", alt: "04-dark.png", hiddenMobile: false },
+  { primary: "05.png", alt: "05-dark.png", hiddenMobile: true },
+  { primary: "06.png", alt: "06-dark.png", hiddenMobile: false },
+  { primary: "07.png", alt: "07-dark.png", hiddenMobile: false },
+  { primary: "08.png", alt: "08-dark.png", hiddenMobile: true },
+  { primary: "09.png", alt: "09-dark.png", hiddenMobile: true },
+  { primary: "06.png", alt: "06-dark.png", hiddenMobile: true },
+  { primary: "10.png", alt: "10-dark.png", hiddenMobile: true },
+  { primary: "11.png", alt: "11-dark.png", hiddenMobile: true },
+  { primary: "12.png", alt: "12-dark.png", hiddenMobile: true },
+  { primary: "03.png", alt: "03-dark.png", hiddenMobile: true },
+  { primary: "13.png", alt: "13-dark.png", hiddenMobile: false },
+  { primary: "06.png", alt: "06-dark.png", hiddenMobile: false },
+  { primary: "14.png", alt: "14-dark.png", hiddenMobile: true },
+  { primary: "15.png", alt: "15-dark.png", hiddenMobile: true },
+  { primary: "06.png", alt: "06-dark.png", hiddenMobile: true },
+  { primary: "03.png", alt: "03-dark.png", hiddenMobile: true },
+  { primary: "16.png", alt: "16-dark.png", hiddenMobile: false },
+  { primary: "17.png", alt: "17-dark.png", hiddenMobile: false },
+];
 
 const LandingPage = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    };
+
+    checkDarkMode();
+
+    const observer = new MutationObserver(() => {
+      checkDarkMode();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div>
       <h1 className="text-center mt-24 mb-6">
-        Unlock the full potential of 
-        <br className="hidden sm:block" />
-        <em> high-performance ZK-proving </em>
-        <br className="hidden sm:block" />
-         with Binius
-        <br className="block sm:hidden" />
+        Binary Proofs, <br className="lg:hidden"/>Blazing Fast
       </h1>
 
       <p className="text-center text-[20px]">
-        Explore detailed documentation, benchmarks, and resources
+        Unlock the full potential of high-performance ZK with Binius      
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-16">
         <a href="/blueprint">
           <div className="bg-green hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate ">
-            <img src={BlueprintIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
+            <img
+              src={BlueprintIcon}
+              alt="Blueprint Icon"
+              className="w-10 h-10 mb-6"
+            />
             <div className="flex flex-col gap-4 flex-grow">
               <h2>Blueprint</h2>
-              <p className="mb-4">Learn how Binius proofs are generated and verified</p>
+              <p className="mb-4">
+                Learn how Binius proofs are generated and verified
+              </p>
             </div>
             <ArrowIcon />
           </div>
@@ -74,7 +100,11 @@ const LandingPage = () => {
 
         <a href="/usage">
           <div className="bg-orange hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
-            <img src={PowerButtonIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
+            <img
+              src={PowerButtonIcon}
+              alt="Blueprint Icon"
+              className="w-10 h-10 mb-6"
+            />
             <div className="flex flex-col gap-4 flex-grow">
               <h2>Getting Started</h2>
               <p className="mb-4">Learn how to write a SNARK with Binius</p>
@@ -85,50 +115,81 @@ const LandingPage = () => {
 
         <a href="/benchmarks">
           <div className="bg-blue hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
-            <img src={ChartIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
+            <img
+              src={ChartIcon}
+              alt="Blueprint Icon"
+              className="w-10 h-10 mb-6"
+            />
             <div className="flex flex-col gap-4 flex-grow">
               <h2>Benchmarks</h2>
               <p className="mb-4">Explore up-to-date comparative benchmarks</p>
             </div>
-              <ArrowIcon />
+            <ArrowIcon />
           </div>
         </a>
 
         <a href="/resources">
           <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
-            <img src={BooksIcon} alt="Blueprint Icon" className="w-10 h-10 mb-6" />
+            <img
+              src={BooksIcon}
+              alt="Blueprint Icon"
+              className="w-10 h-10 mb-6"
+            />
             <div className="flex flex-col gap-4 flex-grow">
               <h2>Educational Resources</h2>
-              <p className="mb-4">Understand Binius fundamentals and core concepts</p>
+              <p className="mb-4">
+                Understand Binius fundamentals and core concepts
+              </p>
             </div>
             <ArrowIcon />
           </div>
         </a>
       </div>
 
-    <footer className="w-full absolute left-0 mt-20">
-      <div className="shape-grid">
-        {footerShapes.map((shape, index) => (
-          <div key={index} className={index < footerShapes.length - 10 ? 'hidden-mobile' : ''}>
-            {shape.primary && (
-              <img src={shape.primary} alt={shape.alt} className="w-full h-full object-cover" />
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="lp-footer flex py-6 justify-between my-8">
-        <p className="text-sm text-gunmetal">&copy; 2024 Binius</p>
-        <div className="flex">
-          <a href="https://x.com/IrreducibleHW" target="_blank">
-            <SVG src="x-icon.svg" className="w-5 h-5 mr-6" />
-          </a>
-          <a href="https://github.com/IrreducibleOSS" target="_blank">
-            <SVG src="github-icon.svg" className="w-5 h-5" />
-          </a>
+      <footer className="w-full absolute left-0 mt-20">
+        <div className="shape-grid">
+          {footerShapes.map((shape, index) => (
+            <div
+              key={index}
+              className={shape.hiddenMobile ? "hidden-mobile" : ""}
+            >
+              {shape.primary && (
+                <img
+                  src={
+                    isDarkMode
+                      ? `shapes/${shape.alt}`
+                      : `shapes/${shape.primary}`
+                  }
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+          ))}
         </div>
-      </div>
-    </footer>
+
+        <div className="lp-footer flex flex-col mb-6 md:flex-row py-6 justify-center md:justify-between my-8">
+          {" "}
+          <p className="text-sm text-gunmetal pl-6">
+            Binius is developed by{" "}
+            <a
+              href="https://www.irreducible.com/"
+              className="underline"
+              target="_blank"
+            >
+              Irreducible.
+            </a>{" "}
+            &copy; 2024 Irreducible, Inc.
+          </p>
+          <div className="flex pr-6 md:justify-end justify-center mt-6 md:mt-0">
+            <a href="https://x.com/IrreducibleHW" target="_blank">
+              <SVG src="x-icon.svg" className="w-5 h-5 mr-6" />
+            </a>
+            <a href="https://github.com/IrreducibleOSS" target="_blank">
+              <SVG src="github-icon.svg" className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
