@@ -81,8 +81,40 @@ const LandingPage = () => {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-16">
-        <a href="/blueprint">
+        <a href="/basics">
           <div className="bg-green hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate ">
+            <img
+              src={BooksIcon}
+              alt="Books Icon"
+              className="w-10 h-10 mb-6"
+            />
+            <div className="flex flex-col gap-4 flex-grow">
+              <h2>Basics</h2>
+              <p className="mb-4">
+                Understand Binius fundamentals and core concepts
+              </p>
+            </div>
+            <ArrowIcon />
+          </div>
+        </a>
+
+        <a href="/building">
+          <div className="bg-orange hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
+            <img
+              src={PowerButtonIcon}
+              alt="Building Icon"
+              className="w-10 h-10 mb-6"
+            />
+            <div className="flex flex-col gap-4 flex-grow">
+              <h2>Building</h2>
+              <p className="mb-4">Learn how to write a SNARK with Binius</p>
+            </div>
+            <ArrowIcon />
+          </div>
+        </a>
+
+        <a href="/blueprint">
+          <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
             <img
               src={BlueprintIcon}
               alt="Blueprint Icon"
@@ -98,26 +130,11 @@ const LandingPage = () => {
           </div>
         </a>
 
-        <a href="/usage">
-          <div className="bg-orange hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
-            <img
-              src={PowerButtonIcon}
-              alt="Blueprint Icon"
-              className="w-10 h-10 mb-6"
-            />
-            <div className="flex flex-col gap-4 flex-grow">
-              <h2>Getting Started</h2>
-              <p className="mb-4">Learn how to write a SNARK with Binius</p>
-            </div>
-            <ArrowIcon />
-          </div>
-        </a>
-
         <a href="/benchmarks">
           <div className="bg-blue hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
             <img
               src={ChartIcon}
-              alt="Blueprint Icon"
+              alt="Chart Icon"
               className="w-10 h-10 mb-6"
             />
             <div className="flex flex-col gap-4 flex-grow">
@@ -128,22 +145,6 @@ const LandingPage = () => {
           </div>
         </a>
 
-        <a href="/resources">
-          <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
-            <img
-              src={BooksIcon}
-              alt="Blueprint Icon"
-              className="w-10 h-10 mb-6"
-            />
-            <div className="flex flex-col gap-4 flex-grow">
-              <h2>Educational Resources</h2>
-              <p className="mb-4">
-                Understand Binius fundamentals and core concepts
-              </p>
-            </div>
-            <ArrowIcon />
-          </div>
-        </a>
       </div>
 
       <footer className="w-full absolute left-0 mt-20">

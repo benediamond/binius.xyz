@@ -21,7 +21,7 @@ eventually reaches 1. We're going to sketch an M3-based proof that some _particu
 
 ## The Instance Specification
 
-Here, we sketch the appropriate M3 instance, generally taking for granted [the definition of M3](/blueprint/arithmetization/matching/definition). Our statement looks like:
+Here, we sketch the appropriate M3 instance, generally taking for granted [the definition of M3](/basics/arithmetization/matching/definition). Our statement looks like:
 
 :::note
 You are going to convince me that some given integer satisfies the hypothesis of the Collatz conjecture (that is, its orbit under the Collatz function terminates at 1).
@@ -30,7 +30,7 @@ You are going to convince me that some given integer satisfies the hypothesis of
 For example, let's pick 6 as our number.
 
 ### Channels
-I, the verifier, am going to set up a single channel, with a simple positive-integer value (just like in the [previous toy example](/blueprint/arithmetization/matching/example)).
+I, the verifier, am going to set up a single channel, with a simple positive-integer value (just like in the [previous toy example](/basics/arithmetization/matching/example)).
 
 ### Boundary Constraints
 
@@ -121,8 +121,6 @@ It should be intuitively clear that this thing is correct and secure. (In partic
 
 This M3 sketch illustrates something interesting: we let the _choice of_ progression rule become completely nondeterministic, put on the prover. That is, we let the _prover_ deal with the problem of deciding _which_ case we're in: whether we're at an even number, which we must halve, or an odd number, which we must triple and add one to.
 
-If we had tried to attack the Collatz problem using a more classical arithmetization scheme—like AIR—then, most likely, we would have had to write down _two_ polynomial constraints (or perhaps more), and then _select_ between those two on the basis of parity. In particular, we would have been doing the work of _both_ Collatz transition functions at every step. Above, on the other hand, we were able to "break apart" the two different algebraic operations into separate tables, in such a way that the verifier needed only to constrain _where and how it was needed_ (and with no selectors!). The key part was to link those two tables together in a secure way; we achieved that using flushing rules and our channel.
+If we had tried to attack the Collatz problem using a more classical arithmetization scheme—like AIR—then, most likely, we would have had to write down _two_ polynomial constraints (or perhaps more), and then _select_ between those two on the basis of parity. In particular, we would have been doing the work of _both_ Collatz transition functions at every step. Above, on the other hand, we were able to "break apart" the two different algebraic operations into separate tables, which had just one constraint each (and no selectors!). The key part was to link those two tables together in a secure way; we achieved that using flushing rules and our channel.
 
-Above, we didn't need a global execution trace to orchestrate the individual, primitive function calls. Rather, each primitive operation had its own table, and we just needed to link them with channels.
-
-Looking ahead, we note that Collatz-like branching functions can be extremely rich—see, e.g., _[Unpredictable Iterations](https://gwern.net/doc/cs/computable/1972-conway.pdf)_ and _[Fractran](https://en.wikipedia.org/wiki/FRACTRAN)_. This opens up intriguing possibilities—these latter, Turing-complete languages could probably be turned into M3 programs! Not saying that would be useful, but it would be fun.
+We didn't need a global execution trace to orchestrate these individual, primitive function calls. Rather, each primitive operation had its own table, and we just needed to link them with channels.

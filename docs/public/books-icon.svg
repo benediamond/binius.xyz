@@ -1,11 +1,11 @@
 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.5 10H14.1667" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M19.1667 20H12.5" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M7.5 30H14.1667" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M25 5V15" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M30 15V25" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M25 25V35" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M33.3333 5H1.66663V15H33.3333V5Z" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M38.3333 15H6.66663V25H38.3333V15Z" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
-<path d="M33.3333 25H1.66663V35H33.3333V25Z" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M7.5 10H14.1667" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M19.1667 20H12.5" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M7.5 30H14.1667" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M25 5V15" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M30 15V25" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M25 25V35" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M33.3333 5H1.66663V15H33.3333V5Z" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M38.3333 15H6.66663V25H38.3333V15Z" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+<path d="M33.3333 25H1.66663V35H33.3333V25Z" stroke="#1D272A" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
 </svg>

@@ -1,6 +1,6 @@
 # Multiset-Check [Reducing multiset equality to grand-product claims]
 
-As [we've mentioned](/blueprint/arithmetization/matching/verifying) already, the _equality of multisets_ turns out to be our way of mathematically capturing the balancing of M3 [channels](/blueprint/arithmetization/matching/definition#channels). Here, we sketch how we process multiset-equality claims in Binius (specifically, how we reduce them in turn to [grand-product](/blueprint/reductions/gpa) claims).
+As [we've mentioned](/blueprint/mathematizing) already, the _equality of multisets_ turns out to be our way of mathematically capturing the balancing of M3 [channels](/basics/arithmetization/matching/definition#channels). Here, we sketch how we process multiset-equality claims in Binius (specifically, how we reduce them in turn to [grand-product](/blueprint/reductions/gpa) claims).
 
 The first thing that makes this tricky is that channels in general accept _tuple types_. Thus we fix a channel and write $\mu$ for its tuple arity (i.e., the number of _components_ in each tuple pushed to or pulled from that channel). The channel's two internal multisets, then, will look something like $(T_0, \ldots , T_{\mu - 1})$ and $(U_0, \ldots , U_{\mu - 1})$, respectively ($T$s for its pushes and $U$s for its pulls, let's say). Each of the individual columns $T_i$ and $U_i$ will be an $\ell$-variate multilinear, let's say, and will _itself_ be virtual.
 

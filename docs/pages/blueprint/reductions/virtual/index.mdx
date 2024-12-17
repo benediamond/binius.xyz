@@ -22,13 +22,13 @@ The thorough reference for this site subsection is [[DP23](https://eprint.iacr.o
 
 ## Multilinears and Lists
 
-We've [already seen](/blueprint/primer) that _multilinear polynomials_ and _lists of values_ are two sides of the same coin. These two worlds are equivalent to each other, and can be mathematically connected. Thus, when we talk about constructing multilinears, we can feel free to work on both sides of this divide. What often happens is that we will first talk about the _desired_ construction in the language of lists; then, when it comes time to actually construct that thing, we will need to supply a mathematical construction in the language of multilinears. If you need a primer on this duality, start [here](/blueprint/primer).
+We've [already seen](/blueprint/background/multilinears) that _multilinear polynomials_ and _lists of values_ are two sides of the same coin. These two worlds are equivalent to each other, and can be mathematically connected. Thus, when we talk about constructing multilinears, we can feel free to work on both sides of this divide. What often happens is that we will first talk about the _desired_ construction in the language of lists; then, when it comes time to actually construct that thing, we will need to supply a mathematical construction in the language of multilinears.
 
 ## Terminal Examples
 
 We begin by sketching the two most basic "virtual" polynomials. These are "degenerate" examples—which barely deserve to be called virtual polynomials—but which are important nonetheless. Indeed, they will serve as our atomic building blocks when we get into more complex constructions.
 
-- **Committed polynomials.** These polynomials are not virtual at all, but actually committed to. [We already agreed](/blueprint/models)—i.e., by definition of a PIOP—that the verifier may evaluate these things "in a single instruction" by just asking the oracle. Thus, they paradoxically count as (trivial) virtual polynomials.
+- **Committed polynomials.** These polynomials are not virtual at all, but actually committed to. [We already agreed](/blueprint/background/models)—i.e., by definition of a PIOP—that the verifier may evaluate these things "in a single instruction" by just asking the oracle. Thus, they paradoxically count as (trivial) virtual polynomials.
 - **Transparent polynomials.** A _transparent_ polynomial is one which the verifier may simply evaluate itself locally, with no help (and efficiently!). These are also "virtual", but again in a trivial way, since they don't depend on any underlying, committed polynomials.
 
 :::info

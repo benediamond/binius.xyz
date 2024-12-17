@@ -8,7 +8,7 @@ As we've repeatedly mentioned, the multivariate composition polynomials we're in
 
 The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds.
 
-## The Status Quo
+## The Standard Zerocheck
 
 As always, we are going to fix an $\ell$-variate composite polynomial $C(X_0, \ldots , X_{\ell - 1})$; our goal is to check that $C(v) = 0$ for each $v \in \mathcal{B}_\ell$. As usual, we will obtain $C$ itself from underlying $\ell$-variate multilinears $t_0, \ldots , t_{n - 1}$, by subjecting those multilinears to some $n$-variate _composition polynomial_ $c(Z_0, \ldots , Z_{n - 1})$.
 
@@ -32,7 +32,7 @@ The basic idea is to "reshape" our fundamental domain $\mathcal{B}_\ell$ into an
 
 Thus we fix a skipping parameter $k \geq 1$ (in practice, $k$ will be around 7). We are going to pick a _univariate domain_ $D \subset \mathcal{T}_\tau$ in our huge field of size $|D| = 2^k$. (In practice, we will moreover want $D$ to be an $\mathbb{F}_2$-subspace of $\mathcal{T}_\tau$.) Our fundamental domain will be $D \times \mathcal{B}_{\ell - k}$, now viewed as a subset of $\mathcal{T}_\tau^{\ell - k + 1}$. Note that this thing's size is exactly $2^\ell$.
 
-We—that is, both the prover and the verifier—are now going to simply "pretend" that the initial multilinears $t_0, \ldots , t_{n - 1}$, and so also the composite $C(X_0, \ldots , X_{\ell - 1})$, were defined to begin with on $D \times \mathcal{B}_{\ell - k}$, instead of on $\mathcal{B}_\ell$. This isn't a problem, conceptually: since our initial multilinears essentially amount to [lists](/blueprint/primer#multilinears-and-lists) of $2^\ell$ elements, we can always decide to identify these lists with $D \times \mathcal{B}_{\ell - k}$ instead of with $\mathcal{B}_\ell$. Thus, instead of multilinears $t_i(X_0, \ldots , X_{\ell - 1})$, we now have _polynomials_ $\widehat{t}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ of degree less than $2^k$ in $Y$ and linear their subsequent variables. The defining property of these rectangularizations $\hat{t}_i$ is that for each $u \in \mathcal{B}_k$,
+We—that is, both the prover and the verifier—are now going to simply "pretend" that the initial multilinears $t_0, \ldots , t_{n - 1}$, and so also the composite $C(X_0, \ldots , X_{\ell - 1})$, were defined to begin with on $D \times \mathcal{B}_{\ell - k}$, instead of on $\mathcal{B}_\ell$. This isn't a problem, conceptually: since our initial multilinears essentially amount to [lists](/blueprint/background/multilinears#multilinears-and-lists) of $2^\ell$ elements, we can always decide to identify these lists with $D \times \mathcal{B}_{\ell - k}$ instead of with $\mathcal{B}_\ell$. Thus, instead of multilinears $t_i(X_0, \ldots , X_{\ell - 1})$, we now have _polynomials_ $\widehat{t}_i(Y, X_0, \ldots , X_{\ell - k - 1})$ of degree less than $2^k$ in $Y$ and linear their subsequent variables. The defining property of these rectangularizations $\hat{t}_i$ is that for each $u \in \mathcal{B}_k$,
 
 $$
 \begin{equation*}\hat{t}_i(\{u\}, X_0, \ldots , X_{\ell - k - 1}) = t(u_0, \ldots , u_{k - 1}, X_0, \ldots , X_{\ell - k - 1})\end{equation*}
