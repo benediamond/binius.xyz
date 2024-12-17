@@ -78,6 +78,10 @@ export default defineConfig({
         link: "/blueprint/models"
       },
       {
+        text: "Binary Towers",
+        link: "/blueprint/towers",
+      },
+      {
         text: 'Arithmetization',
         collapsed: false,
         link: '/blueprint/arithmetization/',
