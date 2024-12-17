@@ -114,7 +114,7 @@ const LandingPage = () => {
         </a>
 
         <a href="/blueprint">
-          <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
+          <div className="bg-blue hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
             <img
               src={BlueprintIcon}
               alt="Blueprint Icon"
@@ -131,7 +131,7 @@ const LandingPage = () => {
         </a>
 
         <a href="/benchmarks">
-          <div className="bg-blue hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
+          <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
             <img
               src={ChartIcon}
               alt="Chart Icon"
