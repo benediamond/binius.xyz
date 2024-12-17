@@ -1,6 +1,6 @@
-# Background [Review of the status quo in arithmetization]
+# Background [Review of previous arithmetization techniques]
 
-Typical SNARKs handle arithmetization using what's called a _computational trace_—essentially a register dump over time.
+The most conceptually simple SNARK arithmetization technique involves what's called a _computational trace_—essentially a register dump over time.
 
 This means that we set up a virtual CPU or VM, with some _registers_—stateful places where data can be stored—and various _instructions_. Each _cycle_, we must mutate the registers, in whatever way the current instruction tells us to. We let our machine run for a couple million cycles. Finally, we're interested in peeking at our machine's initial and final states.
 
