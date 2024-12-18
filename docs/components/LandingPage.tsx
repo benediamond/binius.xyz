@@ -131,7 +131,7 @@ const LandingPage = () => {
         </a>
 
         <a href="/benchmarks">
-          <div className="bg-red hover:brightness-110 transition-all text-white p-8 flex flex-col h-full dark:text-white">
+          <div className="bg-red hover:brightness-110 transition-all p-8 flex flex-col h-full dark:text-slate">
             <img
               src={ChartIcon}
               alt="Chart Icon"
