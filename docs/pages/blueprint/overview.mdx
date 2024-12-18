@@ -6,7 +6,7 @@ In this overview, we take the verifier's perspective, and not the prover's. The 
 
 ## Interaction, _Fiat–Shamir_, and Reductions
 
-Binius operates within the _Fiat–Shamir paradigm_ for noninteractive proofs. Our protocol proceeds through multiple broad phases, each encompassing multiple rounds of prover-verifier interactions. As is standard practice, our protocol replaces interactions with invocations of the random oracle.
+Binius operates within the _Fiat–Shamir paradigm_ for noninteractive proofs. Our protocol proceeds through multiple broad phases, each encompassing multiple rounds of prover–verifier interaction. As is standard practice, our protocol replaces interactions with invocations of the random oracle.
 
 We achieve this using a _transcript_. The transcript tracks all data sent by the prover to the verifier; it hashes this data, automating the calculation of the verifier's challenges. During verification, the verifier uses the transcript to absorb the prover's data and produce the correct challenge sequence.
 
