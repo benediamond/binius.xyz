@@ -11,4 +11,6 @@ The essential efficiency property will be that we will only need to run FRI _onc
 This subsection contains the following pages:
 
 - [**Review of FRI.**](fri) Here, we drop a crash course on the _FRI_ protocol [[BBHR18](https://eccc.weizmann.ac.il/report/2017/134/)], a crucial proximity test for Reed–Solomon codes. We also describe a _particular instantiation_ of that protocol—due to [[DP24](https://eprint.iacr.org/2024/504.pdf)]—designed to play nicely with the [additive NTT](/blueprint/cryptography/commitment/additive).
+- [**Front-Loaded Sumcheck.**](frontloaded) While batching sumchecks on _equally-sized_ polynomials is standard, things get trickier when the polynomials have unequal numbers of variables. Here, we describe our protocol for this sort of thing, which we call the _front-loaded sumcheck_.
+- [**Evaluating Piecewise Multilinears.**](piecewise) Here, we continue our treatment of unequally-sized polynomials. While piecewise multilinears _all of whose pieces are the same size_ are [straightforward](/blueprint/reductions/virtual/merge) to deal with, things get much more interesting when the constituent "pieces" are unequally sized.
 - [**The Procedure.**](procedure) Here, we describe our main evaluation procedure, which combines a "front-loaded sumcheck" with FRI folding.
