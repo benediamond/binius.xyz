@@ -2,15 +2,15 @@
 
 Here, we present a high-level overview of our backend. These stages reduce an input M3 instance into progressively simpler mathematical claims, culminating in claims about the evaluations of certain multilinear polynomials.
 
-In this overview, we take the verifier's perspective, and not the prover's. The verifier's view attests to a protocol's soundness, while the prover's view attests to its completness (both views reflect its efficiency!).
+In this overview, we take the verifier's perspective, and not the prover's. The verifier's view attests to a protocol's soundness, while the prover's view attests to its completness.
 
 ## Interaction, _Fiat–Shamir_, and Reductions
 
-Binius operates within the _Fiat–Shamir paradigm_ for noninteractive proofs. Our protocol, abstractly, proceeds through multiple, broad "phases", _each_ in turn encompassing multiple rounds of interaction between the prover and the verifier. As is standard in the practice of noninteractive proofs, we replace all interaction in our protocol by invocations of the random oracle (concretely, a hash function).
+Binius operates within the _Fiat–Shamir paradigm_ for noninteractive proofs. Our protocol proceeds through multiple broad phases, each encompassing multiple rounds of prover-verifier interactions. As is standard practice, our protocol replaces interactions with invocations of the random oracle.
 
-We achieve this using an abstract object called a _transcript_. On the one hand, the transcript tracks all data sent by the prover to the verifier; simultaneously, it moreover hashes this data, automating the calculation of the verifier's challenges. When the verifier verifies a proof, it uses a parallel transcript object, which absorbs the prover's sent data, and moreover independently produces the correct challenge sequence.
+We achieve this using a _transcript_. The transcript tracks all data sent by the prover to the verifier; it hashes this data, automating the calculation of the verifier's challenges. During verification, the verifier uses the transcript to absorb the prover's data and produce the correct challenge sequence.
 
-Our protocol's respective phases can be viewed as cryptographic _reductions_. Each phase serves to _reduce_ the truth of claims of one sort to the truth of claims of a simpler sort. By proceeding in this way through our protocol's various phases—which we summarize below—our verifier may, steadily, reduce the prover's initial statement into simpler and simpler claims, until everything is finally proven.
+Our protocol's phases are essentially cryptographic reductions. Each phase reduces the truth of claims of one sort to the truth of claims of a simpler sort. 
 
 ## The M3 Instance
 
