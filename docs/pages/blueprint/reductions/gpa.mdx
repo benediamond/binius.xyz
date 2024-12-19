@@ -20,11 +20,11 @@ Let's again write $T(X_0, \ldots , X_{\ell - 1})$ for our $\ell$-variate multili
 
 The idea is very simple: both the prover and verifier will _imagine_ a height-$\ell$, perfectly balanced binary tree. In the leaves, we will inscribe the values $T_\ell(v) \coloneqq T(v)$ for $v \in \mathcal{B}_\ell$ varying (i.e., the leaf layer will be just $T$ itself). For each internal layer $k \in \{0, \ldots , \ell - 1\}$, we will have exactly $2^k$ node values to fill in; we will call these $T_k(v)$, where here $v \in \mathcal{B}_k$ varies. In fact, for each $v \in \mathcal{B}_k$, we will recursively write in the node value $T_k(v) \coloneqq T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1)$. In other words, each internal node will be the product of its two children.
 
-Following this idea to its root (pardon the pun), we see easily that the _root_ of this tree will be $\prod_{v \in \mathcal{B}_\ell} T(v)$, or $a$ itself if the prover is honest. Technically, we should have $T_0(\varnothing) \stackrel{?}= a$ ($T_0$ is a "$0$-variate multilinear", or in other words a constant).
+Following this idea to its root (pardon the pun), we see easily that the _root_ of this tree will be $\prod_{v \in \mathcal{B}_\ell} T(v)$, or $a$ itself if the prover is honest. Technically, we should have $T_0() \stackrel{?}= a$ ($T_0$ is a "$0$-variate multilinear", or in other words a constant).
 
 ## Unwinding GKR Layers
 
-Now this hasn't gotten us much so far. The key point, though, is that the verifier can use the sumcheck to reduce a claim about _one_ layer to a claim about _the layer below it_. The master claim that the verifier wants to check is a claim about the very top, 0th layer (namely, that $T_0(\varnothing) \stackrel{?}= a$). If the verifier has the ability to repeatedly unwind claims like this, then it may proceed straight down to the leaf layer, at which point it will arrive upon an evaluation claim about $T$ itself, which is what we wanted.
+Now this hasn't gotten us much so far. The key point, though, is that the verifier can use the sumcheck to reduce a claim about _one_ layer to a claim about _the layer below it_. The master claim that the verifier wants to check is a claim about the very top, 0th layer (namely, that $T_0() \stackrel{?}= a$). If the verifier has the ability to repeatedly unwind claims like this, then it may proceed straight down to the leaf layer, at which point it will arrive upon an evaluation claim about $T$ itself, which is what we wanted.
 
 The fact that saves us is that the relationship between each layer and the one below it is _algebraic_. Thus, for each $k \in \{0, \ldots , \ell - 1\}$, since, for each $v \in \mathcal{B}_k$, $T_k(v) = T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1)$ holds by _fiat_, $T_k$'s multilinear extension $T_k(X_0, \ldots , X_{k - 1})$ equals:
 
@@ -50,6 +50,6 @@ Thus we've gotten what we wanted: our new evaluation claim is that $T_{k + 1}(r_
 
 ## The End
 
-By proceeding this way throughout $\ell$ rounds, the verifier may thus reduce its initial claim $a \stackrel{?}= T_0(\varnothing) = \prod_{v \in \mathcal{B}_\ell} T(v)$ to the evaluation claim $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$. Since $T$ is virtual, we agreed already that the verifier will have a way of evaluating it.
+By proceeding this way throughout $\ell$ rounds, the verifier may thus reduce its initial claim $a \stackrel{?}= T_0() = \prod_{v \in \mathcal{B}_\ell} T(v)$ to the evaluation claim $a_\ell \stackrel{?}= T_\ell(r_\ell) = T(r_\ell)$. Since $T$ is virtual, we agreed already that the verifier will have a way of evaluating it.
 
 Evaluating a virtual polynomial can be complicated, though: a fact which brings us to our next page, [evalcheck](/blueprint/reductions/evalcheck).
