@@ -145,6 +145,45 @@ export default defineConfig({
         text: "Building",
         link: "/building",
       },
+      {
+        text: "Constraint Systems",
+        link: "/building/constraints",
+      },
+      {
+        text: "Bitwise Constraints",
+        link: "/building/bitwise",
+      },
+      {
+        text: "The Basic Patterns",
+        link: "/building/patterns",
+        collapsed: false,
+        items: [
+          {
+            text: "Declaring Columns",
+            link: "/building/patterns/declaring",
+          },
+          {
+            text: "Populating Columns",
+            link: "/building/patterns/populating",
+          },
+          {
+            text: "Constraining Columns",
+            link: "/building/patterns/constraining",
+          },
+        ]
+      },
+      {
+        text: "Making Transparents",
+        link: "/building/transparents",
+      },
+      {
+        text: "Packed Fields",
+        link: "/building/packed",
+      },
+      {
+        text: "Collatz in Practice",
+        link: "/building/collatz",
+      }
     ],
     "/blueprint": [
       {
@@ -308,7 +347,7 @@ export default defineConfig({
       {
         text: "Benchmarks",
         link: "/benchmarks",
-      },
-    ],
+      }
+    ]
   },
 })
