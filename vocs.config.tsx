@@ -335,6 +335,14 @@ export default defineConfig({
                 link: "/blueprint/cryptography/evaluation/fri"
               },
               {
+                text: "Front-Loaded Sumcheck",
+                link: "/blueprint/cryptography/evaluation/frontloaded",
+              },
+              {
+                text: "Evaluating Piecewise Multilinears",
+                link: "/blueprint/cryptography/evaluation/piecewise",
+              },
+              {
                 text: "The Procedure",
                 link: "/blueprint/cryptography/evaluation/procedure"
               },
