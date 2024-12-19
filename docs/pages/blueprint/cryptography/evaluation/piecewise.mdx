@@ -43,4 +43,12 @@ Here are the steps.
     $$
     \begin{equation*}T_i.\text{claim} \coloneqq b_{i, \ell_i}.\end{equation*}
     $$
-  - Etc.
+  - The verifier again writes $i_j$ for the _minimum_ among those $i \in \{0, \ldots , n - 1\}$ for which $\ell_i \leq j$ holds. The verifier initializes $k \coloneqq i_j$, and then runs the following loop. While $k < n$:
+    - The verifier sets $c_0 \coloneqq T_k.\text{claim}$.
+    - _If_ the next element $T_k.\text{next} < n$, then the verifier sets $c_1 \coloneqq T_k.\text{next}.\text{claim}$, and _moreover_ cuts $T_k.\text{next}$ out of the list, by overwriting $T_k.\text{next} = T_k.\text{next}.\text{next}$. Otherwise, the verifier sets $c_1 \coloneqq 0$.
+    - In any case, the verifier now overwrites $T_k.\text{claim} = (1 - r_j) \cdot c_0 + r_j \cdot c_1$.
+- At this point, the verifier outputs the final value $T_0.\text{claim}$.
+
+## Security Claim
+
+Now, during the course of the above algorithm, the prover either _did_ or _didn't_ supply the correct evaluation claims $b_{i, \ell_i} \stackrel{?}= t_i(r_0, \ldots , r_{\ell_i - 1})$ to the verifier. Our completeness claim is that if these claims _were_ all valid, then the verifier's final output will be equal to nothing other than $t^*(r_0, \ldots , r_{\ell^* - 1})$, where, again, $t^*(X_0, \ldots , X_{\ell^* - 1})$ is defined in the [piecewise way](/blueprint/cryptography/commitment/batched#a-piecewise-description) we already discussed. Conversely, if even a single of these was wrong, then the verifier's final output $T_0.\text{claim}$ will _not_ be equal to $t^*(X_0, \ldots , X_{\ell^* - 1})$, with high probability over the verifier's choice of the point $(r_0, \ldots , r_{\ell^* - 1})$.

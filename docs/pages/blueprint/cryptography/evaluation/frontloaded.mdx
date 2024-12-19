@@ -28,7 +28,7 @@ At the very end, the verifier needs to learn $\sum_{i = 0}^{n - 1} \alpha^i \cdo
 
 When the sizes $\ell_0, \ldots , \ell_{n - 1}$ are unequal, many aspects of the above recipe stop making sense. We can still define the polynomial $C^*(X_0, \ldots , X_{\ell - 1})$ above, provided we write $\ell \coloneqq \max_{i = 0}^{n - 1} \ell_i$, say. But this polynomial's sum over $\mathcal{B}_\ell$ is not what we're interested in. (It would "double up" the sums of the smaller polynomials, causing them to become annihilated.) So we can't run a simple sumcheck on it.
 
-Roughly, our approach is to "kick off" all sumchecks at the same time. On the other hand, since the polynomials are of different sizes, some will end earlier than others. We thus need to "prune" the finished sumchecks away from the protocol on the fly, as we run it.
+Roughly, our approach is to "kick off" all sumchecks at the same time. On the other hand, since the polynomials are of different sizes, some will end earlier than others. We thus need to "prune" the finished sumchecks away from the protocol on the fly, as we run it. More precisely, each time a polynomial "finishes", that its sumcheck has been fully evaluated, we need to "knock out" that polynomial's contribution from the running sum claim.
 
 Without further ado, here is our procedure. For notational convenience, we assume that the polynomials are sorted in descending order by size, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$.
 
@@ -43,7 +43,7 @@ $$
     $$
     and sends it to the verifier. Here, the upper index $i_j$ of the sum is chosen to be the _minimum_ among those $i \in \{0, \ldots , n - 1\}$ for which $\ell_i \leq j$ holds. The point is that all of the polynomials indexed $i \in \{0, \ldots , i_j - 1\}$ have more than $j$ variables, so each expression $\sum_{v \in \mathcal{B}_{\ell_j - j - 1}} C_i(r_0, \ldots , r_{j - 1}, X, v_0, \ldots , v_{\ell_j - j - 2})$ makes sense. (It might happen that $\ell_j - j - 1 = 0$, in which case the boolean suffix $(v_0, \ldots , v_{\ell_j - j - 2})$ will be empty, but this is fine.)
   - The verifier checks whether $s^*_j \stackrel{?}= g_i(0) + g_i(1)$ holds.
-  - The verifier samples $r_j \gets \mathcal{T}_\tau$ and sends it to the prover. The verifier moreover sets
+  - The verifier samples $r_j \gets \mathcal{T}_\tau$ and sends it to the prover. The verifier moreover computes the updated sum claim:
     $$
     \begin{equation*}s^*_{j + 1} \coloneqq g_j(r_j).\end{equation*}
     $$
