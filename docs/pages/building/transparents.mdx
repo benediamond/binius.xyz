@@ -16,7 +16,7 @@ where
     FS: TowerField,
 ```
 
-Apart from the builder, we'll need the values in some subfield `FS` of the main field `F` (TODO expalin this).
+Apart from the builder, we'll need the values in some subfield `FS` of the main field `F` (_TODO_: explain this).
 The function should return the oracle id for the newly created transparent.
 
 Within this function we declare the transparent oracle as
@@ -36,7 +36,7 @@ let mle = MultilinearExtensionTransparent::<_, PackedType<U, F>, _>::from_values
 )?;
 ```
 
-But notice we're passing in `packed_values`, whereas we're only given `value`. We must take the `FS` values vector given and create a vector of packed `FS` values. For context on packing, see our page on _[**packed fields**](/building/packed)_.
+But notice we're passing in `packed_values`, whereas we're only given `value`. We must take the `FS` values vector given and create a vector of packed `FS` values. For context on packing, see our page on _[packed fields](/building/packed)_.
 
 Before we create the packed values, we must calculate how large our packed value vector will be due to packing.
 The packing width is `PackedType::<U, FS>::WIDTH`, so if `values.len()` was divisible by this packing width we'd simply divide.
@@ -73,7 +73,7 @@ if let Some(witness) = builder.witness() {
 First, we create the new column, receiving an `EntryBuilder`. Next, we called `packed` on the entry builder to receive a mutable reference to a slice of packed values. Finally, we copy over our packed values to this packed slice.
 
 :::note
-_Why do we need to allocate two slices of packed values rather than one?_
+Why do we need to allocate two slices of packed values rather than one?
 
 The first time was when we allocated the packed vector `packed_values`. Both the verifier and prover need to do this. We need `packed_values` in order to create the `mle` and declare the transparent oracle. The second time was when we called `new_column`, internally creating another vector of packed values. This is something done only by the prover, not the verifier.
 

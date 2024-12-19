@@ -123,8 +123,8 @@ Transparent columns are columns known to the verifier.
 Whereas committed and virtual columns are opaque and the verifier holds only a "handle" to them via commitments, transparent columns are fully transparent to the verifier.
 
 There are many specialized transparent constructions in [Binius transparents](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/core/src/transparent) that are easily created.
-For example, suppose we wish to take a field element and create a column with values had by taking consecutive powers of the elements.
-The transparent [powers](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/transparent/powers.rs) lets us do this.
+For example, suppose we wish to take a field element, and create a column whose values are the consecutive powers of that element.
+The transparent _[powers](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/transparent/powers.rs)_ polynomial lets us do exactly this.
 
 Suppose we choose the element to be the generator `gen` of the multiplicative group of the field `BinaryField16b`.
 

@@ -47,9 +47,9 @@ Two tasks remain:
 - _Populating the output oracle:_ If the prover is the one building, we must materialize this oracle with correct output values and update the witness.
 - _Constraining the output oracle:_ We must constrain the output oracle to hold the correct values.
 
-## Populating the output oracle
+## Populating the Output Oracle
 
-In order to detect whether building for the prover or verifier, and obtain the witness if building for the prover, we call `builder.witness()`.
+In order to detect whether we're building for the prover or verifier—and, if we're the prover, obtain the witness—we call `builder.witness()`.
 
 ```rust
 if let Some(witness) = builder.witness() {
@@ -57,8 +57,8 @@ if let Some(witness) = builder.witness() {
 }
 ```
 
-Once having the witness we query for access to the input oracles.
-Calling `witness.get::<BinaryField1b>(xin)?` we get a `WitnessEntry`, and now we must use this witness entry to conveniently access the input values.
+Once we have the witness, we query for access to the input oracles.
+Calling `witness.get::<BinaryField1b>(xin)?` we get a `WitnessEntry`; now, we must use this witness entry to conveniently access the input values.
 In memory there is a contiguous sequence of `BinaryField1b` field elements, i.e. a sequence of bits, and we wish to access these bits to compute an AND.
 Most conveniently, we can cast this contiguous slice of bits to a slice of `u32` values, and then compute an AND with each of those values.
 We make this cast by calling `as_slice::<u32>()` on the witness entry.
@@ -87,11 +87,11 @@ Now we iterate (or parallel iterate for speed) through the inputs and outputs al
     });
 ```
 
-## Constraining the output oracle
+## Constraining the Output Oracle
 
 From the verifier's perspective, we have so far only declared `zout` to be the committed output oracle.
-Nothing constrains `zout` to contain the correct output values.
-In order to constraint `zout`, we can ask that the three values occupying every row of these three oracles satisfies an equation.
+Nothing yet constrains `zout` to contain the correct output values.
+In order to constraint `zout`, we can ask that the three values occupying every row of these three oracles satisfy an equation.
 The equation is `xin * yin - zout = 0`, where the variables represent `BinaryField1b` elements and multiplication takes place in the field `BinaryField1b`.
 We enforce an equation by enforcing that an arithmetic expression have the value zero.
 Using the macro `binius_macros::arith_expr` we can create an arithmetic expression as
@@ -113,7 +113,7 @@ builder.assert_zero([xin, yin, zout], expr.convert_field());
 
 Finally, having let the prover fill `zout` with values and let the verifier constrain `zout` to be correct, we may return the oracle to the caller as `Ok(zout)`.
 
-## The full example
+## The Full Example
 
 For completeness we write the full gadget below.
 
