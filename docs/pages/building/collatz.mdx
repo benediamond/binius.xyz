@@ -207,7 +207,7 @@ Now that we have `even` and `odd` gadgets, we need to put thing into place to us
 ## Implementing Collatz
 
 We'll implement our `Collatz` struct with several methods besides `even` and `odd`.
-First we'll make a factory method that both the prover and verifier will call
+First we'll make a factory method that both the prover and verifier will call.
 
 ```rust
 pub fn new(x0: u32) -> Self {
@@ -219,7 +219,7 @@ pub fn new(x0: u32) -> Self {
 }
 ```
 
-Next we'll make a method that only the prover will call, in order to compute the orbit of `x0` and properly fill the struct `evens` and `odds` fields.
+Next, we'll make a method that only the prover will call, in order to compute the orbit of `x0` and properly fill the struct `evens` and `odds` fields.
 
 ```rust
 pub fn init_prover(&mut self) -> Advice {
@@ -396,4 +396,4 @@ fn verify(x0: u32, advice: Advice, proof: Proof, log_inv_rate: usize) -> Result<
 
 ## The Full Example
 
-To see the example in full, visit [circuits/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/examples/collatz.rs) for the prove and verify functions.
+To see the example in full, visit [`circuits/src/collatz`](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visit [`examples/collatz`](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/examples/collatz.rs) for the prove and verify functions.

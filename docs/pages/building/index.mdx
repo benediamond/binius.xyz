@@ -1,30 +1,30 @@
 # Building [First steps to get you set up and running Binius]
 
-In this section, we describe how to build a constraint system for Binius, and how to prove and verify statements with respect to a constraint system.
-Before we delve into the task of building constraint systems, we first devote this introductory page to clarifying the big picture around constraint systems, statements, provers and verifiers.
-Familiarity with .... is assumed.
+This site area contains a rapid _getting-started_ guide for those seeking to build on Binius. Here, we explain how to build a _constraint system_, and how to prove and verify statements with respect to a constraint system. Throughout, we supplement everything with code snippets and rich examples.
+
+Before we delve into the particularities of building constraint systems, we clarify on this page the big picture around constraint systems, statements, provers and verifiers.
 
 ## Prover and Verifier Outline
 
 The prover accepts as input a constraint system and a witness.
-The verifier accepts as input a constraint system and "boundary values."
+The verifier accepts as input a constraint system and "boundary values".
 Naturally, the constraint systems fed to the prover and verifier should be identical.
-The statement to be proven is defined by the combination of the constraint system and the boundary values.
-These boundary values are what allow the verifier to connect the proof received to the statement proven.
+The statement to be proven is defined collectively by the constraint system and the boundary values.
+These boundary values are what allow the verifier to connect the proof it received to the statement being proven.
 
-In order to build a constraint system, we have a constraint system builder.
-Both the prover and verifier will invoke the builder, but in different ways.
+In order to build a constraint system, we use an object called a _constraint system builder_.
+Both the prover and verifier will invoke this builder, but in different ways.
 To instantiate the builder, the verifier simply calls `ConstraintSystemBuilder::new`.
-The prover must build not only the constraint system but also the witness.
+The prover must build not only the constraint system, but also the witness.
 When used by the prover, the builder accepts an allocator for the witness.
 Currently we use the simple bump allocator [bumpalo](https://github.com/fitzgen/bumpalo).
-To instantiate the builder, the prover calls `ConstraintSystemBuilder::new_with_witness` passing in the allocator.
+To instantiate the builder, the prover calls `ConstraintSystemBuilder::new_with_witness`, passing in the allocator.
 
 When the prover and verifier are done using the builder, they may call `build` on the builder to obtain the constraint system.
 The prover must obtain also the witness from the builder, having built the witness alongside the constraint system, by calling `take_witness`.
 Provided the boundary values as well, the prover and verifier have all they need to prove and verify.
 
-Let us illustrate how to construct a prover and a verifier for this basic workflow, supposing a blackbox function `build` parameterized by a builder.
+Let us illustrate how to construct a prover and a verifier for this basic workflow, assuming the existence of a a blackbox function `build` parameterized by a builder.
 In the `build` function suppose we build the constraint system as well as the witness in the case of the prover calling `build`.
 See ... for details around choosing parameters, including type parameters, for the `prove` and `verify` functions.
 Suppressing type parameters and irrelevant arguments in the `prove` and `verify` functions, for our prover we have

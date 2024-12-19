@@ -17,7 +17,7 @@ We now record our evaluation protocol. We drop a slightly simplified variant in 
 
 We write $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$ for the result of the prover's _initial_ [commitment](/blueprint/cryptography/commitment/procedure). Here, $S^{(0)} \subset \mathcal{T}_\tau$ is a _Reed–Solomon domain_ of size $2^{\ell^* + \mathcal{R}}$. We moreover fix [the usual](/blueprint/cryptography/evaluation/fri) sequence of further FRI domains $S^{(0)}, \ldots , S^{(\ell^*)}$, as well as the 2-to-1 folding maps $q^{(i)} : S^{(i)} \to S^{(i + 1)}$. Using these, we get a FRI folding procedure, which, given a word $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ and a folding challenge $r_i \in \mathcal{T}_\tau$, produces a folded word $f^{(i + 1)} \coloneqq \mathsf{fold}(f^{(i)}, r_i)$, a map $f^{(i + 1)} : S^{(i + 1)} \to \mathcal{T}_\tau$.
 
-We moreover use a notational device which we've already used in the previous two pages. We assume as usual that the polynomials $t_0, \ldots , t_{n - 1}$ are arranged in sorted order, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$ holds. Moreover, for each $j \in \{0, \ldots , \ell^*\}$, we are going to write $j_i \in \{0, \ldots , n\}$ for the _minimal_ $j \in \{0, \ldots , n\}$ for which $\ell_j \leq i$ holds. We note that $j_{\ell^*} = 0$ necessarily holds; moreover, $j_0 = n$ will too, provided we assume that each $\ell_j$ is positive—which we do now. Finally, the elements $i_j \geq \cdots \geq j_{\ell^*}$ will be nonincreasing.
+We moreover use a notational device which we've already used in the previous two pages. We assume as usual that the polynomials $t_0, \ldots , t_{n - 1}$ are arranged in sorted order, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$ holds. Moreover, for each $j \in \{0, \ldots , \ell^*\}$, we are going to write $j_i \in \{0, \ldots , n\}$ for the _minimal_ $j \in \{0, \ldots , n\}$ for which $\ell_j \leq i$ holds. We note that $j_{\ell^*} = 0$ necessarily holds; moreover, $j_0 = n$ will too, provided we assume that each $\ell_j$ is positive—which we do now. Finally, the elements $j_0 \geq \cdots \geq j_{\ell^*}$ will be nonincreasing.
 
 ## The Steps
 
@@ -26,7 +26,7 @@ $$
 \begin{equation*}s_{j, 0} \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell_j}} t_j(v) \cdot A_j(v),\end{equation*}
 $$
 
-where the $t_j(X_0, \ldots , X_{\ell_j - 1})$ are [batch-committed](/blueprint/cryptography/commitment/batched#the-steps) and the $A_j(X_0, \ldots , X_{\ell_j - 1})$ are transparent. The verifier initializes claim datastructures $T_0, \ldots , T_{n - 1}$, each featuring $.\text{claim}$ and $.\text{next}$ fields. The verifier sets $T_j.\text{next} \coloneqq j + 1$ for each $j \in \{0, \ldots , n - 1\}$.
+where the $t_j(X_0, \ldots , X_{\ell_j - 1})$ are [batch-committed](/blueprint/cryptography/commitment/batched#the-steps) and the $A_j(X_0, \ldots , X_{\ell_j - 1})$ are transparent. The verifier initializes claim datastructures $T_0, \ldots , T_{n - 1}$, each featuring $.\text{claim}$ and $.\text{next}$ fields. The verifier initializes $T_j.\text{next} \coloneqq j + 1$ for each $j \in \{0, \ldots , n - 1\}$.
 
 Here we go:
 
