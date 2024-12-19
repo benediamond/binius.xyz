@@ -4,15 +4,23 @@ Here, we get to the "grand finale" of this site. Our setup is a list of polynomi
 
 We now fix a list of _sum claims_, each of the form
 $$
-\begin{equation*}s_{i, 0} \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell_i}} t_i(v) \cdot A_i(v).\end{equation*}
+\begin{equation*}s_{j, 0} \stackrel{?}= \sum_{v \in \mathcal{B}_{\ell_i}} t_j(v) \cdot A_j(v).\end{equation*}
 $$
 
-Here, the $A_i(X_0, \ldots , X_{\ell_i - 1})$ are further _transparent_ polynomials that arise during the ring-switching reduction. We don't need to worry what these polynomials _even are_ for the purposes of this page; we merely need the fact that they're transparent (i.e., efficiently evaluable by the verifier at any given point).
+Here, the $A_j(X_0, \ldots , X_{\ell_i - 1})$ are further _transparent_ polynomials that arise during the ring-switching reduction. We don't need to worry what these polynomials _even are_ for the purposes of this page; we merely need the fact that they're transparent (i.e., efficiently evaluable by the verifier at any given point).
 
-Our goal in this page will be to jointly evaluate all of these sum claims.
+Our goal in this page will be to jointly evaluate all of these sum claims. Our algorithm will essentially run [FRI](/blueprint/cryptography/evaluation/fri), our [front-loaded sumcheck](/blueprint/cryptography/evaluation/frontloaded), _and_ our [piecewise evaluation](/blueprint/cryptography/evaluation/piecewise) procedure together, in an interleaved way, and using just one stream of random challenges for all three algorithms.
 
-## The Steps
+## Some Preliminaries
 
 We now record our evaluation protocol. We drop a slightly simplified variant in which a certain _oracle skipping_ optimization is omitted. (We refer to [[DP24](https://eprint.iacr.org/2024/504), § 6.2] for a description of this optimization.)
 
 We write $f^{(0)} : S^{(0)} \to \mathcal{T}_\tau$ for the result of the prover's _initial_ [commitment](/blueprint/cryptography/commitment/procedure). Here, $S^{(0)} \subset \mathcal{T}_\tau$ is a _Reed–Solomon domain_ of size $2^{\ell^* + \mathcal{R}}$. We moreover fix [the usual](/blueprint/cryptography/evaluation/fri) sequence of further FRI domains $S^{(0)}, \ldots , S^{(\ell^*)}$, as well as the 2-to-1 folding maps $q^{(i)} : S^{(i)} \to S^{(i + 1)}$. Using these, we get a FRI folding procedure, which, given a word $f^{(i)} : S^{(i)} \to \mathcal{T}_\tau$ and a folding challenge $r_i \in \mathcal{T}_\tau$, produces a folded word $f^{(i + 1)} \coloneqq \mathsf{fold}(f^{(i)}, r_i)$, a map $f^{(i + 1)} : S^{(i + 1)} \to \mathcal{T}_\tau$.
+
+We moreover use a notational device which we've already used in the previous two pages. We assume as usual that the polynomials $t_0, \ldots , t_{n - 1}$ are arranged in sorted order, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$ holds. Moreover, for each $j \in \{0, \ldots , \ell^*\}$, we are going to write $i_j \in \{0, \ldots , n\}$ for the _minimal_ $i \in \{0, \ldots , n\}$ for which $\ell_i \leq j$ holds. We note that $i_{\ell^*} = 0$ necessarily holds; moreover, $i_0 = n$ will too, provided we assume that each $\ell_i$ is positive—which we do now. Finally, the elements $i_0 \geq \cdots \geq i_{\ell^*}$ will be nonincreasing.
+
+## The Steps
+
+Here is our algorithm.
+
+- For each round $j \in \{0, \ldots , \ell^*\}$, the prover and verifier proceed as:
