@@ -17,6 +17,24 @@ Now, we haven't said anything yet about _how_ to actually construct this barcode
 
 For now, in this site area, we will explain how to _use_ Binius to construct barcode systems for computations _we care about_—like Ethereum block proving, for example.
 
-## What's Different?
+## Binary Fields
 
-As we've already mentioned, Binius introduces many new concepts and techniques to the SNARK landscape.
+As we've already mentioned, Binius introduces many new concepts and techniques to the SNARK landscape. If we had to explain these differences in one phrase, it'd be our _use of binary fields_. As [we explain](/basics/arithmetization/types) later in this site, our fundamental datatypes are _binary strings of power-of-2 width_. This makes Binius actually a lot _more_ like standard physical computers, and a lot _less_ like the SNARKs you've worked with before. Indeed, fixed-width binary strings—like single bits, 32-bit words, and 8-bit bytes—have been the fundamental units of computers since their early days.
+
+Why did SNARKs _ever_ use anything else? The short answer is that, for technical reasons, we have to work with a mathematical object called a _field_—essentially a number system where we can add, multiply and divide. The standard unsigned integer datatypes are actually _not_ fields. We can of course add with no problem—we all know that if I add `0xFFFFFFFF` plus `0x00000001`, I'll get `0x00000000`, with an overflow modulo $2^{32}$. On the other hand, I can't always divide. Why not? To see this, note that there does not exist an integer $x$ such that $x \cdot 2 \equiv 1 \pmod{2^{32}}$ holds. Whatever I multiply 2 by, the result will be _even_, and will remain so even after we reduce modulo $2^{32}$.
+
+For this reason, SNARKs have largely used _prime fields_, the next-simplest thing. Here, we take a prime number $p$, like the _Baby Bear prime_ $2^{31} - 2^{27} + 1$. The set of integers $\{0, \ldots , p - 1\}$ _is_ a field, provided that we understand all addition and multiplication with wraparound modulo $p$. It is a [fact of basic algebra](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) that sets of this form _are_ fields. All production-oriented SNARKs in use today, like [Plonky3](https://github.com/Plonky3/Plonky3) and [Stwo](https://github.com/starkware-libs/stwo), use prime fields of roughly 32 bits.
+
+In Binius, we use _binary fields_, fields that look a lot more like classical fixed-width binary registers. The tricky part is that when we _multiply_ two 32-bit elements, we can't just do integer multiplication modulo $2^{32}$—we have to do something [more complicated](/blueprint/background/towers). On the other hand, these fields give us huge efficiency dividends.
+
+To see why, we need to talk about [arithmetization](/basics/arithmetization). As we will explain at length shortly, _arithmetization_ is how we capture real-life statements in SNARK design. Let's start with a computational task—like "prove that this Ethereum block is valid". We can't feed this task _directly_ into a SNARK—whether binary or otherwise. Rather, we need to express it in the language of the "frontend" that the SNARK exposes.
+
+In prime-field SNARKs, these front-ends all work modulo $p$. This is like putting a round peg into a square hole: while the computation we care about (say, the Keccak-256 hash function) has nothing to do with prime fields, we must express it in a language which _only_ recognizes prime fields. This entails a sort of efficiency loss.
+
+As it happens, our arithmetization doesn't win _just_ because of its binary datatypes. It also introduces an new, declarative computational paradigm, which we call _M3_ (multi-multiset matching). We [describe](/basics/arithmetization) M3 at length in this site area.
+
+## Multilinear Polynomials
+
+Why don't other SNARKs use binary fields? [Some in the past](https://eprint.iacr.org/2018/046) have. On the other hand, binary fields don't work compatibly with the technique used in the production-oriented SNARKs used today: the [DEEP-ALI](https://eprint.iacr.org/2019/336.pdf) paradigm. In short, this paradigm only works with fields whose multiplicative groups have high [two-adicity](https://www.cryptologie.net/article/559/whats-two-adicity/). Binary fields have none at all! Thus, univariate techniques won't work for us.
+
+Instead, we revive a much-older stream of research: based on the multivariate _sumcheck_ protocol of Lund, Fortnow, Karloff, and Nisan [[LFKN92](https://dl.acm.org/doi/10.1145/146585.146605)]. To make this work, we have to introduce a lot of new techniques, including for the _[commitment](/blueprint/cryptography)_ of multilinears over binary fields. In the process, we lean on a number of existing works, including Ligero [[AHIV23](https://link.springer.com/article/10.1007/s10623-023-01222-8)], HyperPlonk [[CBBZ23](https://www.iacr.org/cryptodb/data/paper.php?pubkey=32920)] and BaseFold [[ZCF24](https://dl.acm.org/doi/10.1007/978-3-031-68403-6_5)]. We describe the techniques of our cryptographic backend in the [blueprint](/blueprint) area of this site. The academic expositions of those techniques appear in the works [[DP23](https://eprint.iacr.org/2023/1784.pdf)] and [[DP24](https://eprint.iacr.org/2024/504.pdf)].
