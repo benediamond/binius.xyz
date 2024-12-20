@@ -12,10 +12,10 @@ Here are our latest hashing-based benchmarks. In each of which, we run enough pe
 | Grøstl $P$                                    | Binius         | 1.23             | 1350                   | 1.20            |
 | Vision32b                                     | Binius         | 5.06             | 96                     | 1.04            |
 | SHA-256                                       | Binius         | 3.22             | 627                    | 0.80            |
-| u32-add                                       | Binius         | 0.03             | 13                     | N/A             |
-| Xor                                           | Binius         | 0.03             | 14                     | N/A             |
-| And                                           | Binius         | 0.03             | 11                     | N/A             |
-| Or                                            | Binius         | 0.03             | 11                     | N/A             |
+| u32-ADD                                       | Binius         | 0.03             | 13                     | N/A             |
+| XOR                                           | Binius         | 0.03             | 14                     | N/A             |
+| AND                                           | Binius         | 0.03             | 11                     | N/A             |
+| OR                                            | Binius         | 0.03             | 11                     | N/A             |
 
 ## Notes and Explanations
 
@@ -25,4 +25,4 @@ Our benchmarks above capture hashing-related tasks, themselves involving the exe
 
 For u32-add and other binary operations we are doing slightly over 1 million operations per SNARK. 
 
-We explain a bit more thoroughly how we derive "total data hashed", as a function of how many permutations we execute. For each $\text{Keccak-}f$ permutation, we count only those semantically meaningful bytes directly absorbed into the sponge's _rate_ portion. That is, only 136 semantically meaningful bytes get absorbed per $\text{Keccak-}f$ permutation (even though the total state size upon which that permutation acts is 200 bytes). In simple terms, we count as "hashed bytes" the number of permutations times 136, not the number of permutations times 200. In the case of Grøstl, we've actually only implemented that hash function's $P$ permutation thus far. To process a 64-byte block of input data, that hash function must apply $P$ exactly once and $Q$ exactly once. We thus fudge slightly, by acting as if we were doing both $P$s and $Q$s, even though we are actually doing doubly many $P$s. Thus, we count 64 bytes "hashed" for every _two_ executions of the $P$ permutation. In each $\text{Keccak-}f$ benchmark, we run $2^{13}$ permutations; in each of the others, we run $2^{14}$.
+We explain a bit more thoroughly how we derive "total data hashed" as a function of how many permutations we execute. For each $\text{Keccak-}f$ permutation, we count only those semantically meaningful bytes directly absorbed into the sponge's _rate_ portion. That is, only 136 semantically meaningful bytes get absorbed per $\text{Keccak-}f$ permutation (even though the total state size upon which that permutation acts is 200 bytes). In simple terms, we count as "hashed bytes" the number of permutations times 136, not the number of permutations times 200. In the case of Grøstl, we've actually only implemented that hash function's $P$ permutation thus far. To process a 64-byte block of input data, that hash function must apply $P$ exactly once and $Q$ exactly once. We thus fudge slightly, by acting as if we were doing both $P$s and $Q$s, even though we are actually doing doubly many $P$s. Thus, we count 64 bytes "hashed" for every _two_ executions of the $P$ permutation. In each $\text{Keccak-}f$ benchmark, we run $2^{13}$ permutations; in each of the others, we run $2^{14}$.

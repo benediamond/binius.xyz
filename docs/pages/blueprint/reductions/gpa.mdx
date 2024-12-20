@@ -10,7 +10,7 @@ here, $T$ is $\ell$-variate and _virtual_ in general, and $a$ is held explicitly
 
 ## Background
 
-The basic idea is that the sumcheck is a _reduction_—it lets us reduce a claim about the _sum over the cube_ of a multivariate polynomial to a claim about the _evaluation_ of that multivariate polynomial. The _GKR protocol_ is a special way of exploiting the sumcheck in a "layered" fashion. That is, we set up a sort of layered circuit or tree. _Each_ layer of that tree is defined elementwise as a sum over the layer below it. Thus to go from one layer to the one beneath it, we need to run a sumcheck, to "peel off" that layer. We end up running as many sumchecks as there are layers in the entire tree.
+We have already seen how the [sumcheck](/blueprint/background/sumcheck) can transform claims about the _sum over the cube_ of some multivariate polynomial to a claim about the _evaluation_ of that multivariate polynomial. The _GKR protocol_ is a special way of exploiting the sumcheck in a "layered" fashion. That is, we set up a sort of layered circuit or tree. _Each_ layer of that tree is defined elementwise as a sum over the layer below it. Thus to go from one layer to the one beneath it, we need to run a sumcheck, to "peel off" that layer. We end up running as many sumchecks as there are layers in the entire tree.
 
 This technique is very powerful, since many computations of interest can be expressed as layered circuits or trees. As it turns out, multiplication is one of them—and gives us one of our simplest (and most important) applications of GKR.
 
