@@ -1,12 +1,17 @@
-# GKR-Based Grand Product [A grand-product protocol with no commitment overhead]
+# Grand Product Argument [A grand-product protocol with no commitment overhead]
 
-As we learned in the context of the [multiset-check](/blueprint/reductions/multiset), in order for the verifier to assess multiset-equality claims, it's in turn enough for the verifier to assess _grand product claims_. These are claims of the form
+The _grand product_ argument handles claims about the product of a polynomial's values over the boolean hypercube. These claims take the form
 
 $$
-\begin{equation*}\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a;\end{equation*}
+\begin{equation*}\prod_{v \in \mathcal{B}_\ell} T(v) \stackrel{?}= a,\end{equation*}
 $$
 
-here, $T$ is $\ell$-variate and _virtual_ in general, and $a$ is held explicitly by the verifier. Here, we explain how we process these sorts of claims—that is, how we reduce them to _evaluation claims_ on $T$.
+where $T$ is $\ell$-variate and $a$ is a value known to the verifier. The argument reduces these grand product claims to evaluation claims on $T$.
+
+Binius implements the grand product argument using a idea from Thaler [[Tha13]], which is based on the [[GKR15]] protocol. GKR is a very useful general technique for verifying the output of highly structured, low-depth arithmetic circuits. In this case, we want to verify the output of a circuit that is a binary tree of multiplication gates, as a means of checking the product of all the circuit's inputs. The GKR protocol requires no additional commitments, making it remarkably efficient for the prover while remaining succinct for the verifier. Under the hood, the GKR protocol progresses layer by layer through the circuit, invoking the sumcheck protocol once per layer.
+
+[Tha13]: <https://link.springer.com/chapter/10.1007/978-3-642-40084-1_5>
+[GKR15]: <https://dl.acm.org/doi/10.1145/2699436>
 
 ## Background
 
