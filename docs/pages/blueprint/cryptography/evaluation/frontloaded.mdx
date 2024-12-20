@@ -8,7 +8,7 @@ $$
 
 where each $C_j(X_0, \ldots , X_{\ell_j - 1})$ is an $\ell_j$-variate composition polynomial. As the claim index $j \in \{0, \ldots , n - 1\}$ varies, we allow $\ell_j$ to vary too! (They don't have to be the same across all polynomials.)
 
-## Classical Batched Sumcheck
+## Standard Batched Sumcheck
 
 When the sizes $\ell_0 = \cdots = \ell_{n - 1} = \ell$ are all the same, batching sumchecks is not conceptually hard. Indeed, it's enough for the verifier to generate a random combination scalar $\alpha \gets \mathcal{T}_\tau$, and to compute the combined sum claim:
 
@@ -16,7 +16,7 @@ $$
 \begin{equation*}s^*_0 \coloneqq \sum_{j = 0}^{n - 1} \alpha^j \cdot s_{j, 0}.\end{equation*}
 $$
 
-The parties can then run an $\ell$-round sumcheck on the batched polynomial
+The parties can then run an $\ell$-round [sumcheck](/blueprint/background/sumcheck) on the batched polynomial
 
 $$
 \begin{equation*}C^*(X_0, \ldots , X_{\ell - 1}) \coloneqq \sum_{j = 0}^{n - 1} \alpha^j \cdot C_j(X_0, \ldots , X_{\ell - 1}).\end{equation*}
@@ -30,7 +30,7 @@ When the sizes $\ell_0, \ldots , \ell_{n - 1}$ are unequal, many aspects of the 
 
 Roughly, our approach is to "kick off" all sumchecks at the same time. On the other hand, since the polynomials are of different sizes, some will end earlier than others. We thus need to "prune" the finished sumchecks away from the protocol on the fly, as we run it. More precisely, each time a polynomial "finishes", that its sumcheck has been fully evaluated, we need to "knock out" that polynomial's contribution from the running sum claim.
 
-Without further ado, here is our procedure. For notational convenience, we assume that the polynomials are sorted in descending order by size, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$.
+Without further ado, we now present our procedure. For notational convenience, we assume that the polynomials are sorted in descending order by size, so that $\ell_0 \geq \cdots \geq \ell_{n - 1}$.
 
 - The verifier samples a batching challenge $\alpha \gets \mathcal{T}_\tau$ and sends it to the prover. The verifier locally computes the batched sum claim:
 $$

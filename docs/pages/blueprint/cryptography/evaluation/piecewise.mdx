@@ -58,7 +58,7 @@ Here are the steps.
   - The verifier again writes $j_i$ for the _minimum_ among those $j \in \{0, \ldots , n\}$ for which $\ell_j \leq i$ holds. The verifier initializes $k \coloneqq j_i$, and then runs the following loop. While $k < n$:
     - The verifier sets $c_0 \coloneqq T_k.\text{claim}$.
     - _If_ the next element $T_k.\text{next} < n$, then the verifier sets $c_1 \coloneqq T_k.\text{next}.\text{claim}$, and _moreover_ cuts $T_k.\text{next}$ out of the list, by overwriting $T_k.\text{next} = T_k.\text{next}.\text{next}$. Otherwise, the verifier sets $c_1 \coloneqq 0$.
-    - In any case, the verifier now overwrites $T_k.\text{claim} = (1 - r_i) \cdot c_0 + r_i \cdot c_1$, and also updates $k = T_k.\text{claim}$.
+    - In any case, the verifier now overwrites $T_k.\text{claim} = (1 - r_i) \cdot c_0 + r_i \cdot c_1$, and also updates $k = T_k.\text{next}$.
 - At this point, the verifier outputs the final value $T_0.\text{claim}$.
 
 ## Security Claim

@@ -204,6 +204,10 @@ export default defineConfig({
         collapsed: false,
         items: [
           {
+            text: "Binary Towers",
+            link: "/blueprint/background/towers",
+          },
+          {
             text: "Multilinear Polynomials",
             link: "/blueprint/background/multilinears"
           },
@@ -212,9 +216,9 @@ export default defineConfig({
             link: "/blueprint/background/models"
           },
           {
-            text: "Binary Towers",
-            link: "/blueprint/background/towers",
-          },
+            text: "The Sumcheck",
+            link: "/blueprint/background/sumcheck",
+          }
         ],
       },
       {
