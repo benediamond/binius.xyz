@@ -63,7 +63,7 @@ $$
   - Now, the verifier kicks off a "smoothing" step for lower-dimensional subcubes. It initializes $k \coloneqq j_i$, and then runs the following loop. While $k < n$:
     - The verifier sets $c_0 \coloneqq T_k.\text{claim}$.
     - If $T_k.\text{next} < n$, then the verifier sets $c_1 \coloneqq T_k.\text{next}.\text{claim}$ and overwrites $T_k.\text{next} = T_k.\text{next}.\text{next}$. Otherwise, the verifier sets $c_1 \coloneqq 0$.
-    - In any case, the verifier overwrites $T_k.\text{claim} = (1 - r_i) \cdot c_0 + r_i \cdot c_1$, and also updates $k = T_k.\text{claim}$.
+    - In any case, the verifier overwrites $T_k.\text{claim} = (1 - r_i) \cdot c_0 + r_i \cdot c_1$, and also updates $k = T_k.\text{next}$.
 - At the very end, the verifier requires $s^*_{\ell^*} \stackrel{?}= 0$.
 - The verifier moreover requires $c \stackrel{?}= T_0.\text{claim}$, where $c$ is the final constant FRI value.
 - The verifier kicks off FRI querying.
