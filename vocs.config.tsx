@@ -269,7 +269,7 @@ export default defineConfig({
             link: "/blueprint/reductions/multiset",
           },
           {
-            text: "GKR-Based Grand Product",
+            text: "Grand Product Argument",
             link: "/blueprint/reductions/gpa",
           },
           {

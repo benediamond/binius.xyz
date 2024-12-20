@@ -8,10 +8,10 @@ $$
 
 where $T$ is $\ell$-variate and $a$ is a value known to the verifier. The argument reduces these grand product claims to evaluation claims on $T$.
 
-Binius implements the grand product argument using a idea from [Thaler13], which is based on the [GKR] protocol. GKR is a very useful general technique for verifying the output of highly structured, low-depth arithmetic circuits. In this case, we want to verify the output of a circuit that is a binary tree of multiplication gates, as a means of checking the product of all the circuit's inputs. The GKR protocol requires no additional commitments, making it remarkably efficient for the prover while remaining succinct for the verifier. Under the hood, the GKR protocol progresses layer by layer through the circuit, invoking the sumcheck protocol once per layer.
+Binius implements the grand product argument using a idea from Thaler [[Tha13]], which is based on the [[GKR15]] protocol. GKR is a very useful general technique for verifying the output of highly structured, low-depth arithmetic circuits. In this case, we want to verify the output of a circuit that is a binary tree of multiplication gates, as a means of checking the product of all the circuit's inputs. The GKR protocol requires no additional commitments, making it remarkably efficient for the prover while remaining succinct for the verifier. Under the hood, the GKR protocol progresses layer by layer through the circuit, invoking the sumcheck protocol once per layer.
 
-[Thaler13]: <https://link.springer.com/chapter/10.1007/978-3-642-40084-1_5>
-[GKR]: <https://dl.acm.org/doi/10.1145/2699436>
+[Tha13]: <https://link.springer.com/chapter/10.1007/978-3-642-40084-1_5>
+[GKR15]: <https://dl.acm.org/doi/10.1145/2699436>
 
 ## Background
 
