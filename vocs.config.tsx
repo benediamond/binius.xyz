@@ -173,8 +173,8 @@ export default defineConfig({
         ],
       },
       {
-        text: "Building Lookups",
-        link: "/building/lookups",
+        text: "A Lookup Construction",
+        link: "/building/lookup",
         collapsed: false,
         items: [
           {

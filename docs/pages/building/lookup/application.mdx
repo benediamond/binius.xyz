@@ -1,6 +1,6 @@
-# Example Application [Multiplying u8 values with a lookup]
+# Example Application [Multiplying unsigned integers using lookups]
 
-Let us make usage of our lookup gadget [`plain_lookup`](/building/lookups/gadget). The lookup relation we wish to illustrate is the multiplication of two `u8` values into a `u16` value. First we'll create a testing function `test_u8_mul_lookup` that accepts a `log_lookup_count` parameter for how many random lookups to perform, and returns a boundary value. Then we'll write prover and verifier functions to invoke `test_u8_mul_lookup` and use the boundary value returned in verification.
+Let us make use of our lookup gadget [`plain_lookup`](/building/lookup/gadget). The lookup relation we wish to illustrate is the multiplication of two `u8` values into a `u16` value. First we'll create a testing function `test_u8_mul_lookup` that accepts a `log_lookup_count` parameter for how many random lookups to perform, and returns a boundary value. Then we'll write prover and verifier functions to invoke `test_u8_mul_lookup` and use the boundary value returned in verification.
 
 We first choose what parameters the prover and verifier will share.
 
