@@ -1,65 +1,12 @@
-# Building [First steps to get you set up and running Binius]
+# Building [Guidance on the building Binius constraint systems]
 
-This site area contains a rapid _getting-started_ guide for those seeking to build on Binius. Here, we explain how to build a _constraint system_, and how to prove and verify statements with respect to a constraint system. Throughout, we supplement everything with code snippets and rich examples.
+Binius is a proof system framework that can be found and downloaded [here](https://gitlab.com/IrreducibleOSS/binius). To build on Binius you must build a constraint system. The following pages of documentation are intended as guidance for building Binius constraint systems, and connecting them with Binius [`prove`](https://docs.binius.xyz/binius_core/constraint_system/fn.prove.html) and [`verify`](https://docs.binius.xyz/binius_core/constraint_system/fn.verify.html) functions for a complete proof system.
 
-Before we delve into the particularities of building constraint systems, we clarify on this page the big picture around constraint systems, statements, provers and verifiers.
+- **[Constraint System](/building/constraints):** We outline the creation of a constraint system, and its interaction with Binius `prove` and `verify` functions.
+- **[Bitwise Constraint](/building/bitwise):** We give a simple example of a constraint system for verifying bit operations.
+- **[The Basic Pattern](/building/pattern):** The basic pattern utilized repeated in building Binius constraint systems is three fold: declare columns, populate them with values, and constrain those columns. We explain each of these steps in detail.
+- **[Making Transparents](/building/transparents):** When the verifier (as well as the prover) holds a column, the column is called "transparent." Due their importance, for example in lookup constructions, we present a way to create them out of arbitrary values.
+- **[Collatz in Practice](/building/collatz):** Channels and flushing are core to our arithmetization, and we illustrate their usage in a full proof system to complement the theoretical discussion in [Proving Collatz Orbits](/basics/arithmetization/matching/collatz).
+- **[Making Lookups](/building/lookup):** For a second full proof system utilizing channels in a different way, we construct a gadget for lookups.
 
-## Prover and Verifier Outline
-
-The prover accepts as input a constraint system and a witness.
-The verifier accepts as input a constraint system and "boundary values".
-Naturally, the constraint systems fed to the prover and verifier should be identical.
-The statement to be proven is defined collectively by the constraint system and the boundary values.
-These boundary values are what allow the verifier to connect the proof it received to the statement being proven.
-
-In order to build a constraint system, we use an object called a _constraint system builder_.
-Both the prover and verifier will invoke this builder, but in different ways.
-To instantiate the builder, the verifier simply calls `ConstraintSystemBuilder::new`.
-The prover must build not only the constraint system, but also the witness.
-When used by the prover, the builder accepts an allocator for the witness.
-Currently we use the simple bump allocator [bumpalo](https://github.com/fitzgen/bumpalo).
-To instantiate the builder, the prover calls `ConstraintSystemBuilder::new_with_witness`, passing in the allocator.
-
-When the prover and verifier are done using the builder, they may call `build` on the builder to obtain the constraint system.
-The prover must obtain also the witness from the builder, having built the witness alongside the constraint system, by calling `take_witness`.
-Provided the boundary values as well, the prover and verifier have all they need to prove and verify.
-
-Let us illustrate how to construct a prover and a verifier for this basic workflow, assuming the existence of a a blackbox function `build` parameterized by a builder.
-In the `build` function suppose we build the constraint system as well as the witness in the case of the prover calling `build`.
-See ... for details around choosing parameters, including type parameters, for the `prove` and `verify` functions.
-Suppressing type parameters and irrelevant arguments in the `prove` and `verify` functions, for our prover we have
-For the prover we have
-
-```rust
-let allocator = bumpalo::Bump::new();
-let mut builder = ConstraintSystemBuilder::new_with_witness(&allocator);
-
-build(&mut builder).unwrap();
-
-let witness = builder.take_witness().unwrap();
-let constraint_system = builder.build().unwrap();
-
-let proof = binius_core::constraint_system::prove::<...>(
-    &constraint_system,
-    ...
-    witness,
-    ...
-).unwrap();
-```
-
-For our verifier we have
-
-```rust
-let mut builder = ConstraintSystemBuilder::new();
-
-build(&mut builder).unwrap();
-
-let constraint_system = builder.build().unwrap();
-
-binius_core::constraint_system::verify::<...>(
-    &constraint_system,
-    ...
-    boundaries,
-    proof
-).unwrap();
-```
+Beyond these simple guiding examples, many more examples of Binius constraint systems can be found in [Binius circuits](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/circuits/src) and for examples involving full prove and verify functionality see [Binius examples](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/examples).
