@@ -154,36 +154,51 @@ export default defineConfig({
         link: "/building/bitwise",
       },
       {
-        text: "The Basic Patterns",
-        link: "/building/patterns",
+        text: "The Basic Pattern",
+        link: "/building/pattern",
         collapsed: false,
         items: [
           {
             text: "Declaring Columns",
-            link: "/building/patterns/declaring",
+            link: "/building/pattern/declaring",
           },
           {
             text: "Populating Columns",
-            link: "/building/patterns/populating",
+            link: "/building/pattern/populating",
           },
           {
             text: "Constraining Columns",
-            link: "/building/patterns/constraining",
+            link: "/building/pattern/constraining",
           },
-        ]
+        ],
+      },
+      {
+        text: "A Lookup Construction",
+        link: "/building/lookup",
+        collapsed: false,
+        items: [
+          {
+            text: "Gadget Design",
+            link: "/building/lookups/gadget",
+          },
+          {
+            text: "Components Creation",
+            link: "/building/lookups/components",
+          },
+          {
+            text: "Example Application",
+            link: "/building/lookups/application",
+          },
+        ],
       },
       {
         text: "Making Transparents",
         link: "/building/transparents",
       },
       {
-        text: "Packed Fields",
-        link: "/building/packed",
-      },
-      {
         text: "Collatz in Practice",
         link: "/building/collatz",
-      }
+      },
     ],
     "/blueprint": [
       {

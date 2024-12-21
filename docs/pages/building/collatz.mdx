@@ -1,32 +1,24 @@
-# Flushing with Collatz
+# Collatz in Practice [A first example of flushing]
 
-On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits.
-After briefly summarizing the Collatz conjecture and strategizing how a channel and serve for proving the Collatz orbit of some integer, we discuss and create the two gadgets `even` and `odd` at the center of our constraint system.
-In order to properly separate the prover and verifier, we define and implement methods for a `Collatz` type.
-Lastly we construct prover and verifier functions for a complete working system.
+On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits. Collatz orbits were also used for illustrating flushing in M3-base arithmetization in [Proving Collatz Orbits](/basics/arithmetization/matching/collatz). We take that theoretical perspective and build a practical Collatz proof system here, involving not just a constraint system but a prover and verifier. This our first of two end-to-end proof system examples, for the second see [Making Lookups](/building/lookup).
 
-## Background on Collatz
+Some of the gadgets we'll need on this page are not constructed on this page but are used in a blackbox fashion. All gadgets necessary can be found in the [full example](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs).
 
-The Collatz conjecture states that applying a certain sequence of transitions to every positive integer, the integer travels an "orbit" that always ends at 1.
-The transitions are as follows:
+After briefly re-summarizing the Collatz conjecture and reviewing how a channel can serve for proving the Collatz orbit of some integer, we discuss and create the two gadgets `even` and `odd` at the center of our constraint system. In order to properly separate the prover and verifier, we define and implement methods for a `Collatz` type. Lastly we construct prover and verifier functions for a complete working system.
+
+## Collatz Using a Channel
+
+The Collatz conjecture states that applying a certain sequence of transitions to every positive integer, the integer travels an "orbit" that always ends at 1. The transitions are as follows:
 
 - If the integer is even, get the next integer in the orbit by dividing it by 2.
 - If the integer is odd, get the next integer in the orbit by multiplying it by three then adding one.
 
-Suppose the verifier holds an integer `x0` that is to be the first integer in a Collatz orbit.
-The prover must prove that the orbit of `x0` indeed ends at 1.
-Our proof technique will utilize a "channel" (see TODO for context).
-For any integer put into the channel, the prover must prove the Collatz orbit of that integer ends at 1.
-To begin, the verifier puts `x0` into the channel.
-The rules of the game allow the prover to remove an integer `x` from the channel if and only if the correctly calculated integer following `x` in orbit is put into the channel in exchange.
-Our rules are thus
+Suppose the verifier holds an integer `x0` that is to be the first integer in a Collatz orbit. The prover must prove that the orbit of `x0` indeed ends at 1. Our proof technique will utilize a "channel" (see [channels](/basics/arithmetization/matching/definition/#channels) for context). For any integer put into the channel, the prover must prove that the Collatz orbit of that integer ends at 1. To begin, the verifier puts `x0` into the channel. The rules of the game allow the prover to remove an integer `x` from the channel if and only if the correctly calculated integer following `x` in orbit is put into the channel in exchange. Our rules are thus
 
 - If `x` is even, then you may pull `x` out of the channel if you push `x/2` into the channel.
 - If `x` is odd, then you may pull `x` out of the channel if you push `3x+1` into the channel.
 
-If the prover correctly follows the orbit of `x0` and plays by the rules pulling each integer out of the channel in exchange for pushing the next integer in the orbit into the channel, then ultimately (provided the Collatz conjecture is true), only the number 1 should remain in the channel.
-The verifier pulls this number 1 out of the channel.
-By pushing only `x0` into the channel, and pulling only 1 out of the channel, the verifier can be sure the Collatz orbit of `x0` ends in 1.
+If the prover correctly follows the orbit of `x0` and plays by the rules pulling each integer out of the channel in exchange for pushing the next integer in the orbit into the channel, then ultimately (provided the Collatz conjecture is true), only the number 1 should remain in the channel. The verifier pulls this number 1 out of the channel. By pushing only `x0` into the channel, and pulling only 1 out of the channel, the verifier can be sure the Collatz orbit of `x0` ends in 1.
 
 ## Basic needs
 
@@ -38,8 +30,7 @@ Of course we'll need the channel, and to create it we write
 let channel = builder.add_channel();
 ```
 
-The prover will need to calculate the orbit of `x0`.
-For this we write the function
+The prover will need to calculate the orbit of `x0`. For this we write the function
 
 ```rust
 fn collatz_orbit(x0: u32) -> Vec<u32> {
@@ -69,30 +60,20 @@ Now we can begin thinking about the constraints.
 
 ## Even and Odd Gadgets
 
-Suppose the prover counts the number of integers in the orbit and provides that `count` variable as non-deterministic advice to the verifier.
-In fact, the prover will provide the `count`s for both the number of even integers and odd integers.
-Let us construct two gadgets, one called `even` and one called `odd`.
-These gadgets will not have input or output oracles.
-Here's what we'll do in the `even` gadget, and do similarly in the `odd` gadget.
+Suppose the prover counts the number of integers in the orbit and provides that `count` variable as non-deterministic advice to the verifier. In fact, the prover will provide the `count`s for both the number of even integers and odd integers. Let us construct two gadgets, one called `even` and one called `odd`. These gadgets will not have input or output oracles. Here's what we'll do in the `even` gadget, and do similarly in the `odd` gadget.
 
-Inside the `even` gadget we'll create a committed column holding the 32-bit decomposed values of all even integers.
-As all columns must be of length a power of 2, if the number of even integers is not a power of 2 we will round up with extra padding zeros.
-We wish to do three things with this columns of integers.
+Inside the `even` gadget we'll create a committed column holding the 32-bit decomposed values of all even integers. As all columns must be of length a power of 2, if the number of even integers is not a power of 2 we will round up with extra padding zeros. We wish to do three things with this columns of integers.
 
 - Check all integers are even.
 - Pull all integers out of the channel.
 - Push all integers divided by 2 into the channel.
 
-While the committed column is bit-decomposed, and that will help us check the integers to be even, we don't want to push and pull individual bits into the channel, but rather full integers.
-To help us we'll assume the existence of two auxiliary gadgets:
+While the committed column is bit-decomposed, and that will help us check the integers to be even, we don't want to push and pull individual bits into the channel, but rather full integers. To help us we'll assume the existence of two auxiliary gadgets:
 
 - Suppose there exists a gadget called "half" that takes a column of 32-bit decomposed integers, checks that all integers are even, and returns the column containing the 32-bit decomposed output integers had by dividing each input integer by 2.
 - Suppose there exists a gadget called "packed" that takes a column of 32-bit decomposed integers and returns the column of `BinaryField32b` elements representing the packed bit decompositions.
 
-Before writing the `even` gadget, we must discuss one more point.
-If the prover is the one calling the gadget, how is the prover to compute the values to fill the committed column?
-We'll assume the prover already computed the even and odd elements of the orbit.
-Suppose they are saved in a struct
+Before writing the `even` gadget, we must discuss one more point. If the prover is the one calling the gadget, how is the prover to compute the values to fill the committed column? We'll assume the prover already computed the even and odd elements of the orbit. Suppose they are saved in a struct
 
 ```rust
 struct Collatz {
@@ -102,8 +83,7 @@ struct Collatz {
 }
 ```
 
-Then if we make `even` a method of this type, we can get access to the even elements of the orbit via `self`.
-With the function receiving not only `self` and the builder as arguments, but also the channel id and the number of even integers, we write `even` as follows.
+Then if we make `even` a method of this type, we can get access to the even elements of the orbit via `self`. With the function receiving not only `self` and the builder as arguments, but also the channel id and the number of even integers, we write `even` as follows.
 
 ```rust
 fn even<U, F>(
@@ -141,18 +121,14 @@ where
 
 When we call `flush` on the builder, we are requesting that all values in the `even_packed` oracle are pulled out of the channel, and all the values in the `half_packed` oracle are pushed into the channel.
 
-Now we construct the analogous function for the odd elements.
-To do so we assume three additional auxiliary gadgets:
+Now we construct the analogous function for the odd elements. To do so we assume three additional auxiliary gadgets:
 
 - `ensure_odd` takes an oracle of 32-bit decomposed integers and ensures they are all odd.
 - `constant` creates an oracle with all values a given constant.
 - `mul_const` take an oracle of 32-bit decomposed integers and returns the oracle of 32-bit decomposed integers had by multiplying each input by a given constant.
 - `add` accepts two 32-bit decomposed integer oracles and returns the oracle holding the 32-bit decomposed sums.
 
-Using these gadget helpers we write gadget `odd` to similarly create a committed column of 32-bit decomposed integers.
-We'll ensure each of those integers is odd, and we'll pull these out of the channel.
-We'll also multiply these input integers by 3 and add 1, then push the results into the channel.
-Again, we don't actually push and pull the bit decomposed integers but rather their packed versions.
+Using these gadget helpers we write gadget `odd` to similarly create a committed column of 32-bit decomposed integers. We'll ensure each of those integers is odd, and we'll pull these out of the channel. We'll also multiply these input integers by 3 and add 1, then push the results into the channel. Again, we don't actually push and pull the bit decomposed integers but rather their packed versions.
 
 ```rust
 fn odd<U, F>(
@@ -206,8 +182,7 @@ Now that we have `even` and `odd` gadgets, we need to put thing into place to us
 
 ## Implementing Collatz
 
-We'll implement our `Collatz` struct with several methods besides `even` and `odd`.
-First we'll make a factory method that both the prover and verifier will call.
+We'll implement our `Collatz` struct with several methods besides `even` and `odd`. First we'll make a factory method that both the prover and verifier will call
 
 ```rust
 pub fn new(x0: u32) -> Self {
@@ -219,7 +194,7 @@ pub fn new(x0: u32) -> Self {
 }
 ```
 
-Next, we'll make a method that only the prover will call, in order to compute the orbit of `x0` and properly fill the struct `evens` and `odds` fields.
+Next we'll make a method that only the prover will call, in order to compute the orbit of `x0` and properly fill the struct `evens` and `odds` fields.
 
 ```rust
 pub fn init_prover(&mut self) -> Advice {
@@ -231,12 +206,9 @@ pub fn init_prover(&mut self) -> Advice {
 }
 ```
 
-Notice this method returns a tuple of two lengths we call `Advice`.
-Within our `even` and `odd` gadgets we need to know these lengths to create the committed oracles.
-The prover computes and returns these lengths such that we may later provide them to the verifier as non-deterministic advice to pass into the `even` and `odd` gadgets.
+Notice this method returns a tuple of two lengths we call `Advice`. Within our `even` and `odd` gadgets we need to know these lengths to create the committed oracles. The prover computes and returns these lengths such that we may later provide them to the verifier as non-deterministic advice to pass into the `even` and `odd` gadgets.
 
-Another method we'll need is responsible for constructing the boundary values that the verifier will pull from and push into the channel.
-Recall the verifier will push `x0` into the channel and pull 1 out of the channel.
+Another method we'll need is responsible for constructing the boundary values that the verifier will pull from and push into the channel. Recall the verifier will push `x0` into the channel and pull 1 out of the channel.
 
 ```rust
 fn get_boundaries<F>(&self, channel_id: usize) -> Vec<Boundary<F>>
@@ -260,14 +232,9 @@ where
 }
 ```
 
-The multiplicity field may be nonzero in special cases we won't discuss.
-Notice that while `new` and `init_prover` are public methods, `get_boundaries` is private.
-The reason is, we will call it locally from another function `build`.
-The `build` function will be public and called by both the prover and verifier.
-It is the entry point to creating the constraint system.
+The multiplicity field may be nonzero in special cases we won't discuss. Notice that while `new` and `init_prover` are public methods, `get_boundaries` is private. The reason is, we will call it locally from another function `build`. The `build` function will be public and called by both the prover and verifier. It is the entry point to creating the constraint system.
 
-Within `build` we'll create the channel, invoke the `even` and `odds` gadgets, then get and return the boundaries with `get_boundaries`.
-In addition to the builder, our `build` function will accept `Advice` that we may pass to `even` and `odd`.
+Within `build` we'll create the channel, invoke the `even` and `odds` gadgets, then get and return the boundaries with `get_boundaries`. In addition to the builder, our `build` function will accept `Advice` that we may pass to `even` and `odd`.
 
 ```rust
 pub fn build<U, F>(
@@ -294,9 +261,7 @@ where
 
 ## Putting Things Together
 
-Finally let us put together all our functions and see how they interact.
-We will construct `prove` and `verify` functions.
-We'll call these functions in sequence from a `main` function.
+Finally let us put together all our functions and see how they interact. We will construct `prove` and `verify` functions. We'll call these functions in sequence from a `main` function.
 
 ```rust
 fn main() -> Result<()> {
@@ -320,9 +285,7 @@ Notice the `prove` function is responsible for turning advice and the proof, whi
 ### Constructing the prover
 
 The prove function receives the starting integer `x0` as input and returns both advice and a Binius proof.
-Note the steps involved:
-We instantiate a Collatz instance with `x0`, call `init_prover` and receive the advice, create the builder, call `build` with the builder and the advice to receive the boundaries, and finally extract the witness and the constraint system from the builder.
-At that point we can validate that the witness is valid with respect to the constraint system and the boundaries, then lastly we can generate the Binius proof.
+Note the steps involved: We instantiate a Collatz instance with `x0`, call `init_prover` and receive the advice, create the builder, call `build` with the builder and the advice to receive the boundaries, and finally extract the witness and the constraint system from the builder. At that point we can validate that the witness is valid with respect to the constraint system and the boundaries, then lastly we can generate the Binius proof.
 
 ```rust
 fn prove(x0: u32, log_inv_rate: usize) -> Result<(Advice, Proof), anyhow::Error> {
@@ -367,9 +330,7 @@ fn prove(x0: u32, log_inv_rate: usize) -> Result<(Advice, Proof), anyhow::Error>
 
 ### Constructing the verifier
 
-To construct the verifier, we also instantiate a new `Collatz` instance, but we don't call `init_prover` on it but instead are already given advice as an argument.
-We instantiate the builder, and call `build` as we did for the prover.
-Lastly we build extract the constraint system from the builder, and then verify the constraint system with respect to the boundaries and the Binius proof.
+To construct the verifier, we also instantiate a new `Collatz` instance, but we don't call `init_prover` on it but instead are already given advice as an argument. We instantiate the builder, and call `build` as we did for the prover. Lastly we build extract the constraint system from the builder, and then verify the constraint system with respect to the boundaries and the Binius proof.
 
 ```rust
 fn verify(x0: u32, advice: Advice, proof: Proof, log_inv_rate: usize) -> Result<(), anyhow::Error> {
@@ -396,4 +357,4 @@ fn verify(x0: u32, advice: Advice, proof: Proof, log_inv_rate: usize) -> Result<
 
 ## The Full Example
 
-To see the example in full, visit [`circuits/src/collatz`](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visit [`examples/collatz`](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/examples/collatz.rs) for the prove and verify functions.
+To see the example in full, visit [circuits/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/examples/collatz.rs) for the prove and verify functions.

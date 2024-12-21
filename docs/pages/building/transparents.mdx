@@ -1,4 +1,4 @@
-# Making Transparents
+# Making Transparents [The columns shared by the prover and verifier]
 
 To see how some specialized transparent columns are built, let's look inside [Binius transparents](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/core/src/transparent). While specialized transparent columns are sufficient in many scenarios, sometimes we want to make a transparent column out of a plain list of values. For example, if we want to implement a lookup table, we'll need a transparent column to hold the values in the lookup table. Here we build a gadget for the simple case we wish to build a transparent column from a slice of arbitrary values.
 
@@ -16,8 +16,7 @@ where
     FS: TowerField,
 ```
 
-Apart from the builder, we'll need the values in some subfield `FS` of the main field `F` (_TODO_: explain this).
-The function should return the oracle id for the newly created transparent.
+Apart from the builder, we'll need the values in some subfield `FS` of the main field `F`. The function should return the oracle id for the newly created transparent.
 
 Within this function we declare the transparent oracle as
 
@@ -25,9 +24,7 @@ Within this function we declare the transparent oracle as
 let oracle =  builder.add_transparent(name, mle)?;
 ```
 
-where `mle` is something that holds the `FS` values to instantiate this oracle.
-While it is not necessary to understand the `mle` (short for "multilinear extension"), we must construct it.
-To do so we write
+where `mle` is something that holds the `FS` values to instantiate this oracle. While it is not necessary to understand the `mle` (short for "multilinear extension"), we must construct it. To do so we write
 
 ```rust
 use binius_core::transparent::multilinear_extension::MultilinearExtensionTransparent;
@@ -36,11 +33,9 @@ let mle = MultilinearExtensionTransparent::<_, PackedType<U, F>, _>::from_values
 )?;
 ```
 
-But notice we're passing in `packed_values`, whereas we're only given `value`. We must take the `FS` values vector given and create a vector of packed `FS` values. For context on packing, see our page on _[packed fields](/building/packed)_.
+But notice we're passing in `packed_values`, whereas we're only given `value`. We must take the `FS` values vector given and create a vector of packed `FS` values.
 
-Before we create the packed values, we must calculate how large our packed value vector will be due to packing.
-The packing width is `PackedType::<U, FS>::WIDTH`, so if `values.len()` was divisible by this packing width we'd simply divide.
-To account for the case of non-divisibility we instead calculate
+Before we create the packed values, we must calculate how large our packed value vector will be due to packing. The packing width is `PackedType::<U, FS>::WIDTH`, so if `values.len()` was divisible by this packing width we'd simply divide. To account for the case of non-divisibility we instead calculate
 
 ```rust
 let packed_length = values.len().div_ceil(PackedType::<U, FS>::WIDTH);
@@ -73,7 +68,7 @@ if let Some(witness) = builder.witness() {
 First, we create the new column, receiving an `EntryBuilder`. Next, we called `packed` on the entry builder to receive a mutable reference to a slice of packed values. Finally, we copy over our packed values to this packed slice.
 
 :::note
-Why do we need to allocate two slices of packed values rather than one?
+_Why do we need to allocate two slices of packed values rather than one?_
 
 The first time was when we allocated the packed vector `packed_values`. Both the verifier and prover need to do this. We need `packed_values` in order to create the `mle` and declare the transparent oracle. The second time was when we called `new_column`, internally creating another vector of packed values. This is something done only by the prover, not the verifier.
 
@@ -82,8 +77,7 @@ Why don't we reused the `packed_values` when creating a new column? Currently, w
 
 Finally we can return our newly created transparent oracle as `Ok(oracle)`.
 
-We write the full gadget here for completion.
-Notice we must actually clone `packed_values` when creating the `mle`, because we will need that vector again when copying to the new column.
+We write the full gadget here for completion. Notice we must actually clone `packed_values` when creating the `mle`, because we will need that vector again when copying to the new column.
 
 ```rust
 fn make_transparent<U, F, FS>(
