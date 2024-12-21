@@ -173,31 +173,31 @@ export default defineConfig({
         ],
       },
       {
+        text: "Building Lookups",
+        link: "/building/lookups",
+        collapsed: false,
+        items: [
+          {
+            text: "Gadget Design",
+            link: "/building/lookups/gadget",
+          },
+          {
+            text: "Components Creation",
+            link: "/building/lookups/components",
+          },
+          {
+            text: "Example Application",
+            link: "/building/lookups/application",
+          },
+        ],
+      },
+      {
         text: "Making Transparents",
         link: "/building/transparents",
       },
       {
         text: "Collatz in Practice",
         link: "/building/collatz",
-      },
-      {
-        text: "Making Lookups",
-        link: "/building/lookup",
-        collapsed: false,
-        items: [
-          {
-            text: "Gadget Design",
-            link: "/building/lookup/gadget",
-          },
-          {
-            text: "Components Creation",
-            link: "/building/lookup/components",
-          },
-          {
-            text: "Example Application",
-            link: "/building/lookup/application",
-          },
-        ],
       },
     ],
     "/blueprint": [

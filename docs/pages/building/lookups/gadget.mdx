@@ -1,6 +1,6 @@
 # Gadget Design [Designing a lookup gadget]
 
-On this page we design a lookup gadget, discussing the concepts of "multiplicities" and "components" we'll use to implement it. A central sub-gadget will be `get_components` which we'll use in blackbox fashion on this page and construct on the [next page](/building/lookup/components).
+On this page we design a lookup gadget, discussing the concepts of "multiplicities" and "components" we'll use to implement it. A central sub-gadget will be `get_components` which we'll use in blackbox fashion on this page and construct on the [next page](/building/lookups/components).
 
 Our lookup gadget will take the signature
 
@@ -30,7 +30,7 @@ where we call this a "plain" lookup to distinguish it from Lasso lookups, explai
 
 The last point regarding `LOG_MAX_MULTIPLICITY` is an inconvenience. Either the prover and verifier must agree on a strict upper bound for the number of times any table value will be looked up, or the prover can supply the verifier with non-deterministic advice for the upper bound, which in practice will be much smaller than a worst-case upper bound.
 
-Another limitation is that we've restricted the table and lookup values to be over subfield `FS`. But many cases can be adapted for this. For example, when we apply this lookup for `u8` multiplication in our [example application](\building/lookup/application), we will pack the two inputs and the output into one `BinaryField32b` element and thus `FS` as `BinaryField32b` suffices.
+Another limitation is that we've restricted the table and lookup values to be over subfield `FS`. But many cases can be adapted for this. For example, when we apply this lookup for `u8` multiplication in our [example application](\building/lookups/application), we will pack the two inputs and the output into one `BinaryField32b` element and thus `FS` as `BinaryField32b` suffices.
 
 First thing we'll do in this gadget is a sanity check that the size of the table is no smaller than `table_count`.
 
