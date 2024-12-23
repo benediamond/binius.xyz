@@ -46,6 +46,6 @@ The public _statement_—which both the prover and the verifier will possess—w
 The _witness_ will be:
 - the respective Merkle proofs associated to these key–value pairs, against the single state root.
 
-The statement–witness pair will be _valid_ if each of the public key–value pairs has a corresponding proof which correctly attests to its membership, per the MPT's [rules](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/).
+The statement–witness pair will be _valid_ if each claimed key–value pair has a corresponding proof which correctly attests to its membership, per the MPT's [rules](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/).
 
 Here, we see the full power of [succinctness](/basics/overview#what-is-a-snark). Though MPT proofs are designed to be _relatively_ efficient, as the number of key–value pairs above grows, the total size of the witness will become rather large in concrete terms (say, in the hundreds of megabytes). On the other hand, our _proof_ will be just hundreds of kilobytes. From the verifier's point of view, it will be much easier to receive and verify a statement and a _proof_ than a statement and a _witness_.

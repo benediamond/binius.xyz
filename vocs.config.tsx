@@ -112,6 +112,10 @@ export default defineConfig({
                 link: "/basics/arithmetization/mpt/review"
               },
               {
+                text: "Informal Explanation",
+                link: "/basics/arithmetization/mpt/sketch"
+              },
+              {
                 text: "Our MPT Construction",
                 link: "/basics/arithmetization/mpt/construction"
               },
