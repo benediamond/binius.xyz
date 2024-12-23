@@ -14,7 +14,7 @@ Our protocol's phases are essentially cryptographic reductions. Each phase reduc
 
 ## The M3 Instance
 
-Before beginning any given Binius proof, the prover and verifier must formalize the structure of the statement being proved. Binius operates in the [M3](/basics/arithmetization/matching) arithmetization paradigm, as we've already explained. For our purposes now, the prover and verifier must agree on the instance at hand—that is, on its tables, constraints, channels and flushing rules. As we will [see shortly](/blueprint/mathematizing), it is not difficult to reexpress all of these objects in mathematical terms, using objects like [multilinear polynomials](/blueprint/background/multilinears), [multisets](/blueprint/reductions/multiset) and [vanishing claims](/blueprint/reductions/zerocheck).
+Before beginning any given Binius proof, the prover and verifier must formalize the structure of the statement being proved. Binius operates in the [M3](/basics/arithmetization/m3) arithmetization paradigm, as we've already explained. For our purposes now, the prover and verifier must agree on the instance at hand—that is, on its tables, constraints, channels and flushing rules. As we will [see shortly](/blueprint/mathematizing), it is not difficult to reexpress all of these objects in mathematical terms, using objects like [multilinear polynomials](/blueprint/background/multilinears), [multisets](/blueprint/reductions/multiset) and [vanishing claims](/blueprint/reductions/zerocheck).
 
 Taking for granted the M3 abstraction, we proceed into verifier's algorithms proper. In what follows, we sketch the steps by which the verifier may evaluate whether the prover's M3 instance is satisfying, by reducing its satisfaction to successively simpler claims.
 

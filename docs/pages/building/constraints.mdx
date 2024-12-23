@@ -7,7 +7,7 @@ The prover and verifier invoke `prove` and `verify` functions which take the fol
 - **Prove:** a constraint system and a witness.
 - **Verify:** a constraint system and boundary values.
 
-The [boundary values](https://docs.binius.xyz/binius_core/constraint_system/channel/struct.Boundary.html) are integral to our arithmetization techniques and are [introduced here](/basics/arithmetization/matching/definition#boundary-constraints). They are what allow the verifier to connect the proof received to the statement proven. While the prover doesn't need the boundary values, the prover must often help construct the boundary values and give them to the verifier as advice.
+The [boundary values](https://docs.binius.xyz/binius_core/constraint_system/channel/struct.Boundary.html) are integral to our arithmetization techniques and are [introduced here](/basics/arithmetization/m3/definition#boundary-constraints). They are what allow the verifier to connect the proof received to the statement proven. While the prover doesn't need the boundary values, the prover must often help construct the boundary values and give them to the verifier as advice.
 
 As a circuit programmer you won't need to access any fields of the `ConstraintSystem` directly, but it looks like this:
 

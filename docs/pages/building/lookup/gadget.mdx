@@ -19,7 +19,7 @@ where
 	FS: TowerField + Pod,
 ```
 
-where we call this a "plain" lookup to distinguish it from Lasso lookups, explained [here](/basics/arithmetization/examples/lasso) and demonstrated in many forms [here](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/circuits/src/lasso). While the mechanics of "timestamps" like in Lasso are not needed here, other concepts will need explanation. Looking at this signature we have
+where we call this a "plain" lookup to distinguish it from Lasso lookups, explained [here](/basics/arithmetization/m3/lasso) and demonstrated in many forms [here](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/circuits/src/lasso). While the mechanics of "timestamps" like in Lasso are not needed here, other concepts will need explanation. Looking at this signature we have
 
 - `table`: an oracle over `FS` holding the table of valid lookup values.
 - `table_count`: only the first `table_count` values of `table` are considered valid lookup values.

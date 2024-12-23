@@ -81,40 +81,35 @@ export default defineConfig({
           },
           {
             text: "Multi-Multiset Matching",
-            link: "/basics/arithmetization/matching",
+            link: "/basics/arithmetization/m3",
             collapsed: true,
             items: [
               {
                 text: "A Toy Example",
-                link: "/basics/arithmetization/matching/example"
+                link: "/basics/arithmetization/m3/example"
               },
               {
                 text: "Definition of M3",
-                link: "/basics/arithmetization/matching/definition"
+                link: "/basics/arithmetization/m3/definition"
               },
               {
                 text: "Proving Collatz Orbits",
-                link: "/basics/arithmetization/matching/collatz"
+                link: "/basics/arithmetization/m3/collatz"
               },
-
+              {
+                text: "Lasso Lookup",
+                link: "/basics/arithmetization/m3/lasso"
+              },
             ]
           },
           {
-            text: "M3 Examples",
-            link: "/basics/arithmetization/examples",
+            text: "MPT Inclusion",
+            link: "/basics/arithmetization/mpt",
             collapsed: true,
             items: [
               {
-                text: "Lasso Lookup",
-                link: "/basics/arithmetization/examples/lasso"
-              },
-              {
-                text: "RAM",
-                link: "/basics/arithmetization/examples/ram"
-              },
-              {
-                text: "Merkle–Patricia Inclusion",
-                link: "/basics/arithmetization/examples/mpt"
+                text: "Review of MPT Task",
+                link: "/basics/arithmetization/mpt/review"
               },
             ]
           },
