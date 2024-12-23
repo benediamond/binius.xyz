@@ -23,8 +23,8 @@ export default defineConfig({
     )
   },
   logoUrl: {
-    light: '/logo-light.svg',
-    dark: '/logo-dark.svg',
+    light: '/logo-light.png',
+    dark: '/logo-dark.png',
   },
   markdown: {
     remarkPlugins: [
