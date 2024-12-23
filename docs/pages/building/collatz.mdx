@@ -1,4 +1,4 @@
-# Collatz in Practice [A first example of flushing]
+# Collatz in Practice [A key example of flushing]
 
 On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits. Collatz orbits were also used for illustrating flushing in M3-base arithmetization in [Proving Collatz Orbits](/basics/arithmetization/matching/collatz). We take that theoretical perspective and build a practical Collatz proof system here, involving not just a constraint system but a prover and verifier. This our first of two end-to-end proof system examples, for the second see [Making Lookups](/building/lookup).
 
@@ -20,7 +20,7 @@ Suppose the verifier holds an integer `x0` that is to be the first integer in a 
 
 If the prover correctly follows the orbit of `x0` and plays by the rules pulling each integer out of the channel in exchange for pushing the next integer in the orbit into the channel, then ultimately (provided the Collatz conjecture is true), only the number 1 should remain in the channel. The verifier pulls this number 1 out of the channel. By pushing only `x0` into the channel, and pulling only 1 out of the channel, the verifier can be sure the Collatz orbit of `x0` ends in 1.
 
-## Basic needs
+## Basic Needs
 
 Before we discuss how to build the constraint system and witness, let's mention a few basic things we'll need.
 

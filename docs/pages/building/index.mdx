@@ -1,12 +1,39 @@
+import Collapsible from '../../components/Collapsible';
+
+import { Callout } from 'vocs/components';
+
 # Building [Guidance on the building Binius constraint systems]
 
 Binius is a proof system framework that can be found and downloaded [here](https://gitlab.com/IrreducibleOSS/binius). To build on Binius you must build a constraint system. The following pages of documentation are intended as guidance for building Binius constraint systems, and connecting them with Binius [`prove`](https://docs.binius.xyz/binius_core/constraint_system/fn.prove.html) and [`verify`](https://docs.binius.xyz/binius_core/constraint_system/fn.verify.html) functions for a complete proof system.
 
-- **[Constraint System](/building/constraints):** We outline the creation of a constraint system, and its interaction with Binius `prove` and `verify` functions.
-- **[Bitwise Constraint](/building/bitwise):** We give a simple example of a constraint system for verifying bit operations.
-- **[The Basic Pattern](/building/pattern):** The basic pattern utilized repeated in building Binius constraint systems is three fold: declare columns, populate them with values, and constrain those columns. We explain each of these steps in detail.
-- **[Making Transparents](/building/transparents):** When the verifier (as well as the prover) holds a column, the column is called "transparent." Due their importance, for example in lookup constructions, we present a way to create them out of arbitrary values.
-- **[Collatz in Practice](/building/collatz):** Channels and flushing are core to our arithmetization, and we illustrate their usage in a full proof system to complement the theoretical discussion in [Proving Collatz Orbits](/basics/arithmetization/matching/collatz).
-- **[Making Lookups](/building/lookup):** For a second full proof system utilizing channels in a different way, we construct a gadget for lookups.
+## Introductory Content
 
-Beyond these simple guiding examples, many more examples of Binius constraint systems can be found in [Binius circuits](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/circuits/src) and for examples involving full prove and verify functionality see [Binius examples](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/examples).
+In our page about [constraint systems](/building/constraints), we outline the creation of a constraint system, and its interaction with Binius's `prove` and `verify` functions. We moreover present a simple example exhibiting a [bitwise constraint](/building/bitwise).
+
+## Site Directory
+
+Below, we sketch this site area's sections in slightly more detail.
+
+<Callout type="note">
+<Collapsible>
+[**The Basic Pattern.**](pattern) Here, we explain our fundamental constraint-building recipe: the _gadget pattern_.
+
+Indeed, anyone buliding constraints on Binius must ultimately use this gadget pattern repeatedly. Our gadget pattern involves three main steps: [declaring](pattern/declaring) columns, [populating](pattern/populating) them with values, and finally [constraining](pattern/constraining) them. We explain each of these steps in detail, clarifying which steps must be performed by _which_ among the two parties, and how to achieve them in code.
+</Collapsible>
+</Callout>
+
+<Callout type="note">
+<Collapsible>
+[**A Lookup Construction.**](lookup) Here, we undertake an extended, worked example, based on a simple _lookup_ protocol.
+
+Indeed, lookups are key and important. In this site area, we build a lookup from scratch, using a simple technique. The technique we pursue here is _simpler_ than the [Lasso-based approach](/basics/arithmetization/examples/lasso) we pursue in this site's _basics_ area. It's less efficient for the verifier, but is powerful enough to showcase some key ideas.
+</Collapsible>
+</Callout>
+
+## Further Content
+
+We close off this site area by dropping a few further miscellaneous pages. In _[making transparents](transparents)_, we discuss _explicit transparent_ columns, columns made up exclusively of ad-hoc, verifier-supplied concrete values. These constructions are important in more advanced lookup protocols, like [Lasso](/basics/arithmetization/examples/lasso).
+
+Finally, in our [Collatz page](/building/collatz), we take a practice-oriented tour back through our [Collatz arithmetization](/basics/arithmetization/matching/collatz), already developed in our _basics_ site area. This example gives us a concrete look at channels and flushing rules, key concepts in our [M3 arithmetization schema](/basics/arithmetization/matching).
+
+Beyond these simple guiding examples, many more examples of Binius constraint systems can be found in our [Binius circuits](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/circuits/src) directory. For examples involving full prove and verify functionality, we recommend our [Binius examples](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/examples).
