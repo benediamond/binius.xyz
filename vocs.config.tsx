@@ -111,6 +111,14 @@ export default defineConfig({
                 text: "Review of MPT Task",
                 link: "/basics/arithmetization/mpt/review"
               },
+              {
+                text: "Our MPT Construction",
+                link: "/basics/arithmetization/mpt/construction"
+              },
+              {
+                text: "State Forking",
+                link: "/basics/arithmetization/mpt/forking"
+              },
             ]
           },
         ],
