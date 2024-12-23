@@ -1,6 +1,6 @@
 # Collatz in Practice [A key example of flushing]
 
-On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits. Collatz orbits were also used for illustrating flushing in M3-base arithmetization in [Proving Collatz Orbits](/basics/arithmetization/matching/collatz). We take that theoretical perspective and build a practical Collatz proof system here, involving not just a constraint system but a prover and verifier. This our first of two end-to-end proof system examples, for the second see [Making Lookups](/building/lookup).
+On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits. Collatz orbits were also used for illustrating flushing in M3-base arithmetization in [Proving Collatz Orbits](/basics/arithmetization/m3/collatz). We take that theoretical perspective and build a practical Collatz proof system here, involving not just a constraint system but a prover and verifier. This our first of two end-to-end proof system examples, for the second see [Making Lookups](/building/lookup).
 
 Some of the gadgets we'll need on this page are not constructed on this page but are used in a blackbox fashion. All gadgets necessary can be found in the [full example](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs).
 
@@ -13,7 +13,7 @@ The Collatz conjecture states that applying a certain sequence of transitions to
 - If the integer is even, get the next integer in the orbit by dividing it by 2.
 - If the integer is odd, get the next integer in the orbit by multiplying it by three then adding one.
 
-Suppose the verifier holds an integer `x0` that is to be the first integer in a Collatz orbit. The prover must prove that the orbit of `x0` indeed ends at 1. Our proof technique will utilize a "channel" (see [channels](/basics/arithmetization/matching/definition/#channels) for context). For any integer put into the channel, the prover must prove that the Collatz orbit of that integer ends at 1. To begin, the verifier puts `x0` into the channel. The rules of the game allow the prover to remove an integer `x` from the channel if and only if the correctly calculated integer following `x` in orbit is put into the channel in exchange. Our rules are thus
+Suppose the verifier holds an integer `x0` that is to be the first integer in a Collatz orbit. The prover must prove that the orbit of `x0` indeed ends at 1. Our proof technique will utilize a "channel" (see [channels](/basics/arithmetization/m3/definition/#channels) for context). For any integer put into the channel, the prover must prove that the Collatz orbit of that integer ends at 1. To begin, the verifier puts `x0` into the channel. The rules of the game allow the prover to remove an integer `x` from the channel if and only if the correctly calculated integer following `x` in orbit is put into the channel in exchange. Our rules are thus
 
 - If `x` is even, then you may pull `x` out of the channel if you push `x/2` into the channel.
 - If `x` is odd, then you may pull `x` out of the channel if you push `3x+1` into the channel.
@@ -357,4 +357,4 @@ fn verify(x0: u32, advice: Advice, proof: Proof, log_inv_rate: usize) -> Result<
 
 ## The Full Example
 
-To see the example in full, visit [circuits/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/examples/collatz.rs) for the prove and verify functions.
+To see the example in full, visit [circuits/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/mpt/collatz.rs) for the prove and verify functions.

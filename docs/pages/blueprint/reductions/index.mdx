@@ -8,7 +8,7 @@ In prime-field SNARKs based on the _DEEP-ALI_ paradigm—like [Plonky3](https://
 
 In Binius, we must enrich this model, for various reasons. First, we rely heavily on [virtual polynomials](virtual), polynomials which "sit on top of"—and modify—underlying committed polynomials. Virtual polynomials may be compositions or concatenations, say, of raw polynomials; they may also modify their underlying polynomials in more-complex ways—by _shifting_ or _packing_ them, for example.
 
-Secondly, our frontend uses the [M3 paradigm](/basics/arithmetization/matching). If we _just_ had tables—like the AIR and PLONKish arithmetizations schemes do—then we would _just_ need a zerocheck protocol. As it stands, however, we have channel-balancing too to deal with, and must devise a way to check the equality of multisets. (These multisets are themselves often heavily virtual, as we've noted already.)
+Secondly, our frontend uses the [M3 paradigm](/basics/arithmetization/m3). If we _just_ had tables—like the AIR and PLONKish arithmetizations schemes do—then we would _just_ need a zerocheck protocol. As it stands, however, we have channel-balancing too to deal with, and must devise a way to check the equality of multisets. (These multisets are themselves often heavily virtual, as we've noted already.)
 
 Putting these facts together, we see that Binius needs a much-richer landscape of _intermediate_ cryptographic reductions than other SNARKs do. We explain these thoroughly throughout the following subsections.
 

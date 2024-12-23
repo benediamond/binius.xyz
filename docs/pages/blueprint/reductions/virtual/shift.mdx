@@ -87,14 +87,14 @@ This completes the description of $\texttt{shift}_{b, o}(t)$ _as a virtual polyn
 
 ## Then What?
 
-What do we get out of this construction? In short, shifting lets us _link_ distinct rows of our [tables](/basics/arithmetization/matching/definition#tables-and-constraints). Occasionally, it happens that we want to "spread" a computation across multiple rows. When we do this, we often want to "link" the end of one row with the beginning of the next. In fact, this sort of looks like how classical [AIR](/basics/arithmetization/background) works.
+What do we get out of this construction? In short, shifting lets us _link_ distinct rows of our [tables](/basics/arithmetization/m3/definition#tables-and-constraints). Occasionally, it happens that we want to "spread" a computation across multiple rows. When we do this, we often want to "link" the end of one row with the beginning of the next. In fact, this sort of looks like how classical [AIR](/basics/arithmetization/background) works.
 
 Of course, we will not _always_ want to do this, and our use of M3 vastly reduces the frequency that we want to use this kind of thing. On the other hand, it can be useful to have.
 
 :::info
-For example, one key M3 table—used in an essential way in our [MPT arithmetization](/basics/arithmetization/examples/mpt)—is the _Keccak-f_ table. It's possible to write down a table that does an _entire_ 24-round $\text{Keccak-}f$ permutation in just a single row. In that setting, shifting isn't necessary.
+For example, one key M3 table—used in an essential way in our [MPT arithmetization](/basics/arithmetization/mpt)—is the Keccak-$f$ table. It's possible to write down a table that does an _entire_ 24-round Keccak-$f$ permutation in just a single row. In that setting, shifting isn't necessary.
 
-On the other hand, there are subtle efficiency tradeoffs that affect the widths of tables. In certain circumstances, it winds up being _more_ efficient rather to spread _each_ $\text{Keccak-}f$ permutation across 3 rows (so, only 8 rounds get done per row, instead of all 24). In this case, we need to "preserve" our internal sponge state so that we can "carry it over" from the end of one row to the beginning of the next. Shifting turns out to be a key way to do this.
+On the other hand, there are subtle efficiency tradeoffs that affect the widths of tables. In certain circumstances, it winds up being _more_ efficient rather to spread _each_ Keccak-$f$ permutation across 3 rows (so, only 8 rounds get done per row, instead of all 24). In this case, we need to "preserve" our internal sponge state so that we can "carry it over" from the end of one row to the beginning of the next. Shifting turns out to be a key way to do this.
 :::
 
 ## Copy Constraints
