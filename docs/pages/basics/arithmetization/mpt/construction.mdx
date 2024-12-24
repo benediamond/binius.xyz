@@ -6,60 +6,108 @@ Here, we begin our description in earnest. For the sake of this page, we omit [s
 
 For our purposes below, it will be convenient now to extract and state separately a few datatypes, which we will often want to "bundle together".
 
+- **_Nibble_ objects.** We've [already discussed](/basics/arithmetization/mpt/sketch) this convenient abstraction. A _nibble pointer_ contains:
+  - An integer-valued $\texttt{byte}$, representing a location in memory.
+  - A boolean-valued $\texttt{parity}$, representing one of the two nibbles within the byte.
 - **_State_ objects.** As we've [already discussed](/basics/arithmetization/mpt/sketch), we use the term _state_ to refer to a bundle containing:
-  - An integer-valued _RLP pointer_ $a$, which will point to a position in the prover's memory block.
-  - A nibble-valued _key pointer_ $k$, which will point to a nibble within a key in the prover's memory.
+  - An integer-valued $\texttt{rlp\_ptr}$, which will point to a position in the prover's memory block.
+  - A nibble-valued $\texttt{key\_ptr}$, which will point to a nibble within a key in the prover's memory.
 - **Memory tuples.** As should be understandable in view of our [Lasso arithmetization](/basics/arithmetization/mpt/sketch#use-of-lasso), we will often want to bundle together "memory tuples", containing:
-  - A byte-valued _value_ $v$.
-  - An integer-valued _timestamp_ $t$.
+  - A byte-valued $\texttt{value}$.
+  - An integer-valued $\texttt{timestamp}$.
 
-## The M3 instance
+## Channels
 
-Here, we record our M3 instance specification, piece by piece.
+We begin by recording our instance's channels.
 
-### Channels
+### The _state_ channel
 
-- **The _state_ channel.** This channel accepts tuples containing
-  - A state value $s$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
-- **The _memory_ channel.** This channel will accept tuples containing
-  - An integer-valued _memory address_ $a$.
-  - A memory-tuple $m$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
+This channel accepts tuples containing
+- A state value $\texttt{state}$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
+
+### The _memory_ channel
+
+This channel accepts tuples containing
+- An integer-valued _memory address_ $\texttt{addr}$.
+- A memory-tuple $\texttt{mem\_tuple}$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
+
+Each tuple here represents an address–value pair $(\texttt{addr}, \texttt{mem\_tuple}.\texttt{value})$, read at $\texttt{mem\_tuple}.\texttt{timestamp}$; we refer to our [Lasso explainer](/basics/arithmetization/mpt/sketch#use-of-lasso).
+
+### The _absorb-block_ channel
+
+This channel facilitates claims about Keccak-256. It accepts tuples containing:
+- A 1600-byte $\texttt{pre\_hash\_state}$.
+- An integer-valued $\texttt{preimage\_ptr}$.
+- An integer-valued $\texttt{hash\_ptr}$.
+
+Each tuple in this channel represents a claim whereby, after absorbing some (nondeterministically supplied) amount of memory content beginning at $\texttt{preimage\_ptr}$ into the sponge state $\texttt{pre\_hash\_state}$, one obtains the digest beginning in memory at the location $\texttt{hash\_ptr}$.
+
+### The _get-child_ channel
+
+This channel accepts tuples of type:
+- An integer-valued $\texttt{input\_ptr}$.
+- An integer-valued _child index_ $\texttt{index}$.
+- An integer-valued $\texttt{output\_ptr}$.
+
+Each tuple in this channel represents the claim whereby, if $\texttt{input\_ptr}$ points to the beginning the $c$<sup>th</sup>-indexed child of some branch node, let's say, then $\texttt{output\_ptr}$ points to the $c + \texttt{index}$<sup>th</sup>-indexed child of the same branch node. That is, if we start at $\texttt{input\_ptr}$ and take $\texttt{index}$ steps, then we land at $\texttt{output\_ptr}$.
+
+### The _skip list header_ channel
+
+This channel deals with skipping the "header" of RLP-encoded lists. It accepts tuples containing:
+- An integer-valued $\texttt{rlp\_ptr}$.
+- An integer-valued $\texttt{first\_child\_ptr}$.
   
-  Each tuple here represents an address–value pair $(a, m.v)$, read at the timestamp $m.t$; we refer to our [Lasso explainer](/basics/arithmetization/mpt/sketch#use-of-lasso).
-- **The _absorb-block_ channel.** This channel facilitates claims about Keccak-256. It accepts tuples containing:
-  - A 1600-byte _pre-hash state_ $s$.
-  - An integer-valued _preimage pointer_ $a$.
-  - An integer-valued _hash pointer_ $h$.
-  
-  Each tuple $(s, a, h)$ in this channel represents a claim whereby, after absorbing some (nondeterministically supplied) amount of memory content beginning at $a$ into the sponge state $s$, one obtains the digest beginning in memory at the location $h$.
-- **The _get-child_ channel.** This channel accepts tuples of type:
-  - An integer-valued _input pointer_ $a$.
-  - An integer-valued _child index_ $i$.
-  - An integer-valued _output pointer_ $o$.
-  
-  Each tuple $(a, i, o)$ in this channel represents the claim whereby, if $a$ points to the beginning the $c$<sup>th</sup>-indexed child of some branch node, let's say, then $o$ points to the $c + i$<sup>th</sup>-indexed child of the same branch node.
-- **The _skip list header_ channel.** This channel deals with skipping the "header" of RLP-encoded lists. It accepts tuples containing:
-  - An integer-valued _RLP pointer_ $a$.
-  - An integer-valued _first child pointer_ $c$.
-  
-  This channel represents claims whereby $a$ points to the beginning of an RLP-encoded list, and $c$ points to the RLP-encoded first element of that list.
-- **The _check-nibble_ channel.** This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
-  - An integer-valued _target pointer_ $t$.
-  - A nibble-valued _nibble pointer_ $n$.
-  - A nibble-valued _key pointer_ $k$.
-  - A nibble-valued _return pointer _$r$_.
-  
-  Each tuple $(t, n, k, r)$ above represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $n$ and $k$, respectively, and advance _both_ $n$ and $k$ nibble-by-nibble in lockstep until $n$ reaches $t$, then, over the course of that time, $k$ will have reached $r$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
-- **The _Keccak-$f$_ channel.** This channel handles Keccak-$f$ permutation claims. It accepts tuples containing:
-  - A 1600-byte _permutation input_ $i$.
-  - A 1600-byte _permutation output_ $o$.
-  
-  Tuples in this channel represent valid input–output pairs of the Keccak-$f$ permutation.
+This channel represents claims whereby $\texttt{rlp\_ptr}$ points to the beginning of an RLP-encoded list, and $\texttt{first\_child\_ptr}$ points to the RLP-encoded first element of that list. The point is to "skip the list's header".
 
-### Tables
+### The _check-nibble_ channel
 
-Here, we record our tables, as well as the constraints we put on each one.
+This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
+- An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{nibble\_ptr}$.
+- A nibble-valued $\texttt{key\_ptr}$.
+- A nibble-valued $\texttt{return\_ptr}$.
 
-- **The _hash transition_ table.** This table has the following columns:
-  - A _state_-valued column, itself containing an RLP pointer and a key pointer (so really, two sub-columns).
-  - A
+Each tuple in this channel represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $\texttt{nibble\_ptr}$ and $\texttt{key\_ptr}$, respectively, and advance _both_ pointers nibble-by-nibble in lockstep until $\texttt{nibble\_ptr}$ reaches $\texttt{target\_ptr}$, then, over the course of that time, $\texttt{key\_ptr}$ will have reached $\texttt{return\_ptr}$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
+
+### The _Keccak-f_ channel
+
+This channel handles Keccak-$f$ permutation claims. It accepts tuples containing:
+- A 1600-byte $\texttt{perm\_input}$.
+- A 1600-byte $\texttt{perm\_output}$.
+
+Tuples in this channel represent valid input–output pairs of the Keccak-$f$ permutation.
+
+## Tables
+
+We go through our tables, one by one. In each, we describe the datatypes, the constraints, and the flushing rules.
+
+### The _hash-transition_ table
+
+In this table, we allow the prover to replace a state pointing to a _hash_ with a state pointing to the _preimage_ of that hash. We do not allow the prover to advance or change his state's key pointer using this table.
+
+The table has the following columns:
+- A state-valued $\texttt{state}$ column.
+- A memory-tuple-valued $\texttt{prefix}$ column.
+- An integer-valued $\texttt{preimage\_ptr}$.
+
+Its constraints are:
+- **$\texttt{prefix}.\texttt{value} \stackrel{?}= \texttt{0xA0}$.**
+
+Here, $\texttt{prefix}.\texttt{value}$ represents a _byte_ supposedly read from the memory location $\texttt{state}.\texttt{rlp\_ptr}$ (see the flushing rules below). Here, we check that this byte in question takes the value `0xA0`, which, in RLP language, is the prefix attached to a 32-byte string. In context, this winds up assuring the verifier that we're starting in a _nonempty_ child of a branch node, as opposed to an empty one (whose prefix would be `0x80` instead).
+
+Its flushing rules are:
+- _Pull_ the triple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{prefix}.\texttt{value}, \texttt{prefix}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{prefix}.\texttt{value}, \texttt{prefix}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the state $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{key\_ptr})$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the state $(\texttt{preimage\_ptr}, \texttt{state}.\texttt{key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the tuple $(\texttt{0x00\ldots00}, \texttt{preimage\_ptr}, \texttt{state}.\texttt{rlp\_ptr})$ to the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel).
+
+The first two bullet items above are a Lasso-style ROM read. We will see this pattern a lot. Essentially, they have the effect of making sure that the prover's nondeterministically supplied $\texttt{prefix}.\texttt{value}$ is the _same value_ as that sitting in memory at the location $\texttt{state}.\texttt{rlp\_ptr}$.
+
+The second two bullet items above allow the prover to advance his state. That is, they allow the prover to _replace_ the state pointing to $\texttt{state}.\texttt{rlp\_ptr}$ with a new state pointing to $\texttt{preimage\_ptr}$—without changing $\texttt{state}.\texttt{key\_ptr}$.
+
+The cost of this move, though, is that we _push_ a new outstanding liability to the absorb-block channel. That is, we push the liability whereby, upon beginning with the empty sponge state $\texttt{0x00\ldots00}$ and beginning absorption at $\texttt{preimage\_ptr}$, one ends with the digest sitting at $\texttt{state}.\texttt{rlp\_ptr}$. Thus, we make sure that the prover did a legal hash unwinding.
+
+### The _branch-transition_ table
+
+Here, we allow the prover to replace a state pointing to the _beginning_ of a branch node with a state pointing to a _child_ of the branch node. Moreover, we allow the prover to consume one nibble of the relevant key in the process. Finally, we require that these match—i.e., that the _index_ of the final child should be the same as the nibble that got consumed.
