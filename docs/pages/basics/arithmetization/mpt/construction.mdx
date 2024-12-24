@@ -1,4 +1,4 @@
-# Our MPT Construction [How we use M3 to arithmetize this task]
+# Our MPT Construction [Our full M3-based arithmetization of MPT inclusion]
 
 Here, we begin our description in earnest. For the sake of this page, we omit [state forking](/basics/arithmetization/mpt/forking), a conceptually tricky, M3-based deduplication technique. Below, in various places, we moreover "fudge" by allowing natural number-valued datatypes. In our practical implementation, we actually work _multiplicatively_; that is, we use multiplicative group of units of an appropriately chosen tower field. We used a similar expository device in our [Lasso explainer](/basics/arithmetization/m3/lasso).
 
@@ -62,9 +62,9 @@ This channel represents claims whereby $\texttt{rlp\_ptr}$ points to the beginni
 ### The _check-nibble_ channel
 
 This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
-- An integer-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{nibble\_ptr}$.
 - A nibble-valued $\texttt{key\_ptr}$.
+- An integer-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{return\_ptr}$.
 
 Each tuple in this channel represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $\texttt{nibble\_ptr}$ and $\texttt{key\_ptr}$, respectively, and advance _both_ pointers nibble-by-nibble in lockstep until $\texttt{nibble\_ptr}$ reaches $\texttt{target\_ptr}$, then, over the course of that time, $\texttt{key\_ptr}$ will have reached $\texttt{return\_ptr}$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
@@ -136,8 +136,8 @@ Here are the branch transition table's flushing rules:
 - _Push_ the triple $(\texttt{first\_child\_ptr}, \texttt{first\_child}.\texttt{value}, \texttt{first\_child}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
 - _Pull_ the triple $(\texttt{state}.\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
 - _Push_ the triple $(\texttt{state}.\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
-- _Pull_ the state $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{key\_ptr})$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
-- _Push_ the state $(\texttt{new\_state}.\texttt{rlp\_ptr}, \texttt{new\_state}.\texttt{key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Pull_ $\texttt{state}$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ $\texttt{new\_state}$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
 - _Push_ the tuple $(\texttt{first\_child\_ptr}, \texttt{index\_nibble}, \texttt{new\_state}.\texttt{rlp\_ptr})$ to the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
 
@@ -146,3 +146,50 @@ The first two bullets are a Lasso read. Here, we check that the prover's nondete
 In the next two bullet points, we allow the prover to completely update his state. In virtue of the third constraint above, we know that $\texttt{state}.\texttt{key\_ptr}$ and $\texttt{new\_state}.\texttt{key\_ptr}$ relate to each other in the right way (they differ by exactly one nibble). In the final two bulletpoints above, we _push_ new liabilities that guarantee that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{new\_state}.\texttt{rlp\_ptr}$ relate to each other in the right way. In the first, we handle the "stepping stone" from $\texttt{state}.\texttt{rlp\_ptr}$ to $\texttt{first\_child\_ptr}$—what we achieve here is showing that the latter thing is exactly the result of starting at the former and skipping the list header. In the second step, we assure that, upon starting at $\texttt{first\_child\_ptr}$, and marching for $\texttt{index\_nibble}$ children, we wind up exactly at $\texttt{new\_state}.\texttt{rlp\_ptr}$.
 
 Thus, the effect has been for the prover to start at the beginning of a branch node, read one nibble from key memory, and end at the appropriate _child_ of that branch node.
+
+### The _extension–leaf-transition_ table
+
+This table serves an analogous role to that above, but for extension and leaf nodes. Here, our goal is to allow the prover to step _from_ a state pointing to the beginning of an extension node or a leaf node _to_ a state pointing to that node's "payload". [By definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/), extension and leaf nodes look like two-element lists, whose first element is a [prefixed nibble path](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification) and whose second element is a payload. In each case, we want to allow the prover to consume the appropriate number of nibbles of his key—i.e., exactly as many as are in the _raw_ (non-prefixed) nibble path—and moreover to step his state's RLP pointer from the beginning of the node to the payload.
+
+Here are the table's columns:
+
+- A state-valued $\texttt{state}$.
+- An integer-valued $\texttt{first\_child\_ptr}$.
+- A memory-tuple-valued $\texttt{first\_child}$.
+- An integer-valued $\texttt{bytes\_ptr}$.
+- A memory-tuple-valued $\texttt{byte}$.
+- An integer-valued $\texttt{post\_bytes\_ptr}$.
+- A boolean-valued flag $\texttt{is\_odd}$.
+- A nibble-valued $\texttt{nibble\_ptr}$.
+- A nibble-valued $\texttt{new\_key\_ptr}$.
+
+Here are its constraints:
+
+- Assert that $\texttt{first\_child}.\texttt{value}$ is _neither_ $\texttt{0x80}$ _nor_ $\texttt{0xA0}$.
+- Assert that $\texttt{bytes\_ptr}$ points to the beginning of the node's [prefixed nibble path](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification) and $\texttt{post\_bytes\_ptr}$ points to its end. The details here are extremely technical, and come down to [how RLP encoding works](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/); we take it easy here. Essentially, there are two cases, depending on whether the prefixed nibble path is one byte or longer (equivalently, whether the _raw_ nibble path has more than 1 nibble or not).
+  - If it's just one byte, then we require that $\texttt{bytes\_ptr} \stackrel{?}= \texttt{first\_child\_ptr}$ and $\texttt{post\_bytes\_ptr} \stackrel{?}= \texttt{bytes\_ptr} + 1$ both hold.
+  - If it's more than one byte, we require that $\texttt{bytes\_ptr} \stackrel{?}= \texttt{first\_child\_ptr} + 1$ and $\texttt{post\_bytes\_ptr} \stackrel{?}= \texttt{bytes\_ptr} + \texttt{first\_child}.\texttt{value} - \texttt{0x80}$.
+  - The above two cases can be distinguished from each other by checking the single-bit flag $\texttt{first\_child}.\texttt{value} \mathrel{\&} \texttt{0x80} \stackrel{?}= \texttt{0x80}$.
+- Assert that the boolean value $\texttt{is\_odd}$ equals the boolean flag $\texttt{byte}.\texttt{value} \mathrel{\&} \texttt{0x10} \stackrel{?}= \texttt{0x10}$. Here, $\texttt{byte}.\texttt{value}$ will be equal the the value in memory at the location $\texttt{bytes\_ptr}$ (see flushing rules below). Thus, we're simply checking whether the 0<sup>th</sup>-indexed nibble of the _prefixed_ nibble path beginning at $\texttt{bytes\_ptr}$ in memory is odd or not (see explanation [here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification)).
+- Assert that $\texttt{nibble\_ptr}$ points to the beginning of the _raw_ nibble path. This amounts to comparing it to $\texttt{bytes\_ptr}$ and using the $\texttt{is\_odd}$ flag. If $\texttt{is\_odd}$ is true, we need to advance $\texttt{bytes\_ptr}$ by just one nibble; otherwise, we need to advance it by two nibbles (see again [here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification)).
+
+Here are the table's flushing rules.
+
+- _Pull_ the triple $(\texttt{first\_child\_ptr}, \texttt{first\_child}.\texttt{value}, \texttt{first\_child}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{first\_child\_ptr}, \texttt{first\_child}.\texttt{value}, \texttt{first\_child}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the triple $(\texttt{bytes\_ptr}, \texttt{byte}.\texttt{value}, \texttt{byte}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{bytes\_ptr}, \texttt{byte}.\texttt{value}, \texttt{byte}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ $\texttt{state}$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the state $(\texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
+- _Push_ the tuple $(\texttt{nibble\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+
+The first two items above are again a memory read; they ensure that $\texttt{first\_child}.\texttt{value}$ equals what's in memory at the location $\texttt{first\_child\_ptr}$. Similarly, the second two ensure that $\texttt{byte}.\texttt{value}$ equals what's in memory at $\texttt{bytes\_ptr}$.
+
+The next pair of items is a state update; here, the prover pulls the supplied state, and moreover pushes an updated state—whose $\texttt{rlp\_ptr}$ has been updated to $\texttt{post\_bytes\_ptr}$ and its key pointer to $\texttt{new\_key\_ptr}$.
+
+Of course, we need to constrain those latter things, by pushing new liabilities. To this end, in the second-to-last item, we ensure that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{first\_child\_ptr}$ relate to each other by the skipping of a list header. In the final flushing rule above, we ensure that the prover's nondeterministically supplied $\texttt{new\_key\_ptr}$ correctly points to the _result_ that one would get after advancing $\texttt{nibble\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$ in lockstep until the former arrives at $\texttt{post\_bytes\_ptr}$.
+
+## Boundary Constraints
+
+_To complete_.
