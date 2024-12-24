@@ -8,7 +8,7 @@ For our purposes below, it will be convenient now to extract and state separatel
 
 - **_Nibble_ objects.** We've [already discussed](/basics/arithmetization/mpt/sketch) this convenient abstraction. A _nibble pointer_ contains:
   - An integer-valued $\texttt{byte}$, representing a location in memory.
-  - A boolean-valued $\texttt{parity}$, representing one of the two nibbles within the byte.
+  - A boolean-valued $\texttt{parity}$, representing one among the two nibbles within the byte.
 - **_State_ objects.** As we've [already discussed](/basics/arithmetization/mpt/sketch), we use the term _state_ to refer to a bundle containing:
   - An integer-valued $\texttt{rlp\_ptr}$, which will point to a position in the prover's memory block.
   - A nibble-valued $\texttt{key\_ptr}$, which will point to a nibble within a key in the prover's memory.
@@ -83,15 +83,15 @@ We go through our tables, one by one. In each, we describe the datatypes, the co
 
 ### The _hash-transition_ table
 
-In this table, we allow the prover to replace a state pointing to a _hash_ with a state pointing to the _preimage_ of that hash. We do not allow the prover to advance or change his state's key pointer using this table.
+In this table, we allow the prover to replace a state pointing to a _hash_ with a state pointing to the _preimage_ of that hash, without advancing his state's key pointer.
 
 The table has the following columns:
-- A state-valued $\texttt{state}$ column.
-- A memory-tuple-valued $\texttt{prefix}$ column.
+- A state-valued $\texttt{state}$.
+- A memory-tuple-valued $\texttt{prefix}$.
 - An integer-valued $\texttt{preimage\_ptr}$.
 
 Its constraints are:
-- **$\texttt{prefix}.\texttt{value} \stackrel{?}= \texttt{0xA0}$.**
+- Assert that $\texttt{prefix}.\texttt{value}$ equals $\texttt{0xA0}$.
 
 Here, $\texttt{prefix}.\texttt{value}$ represents a _byte_ supposedly read from the memory location $\texttt{state}.\texttt{rlp\_ptr}$ (see the flushing rules below). Here, we check that this byte in question takes the value `0xA0`, which, in RLP language, is the prefix attached to a 32-byte string. In context, this winds up assuring the verifier that we're starting in a _nonempty_ child of a branch node, as opposed to an empty one (whose prefix would be `0x80` instead).
 
@@ -106,8 +106,43 @@ The first two bullet items above are a Lasso-style ROM read. We will see this pa
 
 The second two bullet items above allow the prover to advance his state. That is, they allow the prover to _replace_ the state pointing to $\texttt{state}.\texttt{rlp\_ptr}$ with a new state pointing to $\texttt{preimage\_ptr}$—without changing $\texttt{state}.\texttt{key\_ptr}$.
 
-The cost of this move, though, is that we _push_ a new outstanding liability to the absorb-block channel. That is, we push the liability whereby, upon beginning with the empty sponge state $\texttt{0x00\ldots00}$ and beginning absorption at $\texttt{preimage\_ptr}$, one ends with the digest sitting at $\texttt{state}.\texttt{rlp\_ptr}$. Thus, we make sure that the prover did a legal hash unwinding.
+The cost of this move, though, is that we _push_ a new outstanding liability to the absorb-block channel. That is, we push the liability whereby, upon beginning with the empty sponge state $\texttt{0x00\ldots00}$ and beginning absorption at $\texttt{preimage\_ptr}$, one ends with the digest sitting at $\texttt{state}.\texttt{rlp\_ptr}$. This is nothing other than asserting that the Keccak-256 of something beginning at $\texttt{preimage\_ptr}$ equals the digest beginning at $\texttt{state}.\texttt{rlp\_ptr}$. Thus, we make sure that the prover did a legal hash unwinding.
 
 ### The _branch-transition_ table
 
 Here, we allow the prover to replace a state pointing to the _beginning_ of a branch node with a state pointing to a _child_ of the branch node. Moreover, we allow the prover to consume one nibble of the relevant key in the process. Finally, we require that these match—i.e., that the _index_ of the final child should be the same as the nibble that got consumed.
+
+Here are the table's columns:
+
+- A state-valued $\texttt{state}$.
+- An integer-valued $\texttt{first\_child\_ptr}$.
+- A memory-tuple-valued $\texttt{first\_child}$.
+- A memory-tuple-valued $\texttt{key}$.
+- An integer-valued $\texttt{index\_nibble}$.
+- A state-valued $\texttt{new\_state}$.
+
+Its constraints are:
+- Assert that $\texttt{first\_child}.\texttt{value}$ is _either_ $\texttt{0x80}$ or $\texttt{0xA0}$.
+- Assert that $\texttt{key}.\texttt{value}$'s $\texttt{state}.\texttt{key\_ptr}.\texttt{parity}$<sup>th</sup> nibble equals $\texttt{index\_nibble}$.
+- Assert that the nibble pointer $\texttt{new\_state}.\texttt{key\_ptr}$ is exactly one nibble ahead of $\texttt{state}.\texttt{key\_ptr}$. (Concretely, this amounts to flipping its $\texttt{parity}$, and moreover incrementing its $\texttt{byte}$ if the parity was high to begin with.)
+
+We explain these roughly in the following way. The first constraint above checks that the $\texttt{first\_child}.\texttt{value}$ is either `0x80` or `0xA0`. Conditioned on $\texttt{state}.\texttt{rlp\_ptr}$ pointing to the beginning of an RLP-encoded list (we can assume this by induction), $\texttt{first\_child\_ptr}$ pointing to that list's first child (we will ensure this below by pushing to the skip-list-header channel), and $\texttt{first\_child}.\texttt{value}$ being the value in memory at $\texttt{first\_child\_ptr}$ (we will ensure this below using a memory read), this latter check thus ensures that we are in a branch node, and _not_ in an extension or a leaf node.
+
+The second constraint above ensures that the prover's nondeterministically supplied $\texttt{index\_nibble}$ relates in the right way to $\texttt{key}.\texttt{value}$, which will _itself_ be checked using a memory read against $\texttt{state}.\texttt{key\_ptr}.\texttt{byte}$ (see below). The final constraint ensures tht the prover has advanced his state's key pointer by exactly one nibble.
+
+Here are the branch transition table's flushing rules:
+
+- _Pull_ the triple $(\texttt{first\_child\_ptr}, \texttt{first\_child}.\texttt{value}, \texttt{first\_child}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{first\_child\_ptr}, \texttt{first\_child}.\texttt{value}, \texttt{first\_child}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the triple $(\texttt{state}.\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{state}.\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the state $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{key\_ptr})$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the state $(\texttt{new\_state}.\texttt{rlp\_ptr}, \texttt{new\_state}.\texttt{key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+- _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
+- _Push_ the tuple $(\texttt{first\_child\_ptr}, \texttt{index\_nibble}, \texttt{new\_state}.\texttt{rlp\_ptr})$ to the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
+
+The first two bullets are a Lasso read. Here, we check that the prover's nondeterministically supplied $\texttt{first\_child}.\texttt{value}$ _actually_ matches what's sitting in memory at the location $\texttt{first\_child\_ptr}$. Similarly, in the second two bullets, we check that the prover's nondeterministically supplied $\texttt{key}.\texttt{value}$ _actually_ matches what's in memory at the location $\texttt{state}.\texttt{key\_ptr}.\texttt{byte}$. Coupled with the _second_ constraint above, this check guarantees that $\texttt{index\_nibble}$ is meaningful (i.e., it's actually the "current" nibble of the state's key).
+
+In the next two bullet points, we allow the prover to completely update his state. In virtue of the third constraint above, we know that $\texttt{state}.\texttt{key\_ptr}$ and $\texttt{new\_state}.\texttt{key\_ptr}$ relate to each other in the right way (they differ by exactly one nibble). In the final two bulletpoints above, we _push_ new liabilities that guarantee that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{new\_state}.\texttt{rlp\_ptr}$ relate to each other in the right way. In the first, we handle the "stepping stone" from $\texttt{state}.\texttt{rlp\_ptr}$ to $\texttt{first\_child\_ptr}$—what we achieve here is showing that the latter thing is exactly the result of starting at the former and skipping the list header. In the second step, we assure that, upon starting at $\texttt{first\_child\_ptr}$, and marching for $\texttt{index\_nibble}$ children, we wind up exactly at $\texttt{new\_state}.\texttt{rlp\_ptr}$.
+
+Thus, the effect has been for the prover to start at the beginning of a branch node, read one nibble from key memory, and end at the appropriate _child_ of that branch node.
