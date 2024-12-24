@@ -29,7 +29,7 @@ Following this idea to its root (pardon the pun), we see easily that the _root_ 
 
 ## Unwinding GKR Layers
 
-Now this hasn't gotten us much so far. The key point, though, is that the verifier can use the sumcheck to reduce a claim about _one_ layer to a claim about _the layer below it_. The master claim that the verifier wants to check is a claim about the very top, 0th layer (namely, that $T_0() \stackrel{?}= a$). If the verifier has the ability to repeatedly unwind claims like this, then it may proceed straight down to the leaf layer, at which point it will arrive upon an evaluation claim about $T$ itself, which is what we wanted.
+Now this hasn't gotten us much so far. The key point, though, is that the verifier can use the sumcheck to reduce a claim about _one_ layer to a claim about _the layer below it_. The master claim that the verifier wants to check is a claim about the very top, 0<sup>th</sup> layer (namely, that $T_0() \stackrel{?}= a$). If the verifier has the ability to repeatedly unwind claims like this, then it may proceed straight down to the leaf layer, at which point it will arrive upon an evaluation claim about $T$ itself, which is what we wanted.
 
 The fact that saves us is that the relationship between each layer and the one below it is _algebraic_. Thus, for each $k \in \{0, \ldots , \ell - 1\}$, since, for each $v \in \mathcal{B}_k$, $T_k(v) = T_{k + 1}(v \mathbin{\Vert} 0) \cdot T_{k + 1}(v \mathbin{\Vert} 1)$ holds by _fiat_, $T_k$'s multilinear extension $T_k(X_0, \ldots , X_{k - 1})$ equals:
 

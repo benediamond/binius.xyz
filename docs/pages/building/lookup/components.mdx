@@ -1,6 +1,6 @@
 # Components Creation [The critical sub-gadget]
 
-To make our lookup gadget we need a `get_components` gadget. The main inputs are the `table` column and the `multiplicities` which should be `None` only for the verifier. Most of the work we'll do in this gadget is prover work, in which case `multiplicities` will have a vector of length `table_count`, holding a multiplicity for each of the first `table_count` values in `table`. The `i`'th component oracle returned will hold values that are the product of the `table` values and the bits had by taking the `i`'th bit across the multiplicities.
+To make our lookup gadget we need a `get_components` gadget. The main inputs are the `table` column and the `multiplicities` which should be `None` only for the verifier. Most of the work we'll do in this gadget is prover work, in which case `multiplicities` will have a vector of length `table_count`, holding a multiplicity for each of the first `table_count` values in `table`. The `i`<sup>th</sup> component oracle returned will hold values that are the product of the `table` values and the bits had by taking the `i`<sup>th</sup> bit across the multiplicities.
 
 The `get_components` gadget has the shape
 

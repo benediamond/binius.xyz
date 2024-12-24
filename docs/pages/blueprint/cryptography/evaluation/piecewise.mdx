@@ -20,7 +20,7 @@ at $(r_0, \ldots , r_{\ell^* - 1})$?
 
 ## The Idea
 
-The idea here isn't especially mysterious mathematically, but it involves some interesting algorithmic aspects. We imagine the components $(r_0, \ldots , r_{\ell^* - 1})$ coming to us one by one. The idea is to work "starting at the small end". As of the end of the $i$th round, _some_ among the individual polynomials $t_j(X_0, \ldots X_{\ell_j - 1})$ might become "freshly ready"—namely, those for which $\ell_j - 1 = i$. We recall that these things will be "placed" on $\ell_j$-dimensional subcubes of $\mathcal{B}_{\ell^*}$.
+The idea here isn't especially mysterious mathematically, but it involves some interesting algorithmic aspects. We imagine the components $(r_0, \ldots , r_{\ell^* - 1})$ coming to us one by one. The idea is to work "starting at the small end". As of the end of the $i$<sup>th</sup> round, _some_ among the individual polynomials $t_j(X_0, \ldots X_{\ell_j - 1})$ might become "freshly ready"—namely, those for which $\ell_j - 1 = i$. We recall that these things will be "placed" on $\ell_j$-dimensional subcubes of $\mathcal{B}_{\ell^*}$.
 
 Upon receiving $r_i$, our goal will be to "bootstrap" all outstanding subcubes of $i$-dimensions into $i + 1$-dimensional subcubes. We do this by doing linear combinations with $1 - r_i$ and $r_i$.
 
@@ -42,7 +42,7 @@ The entire point of the rest of this page is to systematize this procedure.
 
 ## The Algorithm
 
-We sketch the algorithm here. We assume as usual that $\ell_0 \geq \cdots \geq \ell_{n - 1}$. We imagine that we start with a list $T_0, \ldots , T_{n - 1}$ of "claim" objects. From the verifier's viewpoint, each $T_j$ _will eventually_ contain the evaluation of $t_j(r_0, \ldots , r_{\ell_j - 1})$—that is, as of the _end_ of the $\ell_j - 1$th round, these things will become ready. In each round $i$, our job will be to receive any such objects—i.e., for which $\ell_j - 1 = i$, or in other words $\ell_j = i + 1$. Moreover, we will "lift" everything which is _not yet_ $i + 1$-dimensional to the $i + 1$-dimensional level, by smoothing trailing subcubes.
+We sketch the algorithm here. We assume as usual that $\ell_0 \geq \cdots \geq \ell_{n - 1}$. We imagine that we start with a list $T_0, \ldots , T_{n - 1}$ of "claim" objects. From the verifier's viewpoint, each $T_j$ _will eventually_ contain the evaluation of $t_j(r_0, \ldots , r_{\ell_j - 1})$—that is, as of the _end_ of the $\ell_j - 1$<sup>st</sup> round, these things will become ready. In each round $i$, our job will be to receive any such objects—i.e., for which $\ell_j - 1 = i$, or in other words $\ell_j = i + 1$. Moreover, we will "lift" everything which is _not yet_ $i + 1$-dimensional to the $i + 1$-dimensional level, by smoothing trailing subcubes.
 
 To keep track of all the relevant information, we bake a linked-list structure into the claims $T_0, \ldots , T_{n - 1}$. To begin with, we initialize $T_j.\text{next} \coloneqq j + 1$, for each $j \in \{0, \ldots , n - 1\}$.
 

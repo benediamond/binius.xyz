@@ -186,15 +186,15 @@ export default defineConfig({
         items: [
           {
             text: "Gadget Design",
-            link: "/building/lookups/gadget",
+            link: "/building/lookup/gadget",
           },
           {
             text: "Components Creation",
-            link: "/building/lookups/components",
+            link: "/building/lookup/components",
           },
           {
             text: "Example Application",
-            link: "/building/lookups/application",
+            link: "/building/lookup/application",
           },
         ],
       },
