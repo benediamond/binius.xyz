@@ -92,7 +92,7 @@ What do we get out of this construction? In short, shifting lets us _link_ disti
 Of course, we will not _always_ want to do this, and our use of M3 vastly reduces the frequency that we want to use this kind of thing. On the other hand, it can be useful to have.
 
 :::info
-For example, one key M3 table—used in an essential way in our [MPT arithmetization](/basics/arithmetization/mpt)—is the Keccak-$f$ table. It's possible to write down a table that does an _entire_ 24-round Keccak-$f$ permutation in just a single row. In that setting, shifting isn't necessary.
+For example, one key M3 table—used in an essential way in our [MPT arithmetization](/basics/arithmetization/mpt)—is the _Keccak-$f$_ table. It's possible to write down a table that does an _entire_ 24-round Keccak-$f$ permutation in just a single row. In that setting, shifting isn't necessary.
 
 On the other hand, there are subtle efficiency tradeoffs that affect the widths of tables. In certain circumstances, it winds up being _more_ efficient rather to spread _each_ Keccak-$f$ permutation across 3 rows (so, only 8 rounds get done per row, instead of all 24). In this case, we need to "preserve" our internal sponge state so that we can "carry it over" from the end of one row to the beginning of the next. Shifting turns out to be a key way to do this.
 :::

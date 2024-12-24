@@ -4,9 +4,9 @@ Here, we begin in earnest our treatment of _vanishing claims_. As we've mentione
 
 Algorithms for sumcheck and zerocheck are extremely complicated in general (especially in the small-field setting), and we can only hope to give a very rough survey in this page. As usual, here, we adopt the verifier's point of view, and sketch the security story. Of course, using a _univariate zerocheck_—as opposed to a standard one—serves to lighten rather the _prover's_ load, and not the verifier's; so our _motivation_ cannot be purely verifier-centric. For the full details, we opt to defer to the Binius codebase.
 
-As we've repeatedly mentioned, the multivariate composition polynomials we're interested in zerochecking are, in general, defined over small fields. This fact makes the 0th round of the zerocheck special, in that much of the computation required by that round may be carried out over an appropriate small field. In the zerocheck's _positive-indexed_ rounds, on the other hand, the polynomials at hand "saturate" to the maximal field size—and many of the small-field advantages disappear.
+As we've repeatedly mentioned, the multivariate composition polynomials we're interested in zerochecking are, in general, defined over small fields. This fact makes the 0<sup>th</sup>round of the zerocheck special, in that much of the computation required by that round may be carried out over an appropriate small field. In the zerocheck's _positive-indexed_ rounds, on the other hand, the polynomials at hand "saturate" to the maximal field size—and many of the small-field advantages disappear.
 
-The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0th round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds.
+The _univariate skip_ is designed to trade off 0th-round computation for positive-round computation. That is, the univariate skip serves to move as much work as possible into the 0<sup>th</sup>round; it vastly reduces, in the process, the amount of work which must be performed in the subsequent, positive-indexed rounds.
 
 ## The Standard Zerocheck
 
@@ -22,13 +22,13 @@ $$
 The resulting thing is $\ell$-variate, and of degree at most $n$ in each individual variable $X_0, \ldots , X_{\ell - 1}$.
 :::
 
-In the [basic zerocheck](/blueprint/reductions/zerocheck/review), we wind up sumchecking the multivariate product $C(X_0, \ldots , X_{\ell - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, X_0, \ldots , X_{\ell - 1})$. The 0th round is special: since the multilinears $t_i$ have small coefficients, their evaluations within the cube itself—_as well as on_ nearby points of the form $(2, v_1, \ldots , v_{\ell - 1})$, say, where the trailing coordinates $(v_1, \ldots , v_{\ell - 1})$ are boolean—will themselves be small. By consequence, evaluating the composition $c(Z_0, \ldots , Z_{n - 1})$ on these points (the main "workhorse" task of the zerocheck) will be very efficient.
+In the [basic zerocheck](/blueprint/reductions/zerocheck/review), we wind up sumchecking the multivariate product $C(X_0, \ldots , X_{\ell - 1}) \cdot \widetilde{\texttt{eq}}(r_0, \ldots , r_{\ell - 1}, X_0, \ldots , X_{\ell - 1})$. The 0<sup>th</sup>round is special: since the multilinears $t_i$ have small coefficients, their evaluations within the cube itself—_as well as on_ nearby points of the form $(2, v_1, \ldots , v_{\ell - 1})$, say, where the trailing coordinates $(v_1, \ldots , v_{\ell - 1})$ are boolean—will themselves be small. By consequence, evaluating the composition $c(Z_0, \ldots , Z_{n - 1})$ on these points (the main "workhorse" task of the zerocheck) will be very efficient.
 
 On the other hand, after a single folding round goes by, this advantage will disappear. Indeed, the _partially specialized_ multilinears $t_i(r_0, X_1, \ldots , X_{\ell - 1})$ will no longer have small coefficients; neither, therefore, will their evaluations at points of the form $(r_0, x_1, v_2 \ldots , v_{\ell - 1})$, where $x_1$ is small and the trailing coordinates $(v_2, \ldots , v_{\ell - 1})$ are boolean. Thus, evaluating $c$ on tuples of these evaluations will stop being efficient. We thus see that we _only_ get to reduce the problem size by 2 before the small-field efficiency advantage all-but disappears.
 
 ## The Basic Idea
 
-The basic idea is to "reshape" our fundamental domain $\mathcal{B}_\ell$ into another domain, which has just as many points (that is, $2^\ell$ of them) but which is much "longer" in its 0th dimension. The goal will be to get _more_ work out of the way in the 0th round (which we've already seen is special). That is, instead of reducing by just half our problem size during the course of the 0th round, we will rather want to reduce it by $2^k$-fold, for some parameter $k$ _generally bigger than_ 1.
+The basic idea is to "reshape" our fundamental domain $\mathcal{B}_\ell$ into another domain, which has just as many points (that is, $2^\ell$ of them) but which is much "longer" in its 0<sup>th</sup>dimension. The goal will be to get _more_ work out of the way in the 0<sup>th</sup>round (which we've already seen is special). That is, instead of reducing by just half our problem size during the course of the 0<sup>th</sup>round, we will rather want to reduce it by $2^k$-fold, for some parameter $k$ _generally bigger than_ 1.
 
 Thus we fix a skipping parameter $k \geq 1$ (in practice, $k$ will be around 7). We are going to pick a _univariate domain_ $D \subset \mathcal{T}_\tau$ in our huge field of size $|D| = 2^k$. (In practice, we will moreover want $D$ to be an $\mathbb{F}_2$-subspace of $\mathcal{T}_\tau$.) Our fundamental domain will be $D \times \mathcal{B}_{\ell - k}$, now viewed as a subset of $\mathcal{T}_\tau^{\ell - k + 1}$. Note that this thing's size is exactly $2^\ell$.
 
@@ -64,7 +64,7 @@ $$
 
 That is, it's enough for the verifier to check whether the sum of _this thing_ over the domain $D \times \mathcal{B}_{\ell - k}$ equals 0 or not.
 
-The protocol for this exactly follows the script of the normal sumcheck. In particular, the prover will start by sending the 0th univariate _round polynomial_
+The protocol for this exactly follows the script of the normal sumcheck. In particular, the prover will start by sending the 0<sup>th</sup>univariate _round polynomial_
 
 $$
 \begin{equation*}g(Y) \coloneqq \sum_{v \in \mathcal{B}_{\ell - k}} \widehat{C}(Y, v) \cdot \delta_D(Y, s) \cdot \widetilde{\texttt{eq}}(v, r).\end{equation*}
