@@ -77,7 +77,7 @@ This channel handles Keccak-$f$ permutation claims. It accepts tuples containing
 
 Tuples in this channel represent valid input–output pairs of the Keccak-$f$ permutation.
 
-## Tables
+## Tables, Constraints, and Flushing Rules
 
 We go through our tables, one by one. In each, we describe the datatypes, the constraints, and the flushing rules.
 
@@ -387,4 +387,12 @@ It has just a single flushing rule:
 
 ## Boundary Constraints
 
-_To complete_. Lasso loads. States.
+Our verifier has two main sorts of boundary constraints. In the first, it pre-seeds the _state channel_ with statement-dependent data. It also has to initialize the memory channel using the prover's memory block and his final read counts. This latter thing is standard from [Lasso](/basics/arithmetization/m3/lasso); we ignore it for now.
+
+Thus, we explain the verifier's state boundary constraints, already sketched in our [informal explanation](/basics/arithmetization/mpt/sketch#the-boundary-conditions). We write $\texttt{ROOT\_PTR}$ for a pointer, sent by the prover, to the `0xA0`-prefixed global state trie root in the prover's memory block. Moreover, for each key–value pair $i$ in the statement, we write $\texttt{KEYS}[i]$ for a pointer to the $i$<sup>th</sup> key in memory and $\texttt{VALUES}[i]$ for a pointer to the $i$<sup>th</sup> value in memory. By making small reads into the prover's memory block, the verifier can explicitly check that all of these pointers are valid and pointing to the right thing.
+
+- For each for each key–value pair $i$ contained in the overall statement, the verifier performs the following boundary operations:
+  - _Push_ the initial tuple $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+  - _Pull_ the terminal tuple $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
+
+You can convince yourself that this works! The prover makes a path from the push to the pull by steadily consuming nibble after nibble of the key, and stepping the pointer from the root down the Merkle–Patricia path.
