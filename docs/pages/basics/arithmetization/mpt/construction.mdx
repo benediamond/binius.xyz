@@ -62,12 +62,12 @@ This channel represents claims whereby $\texttt{rlp\_ptr}$ points to the beginni
 ### The _check-nibble_ channel
 
 This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
-- A nibble-valued $\texttt{nibble\_ptr}$.
+- A nibble-valued $\texttt{nib\_ptr}$.
 - A nibble-valued $\texttt{key\_ptr}$.
 - An integer-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{return\_ptr}$.
 
-Each tuple in this channel represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $\texttt{nibble\_ptr}$ and $\texttt{key\_ptr}$, respectively, and advance _both_ pointers nibble-by-nibble in lockstep until $\texttt{nibble\_ptr}$ reaches $\texttt{target\_ptr}$, then, over the course of that time, $\texttt{key\_ptr}$ will have reached $\texttt{return\_ptr}$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
+Each tuple in this channel represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $\texttt{nib\_ptr}$ and $\texttt{key\_ptr}$, respectively, and advance _both_ pointers nibble-by-nibble in lockstep until $\texttt{nib\_ptr}$ reaches $\texttt{target\_ptr}$, then, over the course of that time, $\texttt{key\_ptr}$ will have reached $\texttt{return\_ptr}$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
 
 ### The _Keccak-f_ channel
 
@@ -160,7 +160,7 @@ Here are the table's columns:
 - A memory-tuple-valued $\texttt{byte}$.
 - An integer-valued $\texttt{post\_bytes\_ptr}$.
 - A boolean-valued flag $\texttt{is\_odd}$.
-- A nibble-valued $\texttt{nibble\_ptr}$.
+- A nibble-valued $\texttt{nib\_ptr}$.
 - A nibble-valued $\texttt{new\_key\_ptr}$.
 
 Here are its constraints:
@@ -171,7 +171,7 @@ Here are its constraints:
   - If it's more than one byte, we require that $\texttt{bytes\_ptr} \stackrel{?}= \texttt{first\_child\_ptr} + 1$ and $\texttt{post\_bytes\_ptr} \stackrel{?}= \texttt{bytes\_ptr} + \texttt{first\_child}.\texttt{value} - \texttt{0x80}$.
   - The above two cases can be distinguished from each other by checking the single-bit flag $\texttt{first\_child}.\texttt{value} \mathrel{\&} \texttt{0x80} \stackrel{?}= \texttt{0x80}$.
 - Assert that the boolean value $\texttt{is\_odd}$ equals the boolean flag $\texttt{byte}.\texttt{value} \mathrel{\&} \texttt{0x10} \stackrel{?}= \texttt{0x10}$. Here, $\texttt{byte}.\texttt{value}$ will be equal the the value in memory at the location $\texttt{bytes\_ptr}$ (see flushing rules below). Thus, we're simply checking whether the 0<sup>th</sup>-indexed nibble of the _prefixed_ nibble path beginning at $\texttt{bytes\_ptr}$ in memory is odd or not (see explanation [here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification)).
-- Assert that $\texttt{nibble\_ptr}$ points to the beginning of the _raw_ nibble path. This amounts to comparing it to $\texttt{bytes\_ptr}$ and using the $\texttt{is\_odd}$ flag. If $\texttt{is\_odd}$ is true, we need to advance $\texttt{bytes\_ptr}$ by just one nibble; otherwise, we need to advance it by two nibbles (see again [here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification)).
+- Assert that $\texttt{nib\_ptr}$ points to the beginning of the _raw_ nibble path. This amounts to comparing it to $\texttt{bytes\_ptr}$ and using the $\texttt{is\_odd}$ flag. If $\texttt{is\_odd}$ is true, we need to advance $\texttt{bytes\_ptr}$ by just one nibble; otherwise, we need to advance it by two nibbles (see again [here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification)).
 
 Here are the table's flushing rules.
 
@@ -182,13 +182,64 @@ Here are the table's flushing rules.
 - _Pull_ $\texttt{state}$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the state $(\texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
-- _Push_ the tuple $(\texttt{nibble\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Push_ the tuple $(\texttt{nib\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
 The first two items above are again a memory read; they ensure that $\texttt{first\_child}.\texttt{value}$ equals what's in memory at the location $\texttt{first\_child\_ptr}$. Similarly, the second two ensure that $\texttt{byte}.\texttt{value}$ equals what's in memory at $\texttt{bytes\_ptr}$.
 
 The next pair of items is a state update; here, the prover pulls the supplied state, and moreover pushes an updated state—whose $\texttt{rlp\_ptr}$ has been updated to $\texttt{post\_bytes\_ptr}$ and its key pointer to $\texttt{new\_key\_ptr}$.
 
-Of course, we need to constrain those latter things, by pushing new liabilities. To this end, in the second-to-last item, we ensure that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{first\_child\_ptr}$ relate to each other by the skipping of a list header. In the final flushing rule above, we ensure that the prover's nondeterministically supplied $\texttt{new\_key\_ptr}$ correctly points to the _result_ that one would get after advancing $\texttt{nibble\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$ in lockstep until the former arrives at $\texttt{post\_bytes\_ptr}$.
+Of course, we need to constrain those latter things, by pushing new liabilities. To this end, in the second-to-last item, we ensure that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{first\_child\_ptr}$ relate to each other by the skipping of a list header. In the final flushing rule above, we ensure that the prover's nondeterministically supplied $\texttt{new\_key\_ptr}$ correctly points to the _result_ that one would get after advancing $\texttt{nib\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$ in lockstep until the former arrives at $\texttt{post\_bytes\_ptr}$.
+
+### The check-nibble tables
+
+Here, we allow the prover to absorb check-nibble liabilities emitted by the [extension–leaf transition table](/basics/arithmetization/mpt/construction#the-extensionleaf-transition-table) above.
+
+This table is our first example of a "recursive call stack" pattern. Each row represents a frame in a recursive call, which spawns a subcall on a smaller problem. As a technicality, we actually have two tables here: a recursive table, which spawns a subcall, and a base table, which lets the prover absorb the final base case of the recursion.
+
+We begin with the recursive table. It has the following columns:
+
+- A nibble-valued $\texttt{nib\_ptr}$.
+- A nibble-valued $\texttt{new\_nib\_ptr}$.
+- A nibble-valued $\texttt{key\_ptr}$.
+- A nibble-valued $\texttt{new\_key\_ptr}$.
+- A memory tuple $\texttt{nib}$.
+- A memory tuple $\texttt{key}$.
+- An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{return\_ptr}$.
+
+While there are a lot of fields here, the logic should be pretty clear; we refer to our explanation of the [check-nibble table](/basics/arithmetization/mpt/construction#the-check-nibble-channel). In each _row_ of the table, we are going to allow the prover to advance both nibbles a single step. We are going moreover going to do a few memory reads, to check that the relevant nibbles are equal. Finally, we will spawn a recursive sub-liability.
+
+Here are the constraints:
+
+- Assert that $\texttt{nib\_ptr}$, advanced by exactly one nibble, yields $\texttt{new\_nib\_ptr}$ (this can be done by flipping its $\texttt{parity}$ and conditionally advancing its $\texttt{byte}$).
+- Assert that $\texttt{key\_ptr}$, advanced by exactly one nibble, yields $\texttt{new\_key\_ptr}$ (similar).
+- Assert that the $\texttt{nib\_ptr}.\texttt{parity}$<sup>th</sup> nibble of $\texttt{nib}.\texttt{value}$ equals the $\texttt{key\_ptr}.\texttt{parity}$<sup>th</sup> nibble of $\texttt{key}.\texttt{value}$. This can be done with a bit of bit twiddling and shifting.
+
+
+Finally, we have the following flushing rules:
+
+- _Pull_ the triple $(\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the triple $(\texttt{nib\_ptr}.\texttt{byte}, \texttt{nib}.\texttt{value}, \texttt{nib}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{nib\_ptr}.\texttt{byte}, \texttt{nib}.\texttt{value}, \texttt{nib}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Push_ the tuple $(\texttt{new\_nib\_ptr}, \texttt{new\_key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+
+These are straightforward. In the first four items, we check that the value in memory at $\texttt{key\_ptr}.\texttt{byte}$ equals $\texttt{key}.\texttt{value}$ and that the value in memory at $\texttt{nib\_ptr}.\texttt{byte}$ equals $\texttt{nib}.\texttt{value}$. In the last two, we pull the liability we started with, and push the sub-liability—with both nibble pointers advanced by exactly one step (see the constraints above).
+
+The base table has just three columns:
+
+- A nibble-valued $\texttt{nib\_ptr}$.
+- A nibble-valued $\texttt{key\_ptr}$.
+- An integer-valued $\texttt{target\_ptr}$.
+
+It has a single constraint:
+- Assert that $\texttt{nib\_ptr}.\texttt{byte} \stackrel{?}= \texttt{target\_ptr}$ and $\texttt{nib\_ptr}.\texttt{parity} \stackrel{?}= \texttt{false}$. This ensures that the nibble pointer has "advanced all the way".
+
+It has the flushing rule:
+- _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{key\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+
+Note that here, we are _forcing_ $\texttt{target\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
 
 ## Boundary Constraints
 
