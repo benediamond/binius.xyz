@@ -36,7 +36,7 @@ Each tuple here represents an address–value pair $(\texttt{addr}, \texttt{mem\
 ### The _absorb-block_ channel
 
 This channel facilitates claims about Keccak-256. It accepts tuples containing:
-- A 1600-byte $\texttt{pre\_hash\_state}$.
+- A 200-byte $\texttt{pre\_hash\_state}$.
 - An integer-valued $\texttt{preimage\_ptr}$.
 - An integer-valued $\texttt{hash\_ptr}$.
 
@@ -47,11 +47,11 @@ Each tuple in this channel represents a claim whereby, after absorbing some (non
 This channel accepts tuples of type:
 - An integer-valued $\texttt{input\_ptr}$.
 - An integer-valued _child index_ $\texttt{index}$.
-- An integer-valued $\texttt{output\_ptr}$.
+- An integer-valued $\texttt{target\_ptr}$.
 
-Each tuple in this channel represents the claim whereby, if $\texttt{input\_ptr}$ points to the beginning the $c$<sup>th</sup>-indexed child of some branch node, let's say, then $\texttt{output\_ptr}$ points to the $c + \texttt{index}$<sup>th</sup>-indexed child of the same branch node. That is, if we start at $\texttt{input\_ptr}$ and take $\texttt{index}$ steps, then we land at $\texttt{output\_ptr}$.
+Each tuple in this channel represents the claim whereby, if $\texttt{input\_ptr}$ points to the beginning the $c$<sup>th</sup>-indexed child of some branch node, let's say, then $\texttt{target\_ptr}$ points to the $c + \texttt{index}$<sup>th</sup>-indexed child of the same branch node. That is, if we start at $\texttt{input\_ptr}$ and take $\texttt{index}$ steps, then we land at $\texttt{target\_ptr}$.
 
-### The _skip list header_ channel
+### The _skip-list-header_ channel
 
 This channel deals with skipping the "header" of RLP-encoded lists. It accepts tuples containing:
 - An integer-valued $\texttt{rlp\_ptr}$.
@@ -72,8 +72,8 @@ Each tuple in this channel represents a claim whereby two "stretches" of nibbles
 ### The _Keccak-f_ channel
 
 This channel handles Keccak-$f$ permutation claims. It accepts tuples containing:
-- A 1600-byte $\texttt{perm\_input}$.
-- A 1600-byte $\texttt{perm\_output}$.
+- A 200-byte $\texttt{perm\_input}$.
+- A 200-byte $\texttt{perm\_output}$.
 
 Tuples in this channel represent valid input–output pairs of the Keccak-$f$ permutation.
 
@@ -86,8 +86,8 @@ We go through our tables, one by one. In each, we describe the datatypes, the co
 In this table, we allow the prover to replace a state pointing to a _hash_ with a state pointing to the _preimage_ of that hash, without advancing his state's key pointer.
 
 The table has the following columns:
-- A state-valued $\texttt{state}$.
-- A memory-tuple-valued $\texttt{prefix}$.
+- A state $\texttt{state}$.
+- A memory-tuple $\texttt{prefix}$.
 - An integer-valued $\texttt{preimage\_ptr}$.
 
 Its constraints are:
@@ -114,12 +114,12 @@ Here, we allow the prover to replace a state pointing to the _beginning_ of a br
 
 Here are the table's columns:
 
-- A state-valued $\texttt{state}$.
+- A state $\texttt{state}$.
 - An integer-valued $\texttt{first\_child\_ptr}$.
-- A memory-tuple-valued $\texttt{first\_child}$.
-- A memory-tuple-valued $\texttt{key}$.
+- A memory-tuple $\texttt{first\_child}$.
+- A memory-tuple $\texttt{key}$.
 - An integer-valued $\texttt{index\_nibble}$.
-- A state-valued $\texttt{new\_state}$.
+- A state $\texttt{new\_state}$.
 
 Its constraints are:
 - Assert that $\texttt{first\_child}.\texttt{value}$ is _either_ $\texttt{0x80}$ or $\texttt{0xA0}$.
@@ -153,19 +153,19 @@ This table serves an analogous role to that above, but for extension and leaf no
 
 Here are the table's columns:
 
-- A state-valued $\texttt{state}$.
+- A state $\texttt{state}$.
 - An integer-valued $\texttt{first\_child\_ptr}$.
-- A memory-tuple-valued $\texttt{first\_child}$.
+- A memory-tuple $\texttt{first\_child}$.
 - An integer-valued $\texttt{bytes\_ptr}$.
-- A memory-tuple-valued $\texttt{byte}$.
+- A memory-tuple $\texttt{byte}$.
 - An integer-valued $\texttt{post\_bytes\_ptr}$.
-- A boolean-valued flag $\texttt{is\_odd}$.
+- A boolean flag $\texttt{is\_odd}$.
 - A nibble-valued $\texttt{nib\_ptr}$.
 - A nibble-valued $\texttt{new\_key\_ptr}$.
 
 Here are its constraints:
 
-- Assert that $\texttt{first\_child}.\texttt{value}$ is _neither_ $\texttt{0x80}$ _nor_ $\texttt{0xA0}$.
+- Assert that $\texttt{first\_child}.\texttt{value}$ is _neither_ $\texttt{0x80}$ _nor_ $\texttt{0xA0}$. This checks that we're _not_ in a branch node.
 - Assert that $\texttt{bytes\_ptr}$ points to the beginning of the node's [prefixed nibble path](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/#specification) and $\texttt{post\_bytes\_ptr}$ points to its end. The details here are extremely technical, and come down to [how RLP encoding works](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/); we take it easy here. Essentially, there are two cases, depending on whether the prefixed nibble path is one byte or longer (equivalently, whether the _raw_ nibble path has more than 1 nibble or not).
   - If it's just one byte, then we require that $\texttt{bytes\_ptr} \stackrel{?}= \texttt{first\_child\_ptr}$ and $\texttt{post\_bytes\_ptr} \stackrel{?}= \texttt{bytes\_ptr} + 1$ both hold.
   - If it's more than one byte, we require that $\texttt{bytes\_ptr} \stackrel{?}= \texttt{first\_child\_ptr} + 1$ and $\texttt{post\_bytes\_ptr} \stackrel{?}= \texttt{bytes\_ptr} + \texttt{first\_child}.\texttt{value} - \texttt{0x80}$.
@@ -190,11 +190,114 @@ The next pair of items is a state update; here, the prover pulls the supplied st
 
 Of course, we need to constrain those latter things, by pushing new liabilities. To this end, in the second-to-last item, we ensure that $\texttt{state}.\texttt{rlp\_ptr}$ and $\texttt{first\_child\_ptr}$ relate to each other by the skipping of a list header. In the final flushing rule above, we ensure that the prover's nondeterministically supplied $\texttt{new\_key\_ptr}$ correctly points to the _result_ that one would get after advancing $\texttt{nib\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$ in lockstep until the former arrives at $\texttt{post\_bytes\_ptr}$.
 
-### The check-nibble tables
+### The _absorb-block_ tables
 
-Here, we allow the prover to absorb check-nibble liabilities emitted by the [extension–leaf transition table](/basics/arithmetization/mpt/construction#the-extensionleaf-transition-table) above.
+Here, we drop our first table which _doesn't_ directly interact with the [state channel](/basics/arithmetization/mpt/construction#the-state-channel) at all. Rather, this table's job is "second-tier"—its job is merely to allow the prover to absorb certain sub-liabilities spawned during in the flushing rules of the [hash-transition table](/basics/arithmetization/mpt/construction#the-hash-transition-table). That is, it allows the prover to _pull_ from the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel), to which the hash-transition table _pushed_.
 
-This table is our first example of a "recursive call stack" pattern. Each row represents a frame in a recursive call, which spawns a subcall on a smaller problem. As a technicality, we actually have two tables here: a recursive table, which spawns a subcall, and a base table, which lets the prover absorb the final base case of the recursion.
+This table is also our first example of a "recursive call stack" pattern. Each row represents a frame in a recursive call, which spawns a subcall on a smaller problem. That is, each row flushes a _pull_ to the absorb-block channel, and also _pushes_ a smaller problem. As a technicality, we actually have two tables here: a recursive table, which spawns a subcall, as well as a base table, which lets the prover absorb the final base case of the recursion.
+
+#### Absorb-block recursive.
+
+Here are the recusrive table's columns:
+
+- A 200-byte $\texttt{pre\_hash\_state}$.
+- A 200-byte $\texttt{perm\_input}$.
+- A 200-byte $\texttt{post\_hash\_state}$.
+- An integer-valued $\texttt{preimage\_ptr}$.
+- An _array_ consisting of 136 memory-tuples, called $\texttt{reads}$.
+- An integer-valued $\texttt{hash\_ptr}$.
+
+Here are its constraints:
+
+- For each $i \in \{0, \ldots , 135\}$:
+  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{reads}[i].\texttt{value} \oplus \texttt{pre\_hash\_state}[i]$.
+- For each $i \in \{136, \ldots , 199\}$:
+  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{reads}[i].\texttt{value}$.
+
+These two constraints are super-easy to explain: they literally just amount to how sponge absorption works. To get the thing we should subject to Keccak-$f$, we should take the sponge state, and _absorb_ in 136 bytes from memory (the _rate_). The remaining bytes (the _capacity_) should be left alone. Of course, we have no idea—yet—whether the prover's $\texttt{reads}[j].\texttt{value}$s actually represent what's in memory at all (since they are supplied by the prover nondeterministically). As usual, we will handle this below using a memory read.
+
+Finally, we have flushing rules, which check the memory reads, and spawn a subcall:
+
+- For each $i \in \{0, \ldots , 135\}$,
+  - _Pull_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[j].\texttt{value}, \texttt{reads}[j].\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+  - _Push_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[j].\texttt{value}, \texttt{reads}[j].\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the tuple $(\texttt{pre\_hash\_state}, \texttt{preimage\_ptr}, \texttt{hash\_ptr})$ from the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel).
+- _Push_ the tuple $(\texttt{post\_hash\_state}, \texttt{preimage\_ptr} + 136, \texttt{hash\_ptr})$ to the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel).
+- _Push_ the tuple $(\texttt{perm\_input}, \texttt{post\_hash\_state})$ to the [Keccak-$f$ channel](/basics/arithmetization/mpt/construction#the-keccak-f-channel).
+
+The first two rules (inside the loop) are easy to explain. Here, by doing a bunch of Lasso reads, we check that, for each $i \in \{0, \ldots , 135\}$ the byte $\texttt{reads}[j].\texttt{value}$ nondeterministically supplied by the prover _actually_ represents what's in memory at the location $\texttt{preimage\_ptr} + j$. With the aid of our constraints above, these reads settle the question of the sponge absorption—that is, they guarantee that $\texttt{perm\_input}$ is _actually_ what the prover should feed into the Keccak-$f$ permutation in order to obtain the next sponge state, provided we begin reading at $\texttt{preimage\_ptr}$.
+
+In the next two items, we allow the prover to replace the absorb-block triple he started with with a new one, in which the sponge state has been updated and the $\texttt{preimage\_ptr}$ has been advanced by 136 bytes. As a side effect, though, we spawn a _new_ liability, which controls whether the prover's Keccak-$f$ permutation was done correctly. That is, we need to spawn a liability pertaining to whether $\texttt{perm\_input}$ and $\texttt{post\_hash\_state}$ actually relate to each other by a Keccak-$f$ or not. This will itself be absorbed later.
+
+#### Absorb-block base.
+
+We need a way for the prover to cap off this recursion. To do this, we also allow it to populate a _base_ variant of this table. That table essentially checks the finalized sponge state against the target location in memory.
+
+The absorb-block base table has the columns:
+
+- A 200-byte $\texttt{pre\_hash\_state}$.
+- An integer-valued $\texttt{preimage\_ptr}$.
+- An integer-valued $\texttt{hash\_ptr}$.
+- An _array_ consisting of 32 integers, called $\texttt{timestamps}$.
+
+This table has no constraints.
+
+Finally, its flushing rules are:
+- For each $i \in \{0, \ldots , 31\}$,
+  - _Pull_ the triple $(\texttt{hash\_ptr} + 1 + i, \texttt{pre\_hash\_state}[i], \texttt{timestamps}[i])$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+  - _Push_ the triple $(\texttt{hash\_ptr} + 1 + i, \texttt{pre\_hash\_state}[i], \texttt{timestamps}[i] + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+
+The effect here is to read 32 bytes out of memory starting at the location $\texttt{hash\_ptr} + 1$ (we have to skip the single prefix byte `0xA0`), and checking whether they equal the first 32 bytes of $\texttt{pre\_hash\_state}$. Note that we are doing something a bit different: we are using $\texttt{pre\_hash\_state}$ to get the values, and just letting the prover supply the timestamps nondeterministically.
+
+### The _get-child_ tables
+
+Here, we allow the prover to absorb the get-child liabilities emitted by the [branch-transition table](/basics/arithmetization/mpt/construction#the-branch-transition-table)'s flushing rules. That is, this table lets the prover _pull_ from the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel), to which that table pushed. This is another pair of tables, consisting of a recursive table and a base table. In the recursive table, we allow the prover to advance his pointer by _one_ child, while decreasing the outstanding child index by 1. We also allow the prover to cap the recursion using the base table.
+
+#### Get-child recursive.
+
+The recursive table's columns are:
+
+- An integer-valued $\texttt{child\_ptr}$.
+- A memory tuple $\texttt{child}$.
+- An integer-valued $\texttt{index}$.
+- An integer-valued $\texttt{new\_ptr}$.
+- An integer-valued $\texttt{target\_ptr}$.
+
+The constraints are:
+
+- Assert that $\texttt{new\_ptr}$ is greater than $\texttt{child\_ptr}$ either by 1 if $\texttt{child}.\texttt{value} \stackrel{?}= \texttt{0x80}$ or by 33 if $\texttt{child}.\texttt{value} \stackrel{?}= \texttt{0xA0}$.
+  - These two cases can be distinguished by checking the single-bit flag $\texttt{child}.\texttt{value} \mathrel{\&} \texttt{0x20} \stackrel{?}= \texttt{0x20}$.
+
+The idea here is that we know by induction that the initial pointer $\texttt{child\_ptr}$ points to the beginning of _some_ child in a branch node. That child is either empty, in which case it looks like the RLP-encoded empty string `0x80`, or else it's nonempty, in which case it looks like `0xA0` followed by a 32-byte hash digest. Above, we check that we skipped the right amount—conditioned on $\texttt{child}.\texttt{value}$ being meaningful, which we check below.
+
+Here are the flushing rules:
+
+- _Pull_ the triple $(\texttt{child\_ptr}, \texttt{child}.\texttt{value}, \texttt{child}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{child\_ptr}, \texttt{child}.\texttt{value}, \texttt{child}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the tuple $(\texttt{child\_ptr}, \texttt{index}, \texttt{target\_ptr})$ to the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
+- _Push_ the tuple $(\texttt{new\_ptr}, \texttt{index} - 1, \texttt{target\_ptr})$ from the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
+
+The idea is straightforward. We check that $\texttt{child}.\texttt{value}$ actually represents what's in memory at the location $\texttt{child\_ptr}$, using a Lasso read. We moreover allow a pull and a push, in which the pointer has been advanced and the index decremented.
+
+#### Get-child base.
+
+The get-child base table has just a single column:
+
+- An integer-valued $\texttt{child\_ptr}$.
+
+It has no constraints.
+
+It has just a single flushing rule:
+
+- _Pull_ the tuple $(\texttt{child\_ptr}, 0, \texttt{child\_ptr})$ from the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
+
+Note that we have enforced $\texttt{target\_ptr} = \texttt{child\_ptr}$.
+
+### The _check-nibble_ tables
+
+Here, we present another second-tier table. This table allows the prover to absorb the check-nibble liabilities emitted by the [extension–leaf transition table](/basics/arithmetization/mpt/construction#the-extensionleaf-transition-table) above; i.e., it lets the prover _pull_ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+
+#### Check-nibble recursive.
 
 We begin with the recursive table. It has the following columns:
 
@@ -215,7 +318,6 @@ Here are the constraints:
 - Assert that $\texttt{key\_ptr}$, advanced by exactly one nibble, yields $\texttt{new\_key\_ptr}$ (similar).
 - Assert that the $\texttt{nib\_ptr}.\texttt{parity}$<sup>th</sup> nibble of $\texttt{nib}.\texttt{value}$ equals the $\texttt{key\_ptr}.\texttt{parity}$<sup>th</sup> nibble of $\texttt{key}.\texttt{value}$. This can be done with a bit of bit twiddling and shifting.
 
-
 Finally, we have the following flushing rules:
 
 - _Pull_ the triple $(\texttt{key\_ptr}.\texttt{byte}, \texttt{key}.\texttt{value}, \texttt{key}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
@@ -226,6 +328,8 @@ Finally, we have the following flushing rules:
 - _Push_ the tuple $(\texttt{new\_nib\_ptr}, \texttt{new\_key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
 These are straightforward. In the first four items, we check that the value in memory at $\texttt{key\_ptr}.\texttt{byte}$ equals $\texttt{key}.\texttt{value}$ and that the value in memory at $\texttt{nib\_ptr}.\texttt{byte}$ equals $\texttt{nib}.\texttt{value}$. In the last two, we pull the liability we started with, and push the sub-liability—with both nibble pointers advanced by exactly one step (see the constraints above).
+
+#### Check-nibble base.
 
 The base table has just three columns:
 
@@ -241,6 +345,46 @@ It has the flushing rule:
 
 Note that here, we are _forcing_ $\texttt{target\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
 
+### The _skip-list-header_ table
+
+Here, we present another auxiliary table, designed to allow the prover to absorb certain liabilities spawned during the flushing rules above. The point is to advance a pointer from the beginning of an RLP-encoded list to the beginning of that list's first child.
+
+Here are the table's columns:
+
+- An integer-valued $\texttt{beginning\_ptr}$.
+- A memory-tuple $\texttt{beginning}$.
+- An integer-valued $\texttt{first\_child\_ptr}$.
+
+Here are its constraints:
+
+- Assert that $\texttt{beginning}.\texttt{value}$ contains the "magic" RLP prefix byte corresponding to lists. Technically, this can be checked using the boolean test $\texttt{beginning}.\texttt{value} \mathrel{\&} \texttt{0xC0} \stackrel{?}= \texttt{0xC0}$.
+- Assert that $\texttt{first\_child\_ptr}$ is ahead of $\texttt{beginning\_ptr}$ by the right amount of bytes. This is another [RLP technicality](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/). There are two cases, depending on whether we're at a "long" list or not.
+  - In the case of a short list, we need to assert $\texttt{first\_child\_ptr} \stackrel{?}= \texttt{beginning\_ptr} + 1$.
+  - In the case of a long list, we need to assert $\texttt{first\_child\_ptr} \stackrel{?}= \texttt{beginning\_ptr} + 1 + \texttt{beginning}.\texttt{value} - 247$.
+  - These cases can be distinguished using the bitwise test $\texttt{beginning}.\texttt{value} \mathrel{\&} \texttt{0xF8} \stackrel{?}= \texttt{0xF8}$.
+
+Finally, its flushing rules:
+
+- _Pull_ the triple $(\texttt{beginning\_ptr}, \texttt{beginning}.\texttt{value}, \texttt{beginning}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Push_ the triple $(\texttt{beginning\_ptr}, \texttt{beginning}.\texttt{value}, \texttt{beginning}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+- _Pull_ the tuple $(\texttt{beginning\_ptr}, \texttt{first\_child\_ptr})$ from the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
+
+Notice that we haven't spawned any new liabilities.
+
+### The Keccak-f table
+
+Here, we get to our very final table. Its job is to safely let the prover absorb the Keccak-$f$ liabilities spawned by the [absorb-block recursive](/basics/arithmetization/mpt/construction#absorb-block-recursive) table.
+
+Actually, the Keccak-$f$ table is quite sophisticated, and of course can be found in production code in Binius. For now, we just mention the _subset_ of the columns that is relevant to us:
+
+- A 200-byte $\texttt{perm\_input}$.
+- A 200-byte $\texttt{perm\_output}$.
+
+It has constraints designed to ensure that, for each row, $\texttt{perm\_output} \stackrel{?}= \text{Keccak-}f(\texttt{perm\_input})$. It does this using a bunch of complicated constraints, as well as further, intermediate columns, which we don't mention here.
+
+It has just a single flushing rule:
+- _Pull_ the tuple $(\texttt{perm\_input}, \texttt{perm\_output})$ from the [Keccak-$f$ channel](/basics/arithmetization/mpt/construction#the-keccak-f-channel).
+
 ## Boundary Constraints
 
-_To complete_.
+_To complete_. Lasso loads. States.
