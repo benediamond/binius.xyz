@@ -1,9 +1,65 @@
 # Our MPT Construction [How we use M3 to arithmetize this task]
 
-Here, we begin our description in earnest. For the sake of this page, we omit [state forking](/basics/arithmetization/mpt/forking), a conceptually tricky, M3-based deduplication technique.
+Here, we begin our description in earnest. For the sake of this page, we omit [state forking](/basics/arithmetization/mpt/forking), a conceptually tricky, M3-based deduplication technique. Below, in various places, we moreover "fudge" by allowing natural number-valued datatypes. In our practical implementation, we actually work _multiplicatively_; that is, we use multiplicative group of units of an appropriately chosen tower field. We used a similar expository device in our [Lasso explainer](/basics/arithmetization/m3/lasso).
+
+## A Few Datatypes
+
+For our purposes below, it will be convenient now to extract and state separately a few datatypes, which we will often want to "bundle together".
+
+- **_State_ objects.** As we've [already discussed](/basics/arithmetization/mpt/sketch), we use the term _state_ to refer to a bundle containing:
+  - An integer-valued _RLP pointer_ $a$, which will point to a position in the prover's memory block.
+  - A nibble-valued _key pointer_ $k$, which will point to a nibble within a key in the prover's memory.
+- **Memory tuples.** As should be understandable in view of our [Lasso arithmetization](/basics/arithmetization/mpt/sketch#use-of-lasso), we will often want to bundle together "memory tuples", containing:
+  - A byte-valued _value_ $v$.
+  - An integer-valued _timestamp_ $t$.
 
 ## The M3 instance
 
-Here, we record the M3 instance, piece by piece.
+Here, we record our M3 instance specification, piece by piece.
 
-_To complete._
+### Channels
+
+- **The _state_ channel.** This channel accepts tuples containing
+  - A state value $s$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
+- **The _memory_ channel.** This channel will accept tuples containing
+  - An integer-valued _memory address_ $a$.
+  - A memory-tuple $m$ (see [above](/basics/arithmetization/mpt/construction#a-few-datatypes)).
+  
+  Each tuple here represents an address–value pair $(a, m.v)$, read at the timestamp $m.t$; we refer to our [Lasso explainer](/basics/arithmetization/mpt/sketch#use-of-lasso).
+- **The _absorb-block_ channel.** This channel facilitates claims about Keccak-256. It accepts tuples containing:
+  - A 1600-byte _pre-hash state_ $s$.
+  - An integer-valued _preimage pointer_ $a$.
+  - An integer-valued _hash pointer_ $h$.
+  
+  Each tuple $(s, a, h)$ in this channel represents a claim whereby, after absorbing some (nondeterministically supplied) amount of memory content beginning at $a$ into the sponge state $s$, one obtains the digest beginning in memory at the location $h$.
+- **The _get-child_ channel.** This channel accepts tuples of type:
+  - An integer-valued _input pointer_ $a$.
+  - An integer-valued _child index_ $i$.
+  - An integer-valued _output pointer_ $o$.
+  
+  Each tuple $(a, i, o)$ in this channel represents the claim whereby, if $a$ points to the beginning the $c$<sup>th</sup>-indexed child of some branch node, let's say, then $o$ points to the $c + i$<sup>th</sup>-indexed child of the same branch node.
+- **The _skip list header_ channel.** This channel deals with skipping the "header" of RLP-encoded lists. It accepts tuples containing:
+  - An integer-valued _RLP pointer_ $a$.
+  - An integer-valued _first child pointer_ $c$.
+  
+  This channel represents claims whereby $a$ points to the beginning of an RLP-encoded list, and $c$ points to the RLP-encoded first element of that list.
+- **The _check-nibble_ channel.** This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
+  - An integer-valued _target pointer_ $t$.
+  - A nibble-valued _nibble pointer_ $n$.
+  - A nibble-valued _key pointer_ $k$.
+  - A nibble-valued _return pointer _$r$_.
+  
+  Each tuple $(t, n, k, r)$ above represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $n$ and $k$, respectively, and advance _both_ $n$ and $k$ nibble-by-nibble in lockstep until $n$ reaches $t$, then, over the course of that time, $k$ will have reached $r$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
+- **The _Keccak-$f$_ channel.** This channel handles Keccak-$f$ permutation claims. It accepts tuples containing:
+  - A 1600-byte _permutation input_ $i$.
+  - A 1600-byte _permutation output_ $o$.
+  
+  Tuples in this channel represent valid input–output pairs of the Keccak-$f$ permutation.
+
+### Tables
+
+Here, we record our tables, as well as the constraints we put on each one.
+
+- **The _hash transition_ table.** This table has the following columns:
+  - A _state_-valued column, itself containing an RLP pointer and a key pointer (so really, two sub-columns).
+  - A
