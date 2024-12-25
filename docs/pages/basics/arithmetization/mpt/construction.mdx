@@ -210,22 +210,22 @@ Here are the recusrive table's columns:
 Here are its constraints:
 
 - For each $i \in \{0, \ldots , 135\}$:
-  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{reads}[i].\texttt{value} \oplus \texttt{pre\_hash\_state}[i]$.
+  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{pre\_hash\_state}[i] \oplus \texttt{reads}[i].\texttt{value}$.
 - For each $i \in \{136, \ldots , 199\}$:
-  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{reads}[i].\texttt{value}$.
+  - Assert $\texttt{perm\_input}[i] \stackrel{?}= \texttt{pre\_hash\_state}[i]$.
 
-These two constraints are super-easy to explain: they literally just amount to how sponge absorption works. To get the thing we should subject to Keccak-$f$, we should take the sponge state, and _absorb_ in 136 bytes from memory (the _rate_). The remaining bytes (the _capacity_) should be left alone. Of course, we have no idea—yet—whether the prover's $\texttt{reads}[j].\texttt{value}$s actually represent what's in memory at all (since they are supplied by the prover nondeterministically). As usual, we will handle this below using a memory read.
+These two constraints are super-easy to explain: they literally just amount to how sponge absorption works. To get the thing we should subject to Keccak-$f$, we should take the sponge state, and _absorb_ in 136 bytes from memory (the _rate_). The remaining bytes (the _capacity_) should be left alone. Of course, we have no idea—yet—whether the prover's $\texttt{reads}[i].\texttt{value}$s have anything to do with what's actually in memory beginning at $\texttt{preimage\_ptr}$ (since they are supplied by the prover nondeterministically). As usual, we will handle this below using a memory read.
 
 Finally, we have flushing rules, which check the memory reads, and spawn a subcall:
 
 - For each $i \in \{0, \ldots , 135\}$,
-  - _Pull_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[j].\texttt{value}, \texttt{reads}[j].\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
-  - _Push_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[j].\texttt{value}, \texttt{reads}[j].\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+  - _Pull_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[i].\texttt{value}, \texttt{reads}[i].\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
+  - _Push_ the triple $(\texttt{preimage\_ptr} + i, \texttt{reads}[i].\texttt{value}, \texttt{reads}[i].\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
 - _Pull_ the tuple $(\texttt{pre\_hash\_state}, \texttt{preimage\_ptr}, \texttt{hash\_ptr})$ from the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel).
 - _Push_ the tuple $(\texttt{post\_hash\_state}, \texttt{preimage\_ptr} + 136, \texttt{hash\_ptr})$ to the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel).
 - _Push_ the tuple $(\texttt{perm\_input}, \texttt{post\_hash\_state})$ to the [Keccak-$f$ channel](/basics/arithmetization/mpt/construction#the-keccak-f-channel).
 
-The first two rules (inside the loop) are easy to explain. Here, by doing a bunch of Lasso reads, we check that, for each $i \in \{0, \ldots , 135\}$ the byte $\texttt{reads}[j].\texttt{value}$ nondeterministically supplied by the prover _actually_ represents what's in memory at the location $\texttt{preimage\_ptr} + j$. With the aid of our constraints above, these reads settle the question of the sponge absorption—that is, they guarantee that $\texttt{perm\_input}$ is _actually_ what the prover should feed into the Keccak-$f$ permutation in order to obtain the next sponge state, provided we begin reading at $\texttt{preimage\_ptr}$.
+The first two rules (inside the loop) are easy to explain. Here, by doing a bunch of Lasso reads, we check that, for each $i \in \{0, \ldots , 135\}$ the byte $\texttt{reads}[i].\texttt{value}$ nondeterministically supplied by the prover _actually_ represents what's in memory at the location $\texttt{preimage\_ptr} + i$. With the aid of our constraints above, these reads settle the question of the sponge absorption—that is, they guarantee that $\texttt{perm\_input}$ is actually what the prover _should_ feed into the Keccak-$f$ permutation in order to obtain the next sponge state, provided we begin reading at $\texttt{preimage\_ptr}$.
 
 In the next two items, we allow the prover to replace the absorb-block triple he started with with a new one, in which the sponge state has been updated and the $\texttt{preimage\_ptr}$ has been advanced by 136 bytes. As a side effect, though, we spawn a _new_ liability, which controls whether the prover's Keccak-$f$ permutation was done correctly. That is, we need to spawn a liability pertaining to whether $\texttt{perm\_input}$ and $\texttt{post\_hash\_state}$ actually relate to each other by a Keccak-$f$ or not. This will itself be absorbed later.
 
@@ -291,7 +291,7 @@ It has just a single flushing rule:
 
 - _Pull_ the tuple $(\texttt{child\_ptr}, 0, \texttt{child\_ptr})$ from the [get-child channel](/basics/arithmetization/mpt/construction#the-get-child-channel).
 
-Note that we have enforced $\texttt{target\_ptr} = \texttt{child\_ptr}$.
+Note that we have enforced that $\texttt{index} = 0$ and $\texttt{target\_ptr} = \texttt{child\_ptr}$, in a _de facto_ way by what we pulled.
 
 ### The _check-nibble_ tables
 
