@@ -310,7 +310,7 @@ We begin with the recursive table. It has the following columns:
 - An integer-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{return\_ptr}$.
 
-While there are a lot of fields here, the logic should be pretty clear; we refer to our explanation of the [check-nibble table](/basics/arithmetization/mpt/construction#the-check-nibble-channel). In each _row_ of the table, we are going to allow the prover to advance both nibbles a single step. We are going moreover going to do a few memory reads, to check that the relevant nibbles are equal. Finally, we will spawn a recursive sub-liability.
+While there are a lot of fields here, the logic should be pretty clear; we refer to our explanation of the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel). In each _row_ of the table, we are going to allow the prover to advance both nibbles a single step. We are going moreover going to do a few memory reads, to check that the relevant nibbles are equal. Finally, we will spawn a recursive sub-liability.
 
 Here are the constraints:
 
@@ -325,7 +325,7 @@ Finally, we have the following flushing rules:
 - _Pull_ the triple $(\texttt{nib\_ptr}.\texttt{byte}, \texttt{nib}.\texttt{value}, \texttt{nib}.\texttt{timestamp})$ from the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
 - _Push_ the triple $(\texttt{nib\_ptr}.\texttt{byte}, \texttt{nib}.\texttt{value}, \texttt{nib}.\texttt{timestamp} + 1)$ to the [memory channel](/basics/arithmetization/mpt/construction#the-memory-channel).
 - _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
-- _Push_ the tuple $(\texttt{new\_nib\_ptr}, \texttt{new\_key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Push_ the tuple $(\texttt{new\_nib\_ptr}, \texttt{new\_key\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
 These are straightforward. In the first four items, we check that the value in memory at $\texttt{key\_ptr}.\texttt{byte}$ equals $\texttt{key}.\texttt{value}$ and that the value in memory at $\texttt{nib\_ptr}.\texttt{byte}$ equals $\texttt{nib}.\texttt{value}$. In the last two, we pull the liability we started with, and push the sub-liability—with both nibble pointers advanced by exactly one step (see the constraints above).
 
@@ -343,7 +343,7 @@ It has a single constraint:
 It has the flushing rule:
 - _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{key\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
-Note that here, we are _forcing_ $\texttt{target\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
+Note that here, we are _forcing_ $\texttt{return\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
 
 ### The _skip-list-header_ table
 
