@@ -2,9 +2,7 @@
 
 We've just wrapped up the most complex [construction](/basics/arithmetization/mpt/construction) in this site area. In that page, we detailed a simplified rendition of our M3 arithmetization of Merkle–Patricia inclusion. That rendition omitted _state forking_, a deduplication technique which winds up saving us a solid amount of work in practice.
 
-Before detailing how state forking works, we explain why deduplication is necessary. We recall [what we're trying to prove](/basics/arithmetization/mpt/review#the-problem-to-arithmetize): we have a state trie root and a _plurality_ of key–value pairs, each of which is claimed to reside in the database underlying that state trie root. The problem is that the independent verification tasks associated with these respective key–value pairs involve certain common operations. For example, _each_ key–value verification will start with the very same [hash-unwinding step](3/basics/arithmetization/mpt/construction#the-hash-transition-table): the prover will need to unwind the global state root hash into the hash of the topmost branch node. This task will be _identical_ for all pairs verified (even when the keys don't share a common first nibble).
-
-When two keys _do_ share a common first nibble, even more work will be shared. In each such case, not only will the topmost hash transition be shared, but the subsequent branch transition also will, as well the _next_ hash transition. Overall, when hundreds of key–value pairs are being verified, the structure of shared operations will be complicated.
+Before detailing how state forking works, we explain why deduplication is necessary. We recall [what we're trying to prove](/basics/arithmetization/mpt/review#the-problem-to-arithmetize): we have a state trie root and a _plurality_ of key–value pairs, each of which is claimed to reside in the database underlying that state trie root. The problem is that the independent verification tasks associated with these respective key–value pairs involve certain common operations. For example, _each_ key–value verification will start with the very same [hash-unwinding step](3/basics/arithmetization/mpt/construction#the-hash-transition-table): the prover will need to unwind the global state root hash into the hash of the topmost branch node. This task will be _identical_ for all pairs verified (even when the keys don't share a common first nibble). When two keys _do_ share a common first nibble, even more work can be shared. In each such case, not only will the topmost hash transition be shared, but the subsequent branch transition also will, as well the _next_ hash transition. Overall, when hundreds of key–value pairs are being verified, the structure of shared operations will be complicated.
 
 These shared operations represent a source of waste. Indeed, there is no sense in forcing the prover to prove—and the verifier to verify—multiple copies of the same identical operation.
 
@@ -14,12 +12,54 @@ In this page, we explain state forking, which lets us _eliminate all common tran
 
 We first recall how our [boundary conditions](/basics/arithmetization/mpt/construction#boundary-constraints) worked in our no-forking variant. In that variant, for _each_ key–value pair included in the statement, the verifier _pushed_ the initial liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the state channel and _pulled_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel. To balance the state channel, the prover had to connect the above liability to the above asset _independently_ for each key–value pair $i$.
 
-Here, we are going to do something different. We are going to:
+Here, we are going to do something different. We are going push just a _single_ master liability corresponding to the state root. As for the terminal leaf assets, we are going to pull one of those per key–value pair in the statement, just as we did previously.
 
-- _Push_, once and for all, the single master liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[0])$ to the state channel.
+How can the prover possibly balance this? In our simplified construction, we only ever let the prover pull a state by pushing _exactly one_ further state. Here, we are going to introduce a new operation—called _state-forking_—which lets a prover "split" or "fork" an existing state into two. This operation is safe to do, since, by induction, we can assume that each state in the push side of the state channel is "valid" (obtained from the root state using legal steps).
+
+More precisely, we are going to allow the prover to "fork off" a duplicate copy of any given state—but where the new copy has a $\texttt{key\_ptr}$ pointing into a _different_ key in memory than the original state did. In order to make this sound, we need to require that the original state's key and the new state's key agree identically up until the nibble at which the fork took place. We can check this by pushing a new subsidiary liability to the check-nibble channel.
+
+In order to force the prover only to duplicate _existing_ states—and not create new states out of thin air—we use a timestamping technique, which works a lot like Lasso's does.
+
+## The Details
+
+In order to achieve this, we thus enrich the [_state_ type](/basics/arithmetization/mpt/construction#a-few-datatypes) in two different ways. First, we add a timestamp to each state. Moreover, we add a "start pointer", so that each state keeps track of not just a key pointer, but moreover the _beginning_ of that key, too. This lets us figure out which "stretch" of nibbles we need to run check-nibble over.
+
+Thus, we now have:
+
+- **_Enriched state_ objects.** Our state object now contains:
+  - An integer-valued $\texttt{rlp\_ptr}$, which will point to a position in the prover's memory block.
+  - An integer-valued $\texttt{start\_ptr}$, which will point to the _beginning_ of the active key in memory.
+  - A nibble-valued $\texttt{key\_ptr}$, which will point to a nibble within a key in the prover's memory.
+  - An integer-valued $\texttt{timestamp}$.
+
+We now declare that our state channel accept _enriched_ state objects.
+
+### The new boundary conditions
+
+We will also have new boundary conditions. We recall the notation we used to explain our [our boundary conditions](/basics/arithmetization/mpt/construction#boundary-conditions). We moreover introduce some _final timestamps_ $F[i]$, sent in the clear nondeterministically from the prover to the verifier. These will be integer-valued; there will be one per key–value pair $i$ in the statement.
+
+- _Push_, once and for all, the single master liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[0], \texttt{KEYS}[0], 0)$ to the state channel.
 - For each key–value pair $i$ in the statement:
-  - _Pull_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel.
+  - _Pull_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i], \texttt{KEYS}[i] + 32, F[i])$ from the state channel.
 
-Thus, the state channel will begin with just a single liability, and many assets. How can the prover possibly balance this? In our simplified construction, we only ever let the prover _pull_ a state by _pushing_ exactly one further state.
+Thus, the state channel will begin with just a single liability, and many assets. The prover will get from the one to the many using a combination of hash and node transitions and forking.
 
-Here, we are going to introduce a new operation, _state-forking_, which lets a prover "split" or "fork" an existing state into two. This is safe to do, since, by induction, we can assume that each state in the push side of the state channel is "valid" (obtained from the root state using legal steps).
+To facilitate forking, we add a new table:
+
+### The state-forking table
+
+The state-forking table has the following columns:
+
+- A enriched state $\texttt{state}$.
+- An integer-valued $\texttt{new\_start\_ptr}$.
+- A nibble-valued $\texttt{new\_key\_ptr}$.
+
+It has no constraints.
+
+Here are its flushing rules:
+- _Pull_ $\texttt{state}$ from the enriched state channel.
+- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{start\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{state}.\texttt{timestamp} + 1)$ to the enriched state channel.
+- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{new\_start\_ptr}, \texttt{new\_key\_ptr}, 0)$ to the enriched state channel.
+- _Push_ $((\texttt{state}.\texttt{start\_ptr}, \texttt{false}), (\texttt{new\_start\_ptr}, \texttt{false}), \texttt{state}.\texttt{key\_ptr}, \texttt{new\_key\_ptr})$ to the check-nibble channel.
+
+And we're done. The effect of this is to _pull_ $\texttt{state}$ from the enriched state channel, and put it right back—but with an increased timestamp (so this is not a no-op). Meanwhile, we pushed a _duplicate_ of $\texttt{state}$, whose $\texttt{start\_ptr}$ is swapped out with $\texttt{new\_start\_ptr}$ and whose $\texttt{key\_ptr}$ is swapped out with $\texttt{new\_key\_ptr}$. Finally, we push a liability to the check-nibble channel. That liability ensures that the respective stretches of nibbles between $\texttt{state}.\texttt{start\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$, on the one hand, and between $\texttt{new\_start\_ptr}$ and $\texttt{new\_key\_ptr}$, on the other, are equally long and identical. (By "between", we mean inclusive on the left end and exclusive on the right—like Python).
