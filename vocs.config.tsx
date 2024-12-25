@@ -189,7 +189,7 @@ export default defineConfig({
             link: "/building/lookup/gadget",
           },
           {
-            text: "Components Creation",
+            text: "Creating Components",
             link: "/building/lookup/components",
           },
           {

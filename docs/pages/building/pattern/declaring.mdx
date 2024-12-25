@@ -80,7 +80,7 @@ Binius currently supports six types of virtual oracles, and each one can be crea
   let padded = builder.add_zero_padded("padded", unpadded, n_vars);
   ```
 
-For details on creating virtual polynomials, for example to see what checks are applied to parameters, see [MulitilinearOracleSet](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/oracle/multilinear.rs).
+For details on creating virtual polynomials, for example to see what checks are applied to parameters, see [MultilinearOracleSet](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/oracle/multilinear.rs).
 
 :::info
 There is something all these transformations into virtual oracles share in common. With the exception of `add_linear_combination_with_offset`, they are all _linear_ transformations. Clearly linear combinations are linear transformations. As for the other transformations, linearity means if you have two oracles of the same height the following two operations are equivalent:
