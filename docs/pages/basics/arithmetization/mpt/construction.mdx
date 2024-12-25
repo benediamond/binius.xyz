@@ -1,4 +1,4 @@
-# Our MPT Construction [Our full M3-based arithmetization of MPT inclusion]
+# Our MPT Construction [Our full M3-based arithmetization of Merkle–Patricia inclusion]
 
 Here, we begin our description in earnest. For the sake of this page, we omit [state forking](/basics/arithmetization/mpt/forking), a conceptually tricky, M3-based deduplication technique. Below, in various places, we moreover "fudge" by allowing natural number-valued datatypes. In our practical implementation, we actually work _multiplicatively_; that is, we use multiplicative group of units of an appropriately chosen tower field. We used a similar expository device in our [Lasso explainer](/basics/arithmetization/m3/lasso).
 
@@ -64,7 +64,7 @@ This channel represents claims whereby $\texttt{rlp\_ptr}$ points to the beginni
 This channel handles asserting the equality of substrings of nibbles. It accepts tuples of containing:
 - A nibble-valued $\texttt{nib\_ptr}$.
 - A nibble-valued $\texttt{key\_ptr}$.
-- An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{return\_ptr}$.
 
 Each tuple in this channel represents a claim whereby two "stretches" of nibbles are equal to each other. Essentially, it says that if you start with two nibble pointers, pointing at $\texttt{nib\_ptr}$ and $\texttt{key\_ptr}$, respectively, and advance _both_ pointers nibble-by-nibble in lockstep until $\texttt{nib\_ptr}$ reaches $\texttt{target\_ptr}$, then, over the course of that time, $\texttt{key\_ptr}$ will have reached $\texttt{return\_ptr}$; and, moreover, both stretches of nibbles will have been identically equal to each other all the while.
@@ -182,7 +182,7 @@ Here are the table's flushing rules.
 - _Pull_ $\texttt{state}$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the state $(\texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
-- _Push_ the tuple $(\texttt{nib\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Push_ the tuple $(\texttt{nib\_ptr}, \texttt{state}.\texttt{key\_ptr}, (\texttt{post\_bytes\_ptr}, \texttt{false}), \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
 The first two items above are again a memory read; they ensure that $\texttt{first\_child}.\texttt{value}$ equals what's in memory at the location $\texttt{first\_child\_ptr}$. Similarly, the second two ensure that $\texttt{byte}.\texttt{value}$ equals what's in memory at $\texttt{bytes\_ptr}$.
 
@@ -307,7 +307,7 @@ We begin with the recursive table. It has the following columns:
 - A nibble-valued $\texttt{new\_key\_ptr}$.
 - A memory tuple $\texttt{nib}$.
 - A memory tuple $\texttt{key}$.
-- An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{target\_ptr}$.
 - A nibble-valued $\texttt{return\_ptr}$.
 
 While there are a lot of fields here, the logic should be pretty clear; we refer to our explanation of the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel). In each _row_ of the table, we are going to allow the prover to advance both nibbles a single step. We are going moreover going to do a few memory reads, to check that the relevant nibbles are equal. Finally, we will spawn a recursive sub-liability.
@@ -331,19 +331,17 @@ These are straightforward. In the first four items, we check that the value in m
 
 #### Check-nibble base.
 
-The base table has just three columns:
+The base table has just two columns:
 
-- A nibble-valued $\texttt{nib\_ptr}$.
-- A nibble-valued $\texttt{key\_ptr}$.
-- An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{return\_ptr}$.
 
-It has a single constraint:
-- Assert that $\texttt{nib\_ptr}.\texttt{byte} \stackrel{?}= \texttt{target\_ptr}$ and $\texttt{nib\_ptr}.\texttt{parity} \stackrel{?}= \texttt{false}$. This ensures that the nibble pointer has "advanced all the way".
+It has no constraints.
 
 It has the flushing rule:
-- _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{key\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Pull_ the tuple $(\texttt{target\_ptr}, \texttt{return\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
-Note that here, we are _forcing_ $\texttt{return\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
+Note that here, we are _forcing_ $\texttt{nib\_ptr} = \texttt{target\_ptr}$ and $\texttt{key\_ptr} = \texttt{return\_ptr}$. That is, we only allow the prover to pull a claim in which the nibble pointer has reached its target, and in which the key and return pointers have equated.
 
 ### The _skip-list-header_ table
 
@@ -385,14 +383,14 @@ It has constraints designed to ensure that, for each row, $\texttt{perm\_output}
 It has just a single flushing rule:
 - _Pull_ the tuple $(\texttt{perm\_input}, \texttt{perm\_output})$ from the [Keccak-$f$ channel](/basics/arithmetization/mpt/construction#the-keccak-f-channel).
 
-## Boundary Constraints
+## Boundary Conditions
 
-Our verifier has two main sorts of boundary constraints. In the first, it pre-seeds the _state channel_ with statement-dependent data. It also has to initialize the memory channel using the prover's memory block and his final read counts. This latter thing is standard from [Lasso](/basics/arithmetization/m3/lasso); we ignore it for now.
+Our verifier has two main sorts of boundary conditions. In the first, it pre-seeds the _state channel_ with statement-dependent data. It also has to initialize the memory channel using the prover's memory block and his final read counts. This latter thing is standard from [Lasso](/basics/arithmetization/m3/lasso); we ignore it for now.
 
-Thus, we explain the verifier's state boundary constraints, already sketched in our [informal explanation](/basics/arithmetization/mpt/sketch#the-boundary-conditions). We write $\texttt{ROOT\_PTR}$ for a pointer, sent by the prover, to the `0xA0`-prefixed global state trie root in the prover's memory block. Moreover, for each key–value pair $i$ in the statement, we write $\texttt{KEYS}[i]$ for a pointer to the $i$<sup>th</sup> key in memory and $\texttt{VALUES}[i]$ for a pointer to the $i$<sup>th</sup> value in memory. By making small reads into the prover's memory block, the verifier can explicitly check that all of these pointers are valid and pointing to the right thing.
+Thus, we explain the verifier's state boundary conditions, already sketched in our [informal explanation](/basics/arithmetization/mpt/sketch#the-boundary-conditions). We write $\texttt{ROOT\_PTR}$ for a pointer, sent by the prover, to the `0xA0`-prefixed global state trie root in the prover's memory block. Moreover, for each key–value pair $i$ in the statement, we write $\texttt{KEYS}[i]$ for a pointer to the $i$<sup>th</sup> key in memory and $\texttt{VALUES}[i]$ for a pointer to the $i$<sup>th</sup> value in memory. By making small reads into the prover's memory block, the verifier can explicitly check that all of these pointers are valid and pointing to the right thing.
 
 - For each for each key–value pair $i$ contained in the overall statement, the verifier performs the following boundary operations:
   - _Push_ the initial tuple $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
   - _Pull_ the terminal tuple $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 
-You can convince yourself that this works! The prover makes a path from the push to the pull by steadily consuming nibble after nibble of the key, and stepping the pointer from the root down the Merkle–Patricia path.
+You can convince yourself that this works! For each key–value pair $i$, the prover makes a path from the relevant push to the relevant pull by steadily consuming nibble after nibble of the relevant key, and stepping the pointer from the root down the appropriate Merkle–Patricia path.

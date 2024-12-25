@@ -82,7 +82,7 @@ On the other hand, the flushing rule
 wouldn't make sense / typecheck, since there would be too many components for the channel (3, instead of 2).
 :::
 
-### Boundary constraints
+### Boundary conditions
 
 Finally, we will in general want to allow the "preseeding" of channels with statement-dependent data. The idea here is that before populate the tables and apply the flushing rules, we initialize the channels with some statement-dependent initial state. What this means is that we will take certain values and "manually" push or pull them _directly_ to certain channels. An example of this can be seen in our [M3 example](/basics/arithmetization/m3/example), where the verifier started things off by _pushing_ 3,135 (the statement) and _pulling_ 1 (a null / terminal value).
 
@@ -90,7 +90,7 @@ There is a further slight subtlety. Even standard flushing rules, which _do_ inv
 
 ## Instances and Attempts
 
-We will use the term _M3 instance_ to refer to a _general_ specification of channels, tables, flushing rules, and boundary contraints. An _instance_ describes how many channels there are (and what their type signatures are), how many tables there are (and what their type signatures are), what the flushing rules are, and finally how channels should be pre-seeded using statement-dependent data.
+We will use the term _M3 instance_ to refer to a _general_ specification of channels, tables, flushing rules, and boundary conditions. An _instance_ describes how many channels there are (and what their type signatures are), how many tables there are (and what their type signatures are), what the flushing rules are, and finally how channels should be pre-seeded using statement-dependent data.
 
 :::info
 For example, an instance might declare that there be _two_ channels, one of type $(\mathcal{T}_0, \mathcal{T}_3, \mathcal{T}_4)$ and the other of type $(\mathcal{T}_4, \mathcal{T}_5)$, and _two_ tables, one of type $(\mathcal{T}_4, \mathcal{T}_5, \mathcal{T}_5)$, and one of type $(\mathcal{T}_0, \mathcal{T}_3)$. These tables might be respectively _constrained_ by the polynomials $X_0 \cdot X_1 = X_2$ and $X_0^3 = X_1$, say. It might finally declare that the first two columns of its first table be pushed to its second channel, and that table's first and third columns be pulled from it, as well as that both columns of its second table _and_ the first column of its first table be pushed to its first channel. Finally, it might pre-push the statement—of type $(\mathcal{T}_0, \mathcal{T}_3, \mathcal{T}_4)$—to its first channel, and pre-pull `(0x0, 0x00, 0x0000)`.
