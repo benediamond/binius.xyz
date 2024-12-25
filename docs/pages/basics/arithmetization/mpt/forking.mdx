@@ -1,3 +1,25 @@
 # State Forking [How to save work when paths share common nodes]
 
-_To complete._
+We've just wrapped up the most complex [construction](/basics/arithmetization/mpt/construction) in this site area. In that page, we detailed a simplified rendition of our M3 arithmetization of Merkle–Patricia inclusion. That rendition omitted _state forking_, a deduplication technique which winds up saving us a solid amount of work in practice.
+
+Before detailing how state forking works, we explain why deduplication is necessary. We recall [what we're trying to prove](/basics/arithmetization/mpt/review#the-problem-to-arithmetize): we have a state trie root and a _plurality_ of key–value pairs, each of which is claimed to reside in the database underlying that state trie root. The problem is that the independent verification tasks associated with these respective key–value pairs involve certain common operations. For example, _each_ key–value verification will start with the very same [hash-unwinding step](3/basics/arithmetization/mpt/construction#the-hash-transition-table): the prover will need to unwind the global state root hash into the hash of the topmost branch node. This task will be _identical_ for all pairs verified (even when the keys don't share a common first nibble).
+
+When two keys _do_ share a common first nibble, even more work will be shared. In each such case, not only will the topmost hash transition be shared, but the subsequent branch transition also will, as well the _next_ hash transition. Overall, when hundreds of key–value pairs are being verified, the structure of shared operations will be complicated.
+
+These shared operations represent a source of waste. Indeed, there is no sense in forcing the prover to prove—and the verifier to verify—multiple copies of the same identical operation.
+
+In this page, we explain state forking, which lets us _eliminate all common transitions_ entirely (and securely, of course). We keep the discussion on a relatively informal level here.
+
+## The Idea
+
+We first recall how our [boundary conditions](/basics/arithmetization/mpt/construction#boundary-constraints) worked in our no-forking variant. In that variant, for _each_ key–value pair included in the statement, the verifier _pushed_ the initial liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the state channel and _pulled_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel. To balance the state channel, the prover had to connect the above liability to the above asset _independently_ for each key–value pair $i$.
+
+Here, we are going to do something different. We are going to:
+
+- _Push_, once and for all, the single master liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[0])$ to the state channel.
+- For each key–value pair $i$ in the statement:
+  - _Pull_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel.
+
+Thus, the state channel will begin with just a single liability, and many assets. How can the prover possibly balance this? In our simplified construction, we only ever let the prover _pull_ a state by _pushing_ exactly one further state.
+
+Here, we are going to introduce a new operation, _state-forking_, which lets a prover "split" or "fork" an existing state into two. This is safe to do, since, by induction, we can assume that each state in the push side of the state channel is "valid" (obtained from the root state using legal steps).

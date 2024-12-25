@@ -1,4 +1,4 @@
-# Our MPT Construction [Our full M3-based arithmetization of MPT inclusion]
+# Our MPT Construction [Our full M3-based arithmetization of Merkle–Patricia inclusion]
 
 Here, we begin our description in earnest. For the sake of this page, we omit [state forking](/basics/arithmetization/mpt/forking), a conceptually tricky, M3-based deduplication technique. Below, in various places, we moreover "fudge" by allowing natural number-valued datatypes. In our practical implementation, we actually work _multiplicatively_; that is, we use multiplicative group of units of an appropriately chosen tower field. We used a similar expository device in our [Lasso explainer](/basics/arithmetization/m3/lasso).
 
@@ -331,19 +331,17 @@ These are straightforward. In the first four items, we check that the value in m
 
 #### Check-nibble base.
 
-The base table has just three columns:
+The base table has just two columns:
 
-- A nibble-valued $\texttt{nib\_ptr}$.
-- A nibble-valued $\texttt{key\_ptr}$.
 - An integer-valued $\texttt{target\_ptr}$.
+- A nibble-valued $\texttt{return\_ptr}$.
 
-It has a single constraint:
-- Assert that $\texttt{nib\_ptr}.\texttt{byte} \stackrel{?}= \texttt{target\_ptr}$ and $\texttt{nib\_ptr}.\texttt{parity} \stackrel{?}= \texttt{false}$. This ensures that the nibble pointer has "advanced all the way".
+It has no constraints.
 
 It has the flushing rule:
-- _Pull_ the tuple $(\texttt{nib\_ptr}, \texttt{key\_ptr}, \texttt{target\_ptr}, \texttt{key\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Pull_ the tuple $((\texttt{target\_ptr}, \texttt{false}), \texttt{return\_ptr}, \texttt{target\_ptr}, \texttt{return\_ptr})$ from the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
-Note that here, we are _forcing_ $\texttt{return\_ptr} = \texttt{key\_ptr}$—that is, we only allow the prover to pull a state in which the key pointer has reached the nondeterministically claimed target.
+Note that here, we are _forcing_ $\texttt{nib\_ptr} = (\texttt{target\_ptr}, \texttt{false})$ and $\texttt{key\_ptr} = \texttt{return\_ptr}$. That is, we only allow the prover to pull a claim in which the nibble pointer has reached its target, and in which the key and return pointers have equated.
 
 ### The _skip-list-header_ table
 
@@ -395,4 +393,4 @@ Thus, we explain the verifier's state boundary constraints, already sketched in 
   - _Push_ the initial tuple $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
   - _Pull_ the terminal tuple $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 
-You can convince yourself that this works! The prover makes a path from the push to the pull by steadily consuming nibble after nibble of the key, and stepping the pointer from the root down the Merkle–Patricia path.
+You can convince yourself that this works! For each key–value pair $i$, the prover makes a path from the relevant push to the relevant pull by steadily consuming nibble after nibble of the relevant key, and stepping the pointer from the root down the appropriate Merkle–Patricia path.
