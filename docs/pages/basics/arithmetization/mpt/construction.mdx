@@ -182,7 +182,7 @@ Here are the table's flushing rules.
 - _Pull_ $\texttt{state}$ from the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the state $(\texttt{post\_bytes\_ptr}, \texttt{new\_key\_ptr})$ to the [state channel](/basics/arithmetization/mpt/construction#the-state-channel).
 - _Push_ the tuple $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{first\_child\_ptr})$ to the [skip-list-header channel](/basics/arithmetization/mpt/construction#the-skip-list-header-channel).
-- _Push_ the tuple $(\texttt{nib\_ptr}, \texttt{state}.\texttt{key\_ptr}, (\texttt{post\_bytes\_ptr}, \texttt{false}), \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
+- _Push_ the tuple $(\texttt{nib\_ptr}, \texttt{state}.\texttt{key\_ptr}, (\texttt{post\_bytes\_ptr}, 0), \texttt{new\_key\_ptr})$ to the [check-nibble channel](/basics/arithmetization/mpt/construction#the-check-nibble-channel).
 
 The first two items above are again a memory read; they ensure that $\texttt{first\_child}.\texttt{value}$ equals what's in memory at the location $\texttt{first\_child\_ptr}$. Similarly, the second two ensure that $\texttt{byte}.\texttt{value}$ equals what's in memory at $\texttt{bytes\_ptr}$.
 

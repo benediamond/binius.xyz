@@ -10,7 +10,7 @@ In this page, we explain state forking, which lets us _eliminate all common tran
 
 ## The Idea
 
-We first recall how our [boundary conditions](/basics/arithmetization/mpt/construction#boundary-constraints) worked in our no-forking variant. In that variant, for _each_ key–value pair included in the statement, the verifier _pushed_ the initial liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the state channel and _pulled_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel. To balance the state channel, the prover had to connect the above liability to the above asset _independently_ for each key–value pair $i$.
+We first recall how our [boundary conditions](/basics/arithmetization/mpt/construction#boundary-conditions) worked in our no-forking variant. In that variant, for _each_ key–value pair included in the statement, the verifier _pushed_ the initial liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[i])$ to the state channel and _pulled_ the terminal asset $(\texttt{VALUES}[i], \texttt{KEYS}[i] + 32)$ from the state channel. To balance the state channel, the prover had to connect the above liability to the above asset _independently_ for each key–value pair $i$.
 
 Here, we are going to do something different. We are going push just a _single_ master liability corresponding to the state root. As for the terminal leaf assets, we are going to pull one of those per key–value pair in the statement, just as we did previously.
 
@@ -36,7 +36,7 @@ We now declare that our state channel accept _enriched_ state objects.
 
 ### The new boundary conditions
 
-We will also have new boundary conditions. We recall the notation we used to explain our [our boundary conditions](/basics/arithmetization/mpt/construction#boundary-conditions). We moreover introduce some _final timestamps_ $F[i]$, sent in the clear nondeterministically from the prover to the verifier. These will be integer-valued; there will be one per key–value pair $i$ in the statement.
+We will also have new boundary conditions. We recall the notation we used to explain [our previous boundary conditions](/basics/arithmetization/mpt/construction#boundary-conditions). We moreover introduce some _final timestamps_ $F[i]$, sent in the clear nondeterministically from the prover to the verifier. These will be integer-valued; there will be one per key–value pair $i$ in the statement.
 
 - _Push_, once and for all, the single master liability $(\texttt{ROOT\_PTR}, \texttt{KEYS}[0], \texttt{KEYS}[0], 0)$ to the state channel.
 - For each key–value pair $i$ in the statement:
@@ -44,11 +44,9 @@ We will also have new boundary conditions. We recall the notation we used to exp
 
 Thus, the state channel will begin with just a single liability, and many assets. The prover will get from the one to the many using a combination of hash and node transitions and forking.
 
-To facilitate forking, we add a new table:
-
 ### The state-forking table
 
-The state-forking table has the following columns:
+To facilitate forking, we add a new table. The state-forking table has the following columns:
 
 - A enriched state $\texttt{state}$.
 - An integer-valued $\texttt{new\_start\_ptr}$.
@@ -57,9 +55,9 @@ The state-forking table has the following columns:
 It has no constraints.
 
 Here are its flushing rules:
-- _Pull_ $\texttt{state}$ from the enriched state channel.
-- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{start\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{state}.\texttt{timestamp} + 1)$ to the enriched state channel.
-- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{new\_start\_ptr}, \texttt{new\_key\_ptr}, 0)$ to the enriched state channel.
-- _Push_ $((\texttt{state}.\texttt{start\_ptr}, \texttt{false}), (\texttt{new\_start\_ptr}, \texttt{false}), \texttt{state}.\texttt{key\_ptr}, \texttt{new\_key\_ptr})$ to the check-nibble channel.
+- _Pull_ $\texttt{state}$ from the state channel.
+- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{state}.\texttt{start\_ptr}, \texttt{state}.\texttt{key\_ptr}, \texttt{state}.\texttt{timestamp} + 1)$ to the state channel.
+- _Push_ $(\texttt{state}.\texttt{rlp\_ptr}, \texttt{new\_start\_ptr}, \texttt{new\_key\_ptr}, 0)$ to the state channel.
+- _Push_ $((\texttt{state}.\texttt{start\_ptr}, 0), (\texttt{new\_start\_ptr}, 0), \texttt{state}.\texttt{key\_ptr}, \texttt{new\_key\_ptr})$ to the check-nibble channel.
 
 And we're done. The effect of this is to _pull_ $\texttt{state}$ from the enriched state channel, and put it right back—but with an increased timestamp (so this is not a no-op). Meanwhile, we pushed a _duplicate_ of $\texttt{state}$, whose $\texttt{start\_ptr}$ is swapped out with $\texttt{new\_start\_ptr}$ and whose $\texttt{key\_ptr}$ is swapped out with $\texttt{new\_key\_ptr}$. Finally, we push a liability to the check-nibble channel. That liability ensures that the respective stretches of nibbles between $\texttt{state}.\texttt{start\_ptr}$ and $\texttt{state}.\texttt{key\_ptr}$, on the one hand, and between $\texttt{new\_start\_ptr}$ and $\texttt{new\_key\_ptr}$, on the other, are equally long and identical. (By "between", we mean inclusive on the left end and exclusive on the right—like Python).
