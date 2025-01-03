@@ -194,11 +194,11 @@ Of course, we need to constrain those latter things, by pushing new liabilities.
 
 Here, we drop our first table which _doesn't_ directly interact with the [state channel](/basics/arithmetization/mpt/construction#the-state-channel) at all. Rather, this table's job is "second-tier"—its job is merely to allow the prover to absorb certain sub-liabilities spawned during in the flushing rules of the [hash-transition table](/basics/arithmetization/mpt/construction#the-hash-transition-table). That is, it allows the prover to _pull_ from the [absorb-block channel](/basics/arithmetization/mpt/construction#the-absorb-block-channel), to which the hash-transition table _pushed_.
 
-This table is also our first example of a "recursive call stack" pattern. Each row represents a frame in a recursive call, which spawns a subcall on a smaller problem. That is, each row flushes a _pull_ to the absorb-block channel, and also _pushes_ a smaller problem. As a technicality, we actually have two tables here: a recursive table, which spawns a subcall, as well as a base table, which lets the prover absorb the final base case of the recursion.
+This table is also our first example of a "recursive call stack" pattern. Each row represents a frame in a recursive call, which spawns a subcall on a smaller problem. That is, each row flushes a _pull_ to the absorb-block channel, and also _pushes_ a smaller problem. As a technicality, we actually have two tables here: a recursive table, which spawns a subcall, as well as a base table, which lets the prover pull the final base case of the recursion.
 
 #### Absorb-block recursive.
 
-Here are the recusrive table's columns:
+Here are the recursive table's columns:
 
 - A 200-byte $\texttt{pre\_hash\_state}$.
 - A 200-byte $\texttt{perm\_input}$.
