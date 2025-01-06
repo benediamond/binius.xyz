@@ -103,7 +103,7 @@ export default defineConfig({
             ]
           },
           {
-            text: "MPT Inclusion",
+            text: "Merkle–Patricia Inclusion",
             link: "/basics/arithmetization/mpt",
             collapsed: true,
             items: [

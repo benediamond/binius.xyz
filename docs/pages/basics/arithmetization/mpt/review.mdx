@@ -1,10 +1,10 @@
-# Merkle–Patricia Inclusion [Proving Ethereum MPT inclusion using M3]
+# Review of MPT Task [Proving Ethereum MPT inclusion using M3]
 
 Here, we get to the key point in our arithmetization story: our arithmetization of _Merkle–Patricia trie inclusion_. This arithmetization is highly complicated, and exhibits the full power of our [M3 abstraction](/basics/arithmetization/m3). Indeed, it shows how M3 can capture not just toy problems, but also highly nontrivial problem of critical real-life importance—and do so highly efficiently! This arithmetization is implemented live in production in Binius.
 
 ## Merkle–Patricia Tries
 
-We recall that Ethereum represents its global state in a _[Merkle–Patricia trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)_, a Merkle-like data structure. Each Merkle–Patricia trie represents a massive amount of _underlying_ data, itself essentially an enormous key–value table. Each _key_ in that table is a 32-byte string, a hash of an Ethereum address. Each _value_ contains its address's basic account state: its balance, its nonce, its code hash and its storage hash.
+We recall that Ethereum represents its global state in a _[Merkle–Patricia trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)_, a Merkle-like data structure. Each Merkle–Patricia trie represents a massive amount of _underlying_ data, itself essentially an enormous, flat key–value table. Each _key_ in that table is a 32-byte string, a hash of an Ethereum address. Each _value_ contains its address's basic account state: its balance, its nonce, its code hash and its storage hash.
 
 :::info
 Thus, a _single_ key–value pair in the global Ethereum state might look like
@@ -22,7 +22,7 @@ Thus, a _single_ key–value pair in the global Ethereum state might look like
 The _key_ above is itself the Keccak-256 hash of the Ethereum address `0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045`. The `value` above contains the nonce, balance (in wei), code hash and storage hash of that address.
 :::
 
-Taken together, the global list of _all_ such key–value pairs gives us Ethereum's global account state. (We are ignoring contract storage state for now.)
+Taken together, the list of _all_ such key–value pairs gives us Ethereum's global account state. (We are ignoring contract storage state for now.)
 
 The Merkle–Patricia construction "bottles up" this entire global state table into a single hash digest. It moreover does so in a way that conveys many important efficiency guarantees. For example, let's say that I receive the root digest alone—and nothing more—from a trusted source. Let's say moreover that an _untrusted_ source makes various claims to me: that one particular key–value pair (of the above form) is _in_ the table, and that a second key is _not_ in the table at all, let's say. By providing me just a logarithmic amount of data, called an _MPT proof_, this untrusted party can prove to me that his claims are valid.
 
