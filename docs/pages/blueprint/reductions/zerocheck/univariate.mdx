@@ -1,6 +1,6 @@
 # Univariate Skip [A small-field zerocheck protocol, implementing the univariate skip with batching]
 
-Here, we begin in earnest our treatment of _vanishing claims_. As we've mentioned elsewhere, the main complication at hand is that the polynomials we want to verify the vanishing of are defined over _small fields_. In this page we sketch Binius's zerocheck variant, which is designed to exploit precisely this small-field situation. The theoretical ideas of this page largely come from Gruen [[Gru24]](https://eprint.iacr.org/2024/108).
+Here, we begin in earnest our treatment of _vanishing claims_. As we've mentioned elsewhere, the main complication at hand is that the polynomials we want to verify the vanishing of are defined over _small fields_. In this page we sketch Binius's zerocheck variant, which is designed to exploit precisely this small-field situation. The theoretical ideas of this page largely come from Gruen [[Gru24](https://eprint.iacr.org/2024/108)].
 
 Algorithms for sumcheck and zerocheck are extremely complicated in general (especially in the small-field setting), and we can only hope to give a very rough survey in this page. As usual, here, we adopt the verifier's point of view, and sketch the security story. Of course, using a _univariate zerocheck_—as opposed to a standard one—serves to lighten rather the _prover's_ load, and not the verifier's; so our _motivation_ cannot be purely verifier-centric. For the full details, we opt to defer to the Binius codebase.
 
