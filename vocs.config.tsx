@@ -26,13 +26,7 @@ export default defineConfig({
     light: '/logo-light.svg',
     dark: '/logo-dark.svg',
   },
-  ogImageUrl: {
-    '/': 'https://www.binius.xyz/x-logo.png',
-    '/basics': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
-    '/building': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
-    '/blueprint': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
-    '/benchmarks': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
-  },
+  ogImageUrl: 'https://www.binius.xyz/x-logo.png',
   markdown: {
     remarkPlugins: [
       remarkMath,
