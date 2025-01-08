@@ -26,7 +26,7 @@ export default defineConfig({
     light: '/logo-light.svg',
     dark: '/logo-dark.svg',
   },
-  ogImageUrl: '/og-image.png',
+  ogImageUrl: '/x-logo.png',
   markdown: {
     remarkPlugins: [
       remarkMath,
