@@ -4,6 +4,7 @@ import rehypeKatex from 'rehype-katex'
 
 export default defineConfig({
   title: 'binius.xyz',
+  description: "Binius is a state-of-the-art SNARK developed by Irreducible.",
   head() {
     return (
       <>
@@ -25,6 +26,13 @@ export default defineConfig({
   logoUrl: {
     light: '/logo-light.svg',
     dark: '/logo-dark.svg',
+  },
+  ogImageUrl: {
+    '/': 'https://www.binius.xyz/logo-light.svg',
+    '/basics': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
+    '/building': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
+    '/blueprint': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
+    '/benchmarks': 'https://vocs.dev/api/og?logo=%logo&title=%title&description=%description',
   },
   markdown: {
     remarkPlugins: [
