@@ -26,7 +26,7 @@ export default defineConfig({
     light: '/logo-light.svg',
     dark: '/logo-dark.svg',
   },
-  ogImageUrl: '/x-logo.png',
+  ogImageUrl: 'https://www.binius.xyz/x-logo.png',
   markdown: {
     remarkPlugins: [
       remarkMath,
