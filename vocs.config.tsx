@@ -17,6 +17,14 @@ export default defineConfig({
             });
           }
         `}} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TV9S6QP84Y"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-TV9S6QP84Y');
+        `}} />
         <link href="/favicon-light.png" rel="icon" media="(prefers-color-scheme: light)" />
         <link href="/favicon-dark.png" rel="icon" media="(prefers-color-scheme: dark)" />
       </>
