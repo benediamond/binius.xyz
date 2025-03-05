@@ -1,6 +1,6 @@
 # Making Transparents [The columns shared by the prover and verifier]
 
-To see how some specialized transparent columns are built, let's look inside [Binius transparents](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/core/src/transparent). While specialized transparent columns are sufficient in many scenarios, sometimes we want to make a transparent column out of a plain list of values. For example, if we want to implement a lookup table, we'll need a transparent column to hold the values in the lookup table. Here we build a gadget for the simple case we wish to build a transparent column from a slice of arbitrary values.
+To see how some specialized transparent columns are built, let's look inside [Binius transparents](https://github.com/IrreducibleOSS/binius/tree/main/crates/core/src/transparent). While specialized transparent columns are sufficient in many scenarios, sometimes we want to make a transparent column out of a plain list of values. For example, if we want to implement a lookup table, we'll need a transparent column to hold the values in the lookup table. Here we build a gadget for the simple case we wish to build a transparent column from a slice of arbitrary values.
 
 First let's decide on a signature for the gadget.
 

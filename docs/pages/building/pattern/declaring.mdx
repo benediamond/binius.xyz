@@ -80,7 +80,7 @@ Binius currently supports six types of virtual oracles, and each one can be crea
   let padded = builder.add_zero_padded("padded", unpadded, n_vars);
   ```
 
-For details on creating virtual polynomials, for example to see what checks are applied to parameters, see [MultilinearOracleSet](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/oracle/multilinear.rs).
+For details on creating virtual polynomials, for example to see what checks are applied to parameters, see [MultilinearOracleSet](https://github.com/IrreducibleOSS/binius/blob/main/crates/core/src/oracle/multilinear.rs).
 
 :::info
 There is something all these transformations into virtual oracles share in common. With the exception of `add_linear_combination_with_offset`, they are all _linear_ transformations. Clearly linear combinations are linear transformations. As for the other transformations, linearity means if you have two oracles of the same height the following two operations are equivalent:
@@ -93,7 +93,7 @@ There is something all these transformations into virtual oracles share in commo
 
 Transparent columns are columns known to the verifier. Whereas committed and virtual columns are opaque and the verifier holds only a "handle" to them via commitments, transparent columns are fully transparent to the verifier.
 
-There are many specialized transparent constructions in [Binius transparents](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/core/src/transparent) that are easily created. For example, suppose we wish to take a field element and create a column with values had by taking consecutive powers of the elements. The transparent [powers](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/core/src/transparent/powers.rs) lets us do this.
+There are many specialized transparent constructions in [Binius transparents](https://github.com/IrreducibleOSS/binius/tree/main/crates/core/src/transparent) that are easily created. For example, suppose we wish to take a field element and create a column with values had by taking consecutive powers of the elements. The transparent [powers](https://github.com/IrreducibleOSS/binius/blob/main/crates/core/src/transparent/powers.rs) lets us do this.
 
 Suppose we choose the element to be the generator `gen` of the multiplicative group of the field `BinaryField16b`.
 
@@ -116,4 +116,4 @@ and then declare the transparent polynomial passing in our `powers` object.
 let transparent = builder.add_transparent("powers of B16 gen", powers)?;
 ```
 
-This `transparent` oracle can now appear in constraints. Here we have created a structured transparent oracle using [Binius transparents](https://gitlab.com/IrreducibleOSS/binius/-/tree/main/crates/core/src/transparent). See [making transparents](/building/transparents) for the case of making an unstructured transparent oracle filled with arbitrary values.
+This `transparent` oracle can now appear in constraints. Here we have created a structured transparent oracle using [Binius transparents](https://github.com/IrreducibleOSS/binius/tree/main/crates/core/src/transparent). See [making transparents](/building/transparents) for the case of making an unstructured transparent oracle filled with arbitrary values.
