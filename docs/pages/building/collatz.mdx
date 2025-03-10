@@ -2,7 +2,7 @@
 
 On this page we demonstrate column "flushing", a type of constraint, by implementing a prover for Collatz orbits. Collatz orbits were also used for illustrating flushing in M3-base arithmetization in [Proving Collatz Orbits](/basics/arithmetization/m3/collatz). We take that theoretical perspective and build a practical Collatz proof system here, involving not just a constraint system but a prover and verifier. This our first of two end-to-end proof system examples, for the second see [Making Lookups](/building/lookup).
 
-Some of the gadgets we'll need on this page are not constructed on this page but are used in a blackbox fashion. All gadgets necessary can be found in the [full example](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs).
+Some of the gadgets we'll need on this page are not constructed on this page but are used in a blackbox fashion. All gadgets necessary can be found in the [full example](https://github.com/IrreducibleOSS/binius/blob/main/crates/circuits/src/collatz.rs).
 
 After briefly re-summarizing the Collatz conjecture and reviewing how a channel can serve for proving the Collatz orbit of some integer, we discuss and create the two gadgets `even` and `odd` at the center of our constraint system. In order to properly separate the prover and verifier, we define and implement methods for a `Collatz` type. Lastly we construct prover and verifier functions for a complete working system.
 
@@ -357,4 +357,4 @@ fn verify(x0: u32, advice: Advice, proof: Proof, log_inv_rate: usize) -> Result<
 
 ## The Full Example
 
-To see the example in full, visit [circuits/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/mpt/collatz.rs) for the prove and verify functions.
+To see the example in full, visit [circuits/collatz](https://github.com/IrreducibleOSS/binius/blob/main/crates/circuits/src/collatz.rs) for the implementation of Collatz, and visited [examples/collatz](https://github.com/IrreducibleOSS/binius/blob/main/crates/circuits/src/collatz.rs) for the prove and verify functions.

@@ -14,7 +14,7 @@ Columns may participate in more than one constraint and more than one kind of co
 
 Suppose we have a set of `k` columns of equal height. We can imagine they are the columns of a table, and we'd like to impose a constraint on every row of this table. We can express that constraint with an arithmetic expression of `k` variables that should vanish on every row. Given a list of `k` oracles and a `k`-variate arithmetic expression, we can impose our constraint by calling `assert_zero` on the builder. Such a constraint is called a "zerocheck" constraint.
 
-Let us show how to construct an arithmetic expression. [Arithmetic expressions in Binius](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/math/src/arith_expr.rs) are symbolic expression trees, providing a convenient and flexible way to represent arithmetic expressions. With expressions structured as a tree, each node represents an operation or an operand.
+Let us show how to construct an arithmetic expression. [Arithmetic expressions in Binius](https://github.com/IrreducibleOSS/binius/blob/main/crates/math/src/arith_expr.rs) are symbolic expression trees, providing a convenient and flexible way to represent arithmetic expressions. With expressions structured as a tree, each node represents an operation or an operand.
 
 - `Const(F)`: a constant.
 - `Var(usize)`: a variable where the `usize` indicates the index of the variable among all variables in the expression.
@@ -78,7 +78,7 @@ Our constraint may then be written as
 builder.assert_zero(oracles, correct_exp.convert_field());
 ```
 
-For convenience when working with arithmetic expressions, there is a macro `arith_expr` found in [Binius macros](https://gitlab.com/IrreducibleOSS/binius/-/blob/main/crates/macros/src/lib.rs) that can reduce verbosity. For example, our `expression` constraining `bits` to take values zero or one could be written as
+For convenience when working with arithmetic expressions, there is a macro `arith_expr` found in [Binius macros](https://github.com/IrreducibleOSS/binius/blob/main/crates/macros/src/lib.rs) that can reduce verbosity. For example, our `expression` constraining `bits` to take values zero or one could be written as
 
 ```rs
 let expression = arith_expr!([bit] = (bit - 0) * (bit - 1));
