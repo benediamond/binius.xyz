@@ -10,15 +10,14 @@ interface Benchmark {
 }
 
 interface BenchmarkTableProps {
-    benchmarkType: string;
+    benchmarksExpected: string[];
 }
 
-// TODO: After CI is setup, change this URL!!
 const DATA_URL = 'https://benchmark.binius.xyz/result.json';
-const VALID_CATEGORIES = ['trace_gen_time', 'proving_time', 'verification_time', 'proof_size_kib', 'n_ops'];
+const CATEGORIES = ['trace-gen-time-multi-thread', 'trace-gen-time-single-thread', 'prove-time-multi-thread', 'prove-time-single-thread', 'verify-time-multi-thread', 'verify-time-single-thread', 'proof-size'];
+const VALID_CATEGORIES = ['trace-gen-time', 'prove-time', 'verify-time', 'proof-size', 'n_ops'];
 
-const nanosecondsToMilliseconds = (ns: number) => (ns / 1000000.0).toFixed(2);
-const nanosecondsToSeconds = (ns: number) => (ns / 1000000000.0).toFixed(2);
+const millisecondsToSeconds = (ms: number) => (ms / 1000.0).toFixed(2);
 
 const validateData = (data: Record<string, Record<string, string>>) => {
     if (Object.keys(data).length === 0) {
@@ -36,39 +35,55 @@ const validateData = (data: Record<string, Record<string, string>>) => {
     });
 };
 
-const fetchAndProcessData = async (benchmarkTypeExpected: string): Promise<Benchmark[]> => {
+const fetchAndProcessData = async (benchmarksExpected: string[]): Promise<Benchmark[]> => {
     try {
         const { data } = await axios.get(DATA_URL);
         const benchmarks: Record<string, Record<string, string>> = {};
 
         Object.entries(data).forEach(([key, value]: [string, any]) => {
-            const [benchmarkType, operation, category] = key.split('::');
-            if (benchmarkType !== benchmarkTypeExpected) return;
+            const [_, operation, num_ops] = key.split(' / ');
+            if (!benchmarksExpected.includes(operation)) return;
 
-            const latencyValue = value.latency?.value;
-            if (typeof latencyValue !== 'number') {
-                throw new Error(`Invalid data: ${operation}::${category} is not a number`);
+            for (const category_key of Object.keys(value)) {
+                if (!CATEGORIES.includes(category_key)) {
+                    throw new Error(`Invalid data: ${operation} has invalid category: ${category_key}`);
+                }
+
+                const latencyValue = value[category_key].value;
+                if (typeof latencyValue !== 'number') {
+                    throw new Error(`Invalid data: ${operation}::${category_key} is not a number`);
+                }
+
+                let operation_name = category_key.endsWith('-single-thread') ? `${operation} (single-threaded)` : operation;
+
+                if (!benchmarks[operation_name]) {
+                    benchmarks[operation_name] = {
+                        n_ops: num_ops,
+                        "proof-size": value['proof-size'].value
+                    };
+                }
+
+                let category_key_non_threading = category_key.endsWith('-single-thread') ? category_key.replace('-single-thread', '') : category_key.endsWith('-multi-thread') ? category_key.replace('-multi-thread', '') : category_key;
+
+                benchmarks[operation_name][category_key_non_threading] = category_key.startsWith('verify-time')
+                    ? latencyValue.toFixed(2)
+                    : category_key.startsWith('prove-time')
+                        ? millisecondsToSeconds(latencyValue)
+                        : category_key.startsWith('trace-gen-time')
+                            ? millisecondsToSeconds(latencyValue)
+                            : latencyValue.toString();
             }
 
-            if (!benchmarks[operation]) {
-                benchmarks[operation] = {};
-            }
-
-            benchmarks[operation][category] = category === 'verification_time'
-                ? nanosecondsToMilliseconds(latencyValue)
-                : category.endsWith('_time')
-                    ? nanosecondsToSeconds(latencyValue)
-                    : latencyValue.toString();
         });
 
         validateData(benchmarks);
 
         return Object.entries(benchmarks).map(([operation, data]) => ({
             operation,
-            count: data.n_ops,
-            prove: `${data.trace_gen_time} + ${data.proving_time}`,
-            verify: data.verification_time,
-            proofSize: data.proof_size_kib
+            count: data['n_ops'],
+            prove: `${data['trace-gen-time']} + ${data['prove-time']}`,
+            verify: data['verify-time'],
+            proofSize: data['proof-size']
         }));
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -81,15 +96,15 @@ const fetchAndProcessData = async (benchmarkTypeExpected: string): Promise<Bench
 };
 
 // Component
-const BenchmarkTable: React.FC<BenchmarkTableProps> = ({ benchmarkType }) => {
+const BenchmarkTable: React.FC<BenchmarkTableProps> = ({ benchmarksExpected }) => {
     const [benchmarks, setBenchmarks] = useState<Benchmark[] | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchAndProcessData(benchmarkType)
+        fetchAndProcessData(benchmarksExpected)
             .then(setBenchmarks)
             .catch(err => setError(err.message));
-    }, [benchmarkType]);
+    }, [benchmarksExpected]);
 
     if (error) return <div>Error loading benchmarks: {error}</div>;
     if (!benchmarks) return <div>Loading...</div>;
