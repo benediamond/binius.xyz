@@ -15,7 +15,7 @@ interface BenchmarkTableProps {
 
 const DATA_URL = 'https://benchmark.binius.xyz/result.json';
 const CATEGORIES = ['trace-gen-time-multi-thread', 'trace-gen-time-single-thread', 'prove-time-multi-thread', 'prove-time-single-thread', 'verify-time-multi-thread', 'verify-time-single-thread', 'proof-size'];
-const VALID_CATEGORIES = ['trace-gen-time', 'prove-time', 'verify-time', 'proof-size', 'n_ops'];
+const VALID_PROCESSED_CATEGORIES = ['trace-gen-time', 'prove-time', 'verify-time', 'proof-size', 'n_ops'];
 
 const millisecondsToSeconds = (ms: number) => (ms / 1000.0).toFixed(2);
 
@@ -25,7 +25,7 @@ const validateData = (data: Record<string, Record<string, string>>) => {
     }
 
     Object.entries(data).forEach(([operation, categories]) => {
-        const invalidCategories = Object.keys(categories).filter(cat => !VALID_CATEGORIES.includes(cat));
+        const invalidCategories = Object.keys(categories).filter(cat => !VALID_PROCESSED_CATEGORIES.includes(cat));
         if (invalidCategories.length > 0) {
             throw new Error(`Invalid data: ${operation} contains invalid categories: ${invalidCategories.join(', ')}`);
         }
