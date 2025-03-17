@@ -179,7 +179,7 @@ const LandingPage = () => {
             >
               Irreducible.
             </a>{" "}
-            &copy; 2024 Irreducible, Inc.
+            &copy; 2025 Irreducible, Inc. All rights reserved.
           </p>
           <div className="flex pr-6 md:justify-end justify-center mt-6 md:mt-0">
             <a href="https://x.com/IrreducibleHW" target="_blank">
