@@ -1,5 +1,7 @@
+import * as React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+
 
 interface Benchmark {
     operation: string;
@@ -85,7 +87,7 @@ const fetchAndProcessData = async (benchmarksExpected: string[]): Promise<Benchm
             verify: data['verify-time'],
             proofSize: data['proof-size']
         }));
-    } catch (error) {
+    } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
             console.error('Axios error:', error.response?.data || error.message);
             throw new Error(`Failed to fetch benchmark data: ${error.message}`);
