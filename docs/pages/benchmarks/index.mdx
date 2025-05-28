@@ -6,7 +6,7 @@ Below we record benchmarks for common operations. Each benchmark verifies its op
 
 We report proving times below in the form `<TRACE GEN TIME> + <PROVE TIME>`, the sum of the witness-generation time and the SNARK-proving time. We report these times separately because, in many cases, we have not yet parallelized the trace generation.
 
-All performance numbers are collected on an AWS `c7a.2xlarge` machine, which has an Intel _Sapphire Rapids_ processor with 16 virtual CPU cores and 32 GiB RAM. All binaries are compiled and run in release mode, with the environment variable `RUSTFLAGS="-C target-cpu=native"`.
+All performance numbers are collected on an AWS `c7a.2xlarge` machine, which has an AMD EPYC 4th generation processor with 8 virtual CPU cores and 16 GiB RAM. All binaries are compiled and run in release mode, with the environment variable `RUSTFLAGS="-C target-cpu=native"`.
 
 For continuous monitoring of our benchmark performance, you can visit our [dashboard](https://bencher.dev/console/projects/binius/perf).
 
