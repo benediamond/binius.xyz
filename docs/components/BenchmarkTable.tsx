@@ -48,7 +48,8 @@ const fetchAndProcessData = async (benchmarksExpected: string[]): Promise<Benchm
 
             for (const category_key of Object.keys(value)) {
                 if (!CATEGORIES.includes(category_key)) {
-                    throw new Error(`Invalid data: ${operation} has invalid category: ${category_key}`);
+                    // Ignore unknown categories
+                    continue;
                 }
 
                 const latencyValue = value[category_key].value;
