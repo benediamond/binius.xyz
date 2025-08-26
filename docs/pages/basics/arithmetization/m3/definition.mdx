@@ -73,7 +73,7 @@ Note that this typechecks; indeed, our channel above expects tuples of type $(\m
 Note that we could have also defined a flushing rule involving _virtual_ columns. For example, we could have declared that:
 > The tuple $(g \cdot Mary + John, Fred)$ should be _pulled_ from the above channel.
 
-Here, $g \in \mathcal{T}_4$ is some fixed, constant field element. The linear combination $g \cdot Mary + John$ is a perfectly good [virtual column](/blueprint/reductions/virtual), based on the above table, and is fair game to use in flushing rules.
+Here, $g \in \mathcal{T}_4$ is some fixed, constant field element. The linear combination $g \cdot Mary + John$ is a perfectly good [virtual column](#TODO), based on the above table, and is fair game to use in flushing rules.
 
 On the other hand, the flushing rule
 
