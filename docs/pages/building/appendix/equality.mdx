@@ -1,0 +1,17 @@
+# Equality Check
+
+To check if `a == b`:
+
+This equality check method is a modification of the Binius64 addition constraint. The principle:
+- If `diff = a ⊕ b` is 0 (meaning a == b): Adding all-1 gives all-1 with no carry out
+- If `diff ≠ 0`: Adding all-1 wraps around and produces a carry out
+
+## Implementation
+
+1. Compute `diff = x ⊕ y` (0 if equal, non-zero if different)
+2. Add all-1 to diff and track carry propagation using constraint:
+   `(x ⊕ y ⊕ cin) ∧ (all-1 ⊕ cin) = cin ⊕ cout` where `cin = cout << 1`
+3. Check MSB of carry out: 0 means equal, 1 means not equal
+4. Broadcast result: `out_mask = ¬(cout >> 63)` using arithmetic shift
+
+This uses only 2 AND constraints instead of ~64 gates for bit-level comparison.
