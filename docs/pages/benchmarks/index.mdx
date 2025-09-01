@@ -2,28 +2,58 @@ import BenchmarkTable from "../../components/BenchmarkTable";
 
 # Benchmarks [How Binius measures up in key real-world tasks]
 
-Below we record benchmarks for common operations. Each benchmark verifies its operations in a single-table constraint system. All executions are parameterized for 100 bits of security using proven—not conjectured—proximity gap results. We use a Reed–Solomon rate of $\frac{1}{2}$.
+We report benchmark results times below in the following form:
+- `aws_instance` (e.g. `c7i.16xlarge`, `c8g.16xlarge`, `l4.2xlarge`)
+- `arch` (e.g. `GPU/x86/ARM`) Note: For `x86/ARM` we report `ST/MT` to indicate single vs multi-threaded operation
+- `Witness generation time [ms]`
+- `Proof generation time [ms]`
+- `Proof verification time [ms]`
+- `Proof size [KiB]`
 
-We report proving times below in the form `<TRACE GEN TIME> + <PROVE TIME>`, the sum of the witness-generation time and the SNARK-proving time. We report these times separately because, in many cases, we have not yet parallelized the trace generation.
+In order to reproduce our benchmarks in AWS, you can check out this [user guide](/benchmarks/aws_guide.mdx)
 
-All performance numbers are collected on an AWS `c7a.2xlarge` machine, which has an AMD EPYC 4th generation processor with 8 virtual CPU cores and 16 GiB RAM. All binaries are compiled and run in release mode, with the environment variable `RUSTFLAGS="-C target-cpu=native"`.
+For continuous monitoring of our benchmark performance, you can visit our [dashboard](https://bencher.dev/console/projects/binius/perf)
 
-For continuous monitoring of our benchmark performance, you can visit our [dashboard](https://bencher.dev/console/projects/binius/perf).
+## ECDSA Signature Aggregation
+
+We compare our `ethsign` (one signature, 67-byte message) performance against Succinct's SP1 and RiscZero's R0VM zkVMs running with the GPU acceleration:
+
+| Prover   | AWS Instance | Arch   | Witness gen time [ms] | Proof gen time [ms] | Verifier time [ms] | Proof size [KiB] |
+|----------|--------------|--------|-----------------------|---------------------|--------------------|------------------|
+| Binius64 | c8g.16xlarge | ARM/ST | 22.5                  | 836.2               | 64.7               | 314.4            |
+| Binius64 | c8g.16xlarge | ARM/MT | 24.7                  | 1,706.0             | 73.7               | 314.4            |
+| Binius64 | c7i.16xlarge | x86/ST | 17.9                  | 753.9               | 103.2              | 314.4            |
+| Binius64 | c7i.16xlarge | x86/MT | 21.6                  | 659.2               | 121.3              | 314.4            |
+| R0VM     | g6.2xlarge   | GPU    | 15.7                  | 1,802.1             | 11.2               | 217.4            |
+| SP1      | g6.2xlarge   | GPU    | 79.6                  | 1,997.7             | 1,092.0            | 48.0             |
+
+## Hash-based Signature Aggregation
+
 
 
 ## Hashing
 
-In each hashing-based benchmark, we run enough operations to hash at least 1 MiB of data[^1].
+We compare our `keccak-f` and `blake2b` performance against Polygon Zero's `plonky3` and StarkWare's `Stwo` provers, respectively.
 
-<BenchmarkTable benchmarksExpected={['Keccak-f', 'Grøstl-256', 'Vision Mark-32', 'SHA-256']} />
+### Keccak-f
 
-[Vision Mark-32]: <https://eprint.iacr.org/2024/633>
+We're testing 1,365 Keccak permutations (matching `plonky3` benchmark):
+| Prover   | AWS Instance | Arch   | Witness gen time [ms] | Proof gen time [ms] | Verifier time [ms] | Proof size [KiB] |
+|----------|--------------|--------|-----------------------|---------------------|--------------------|------------------|
+| Binius64 | c8g.16xlarge | ARM/ST | 46.6                  | 2,612.0             | 299.6              | 398.3            |
+| Plonky3  | c8g.16xlarge | ARM/ST | 115.2                 | 6,134.0             | 34.9               | 1,861.2          |
+| Binius64 | c8g.16xlarge | ARM/MT | 46.7                  | 335.9               | 268.5              | 398.3            |
+| Plonky3  | c8g.16xlarge | ARM/MT | 15.4                  | 259.8               | 38.2               | 1,861.1          |
+| Binius64 | c7i.16xlarge | x86/ST | 39.3                  | 2,050.0             | 580.8              | 398.3            |
+| Plonky3  | c7i.16xlarge | x86/ST | 118.5                 | 3,779.0             | 15.4               | 1,861.2          |
+| Binius64 | c7i.16xlarge | x86/MT | 39.9                  | 590.6               | 558.0              | 398.3            |
+| Plonky3  | c7i.16xlarge | x86/MT | 16.6                  | 261.2               | 16.8               | 1,861.1          |
+
+### Blake2s
+
+
 
 ## Integer Operations
 
-For u32 multiplication, we use a decomposition into 8-bit limbs and Lasso lookups for 8-bit multiplications. We are working on implementing a better multiplication technique explained in [this post](https://www.irreducible.com/posts/integer-multiplication-in-binius).
-
 <BenchmarkTable benchmarksExpected={['BinaryField32b mul', 'u32 add', 'u32 mul', 'XOR (32-bit)', 'AND (32-bit)', 'OR (32-bit)']} />
 
-
-[^1]: The procedure by which we determine the number of operations required to hash 1 MiB of data varies depending on the structure of the hash function. Keccak and Vision use a sponge construction, meaning that each Keccak-$f$ or Vision permutation absorbs a number of bytes equal to the sponge function's _rate_. For SHA-3 and Keccak-256, used in Ethereum, the rate is 136 bytes, meaning one Keccak-$f$ permutation absorbs 136 bytes of input data. SHA2 and Grøstl use Merkle–Damgård and (closely related) wide-pipe constructions, respectively, based on underlying _compression_ functions. In both hash functions, each compression function processes one 64-byte message block. In the case of Grøstl, we've actually only implemented that hash function's $P$ permutation thus far. To process a 64-byte block of input data, that hash function must apply $P$ exactly once and $Q$ exactly once. We thus fudge slightly, by acting as if we were doing both $P$s and $Q$s, even though we are actually doing doubly many $P$s. Thus, we count 64 bytes "hashed" for every _two_ executions of the $P$ permutation. In each Keccak-$f$ benchmark, we run $2^{13}$ permutations; in each of the others, we run $2^{14}$.
