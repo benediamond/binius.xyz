@@ -44,11 +44,11 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 
 ## Hashing
 
-We compare our `keccak-f` and `blake2b` performance against Polygon Zero's `plonky3` and StarkWare's `Stwo` provers, respectively.
+We compare our `keccak-f` and `blake2s` performance against Polygon Zero's `Plonky3` and StarkWare's `Stwo` provers, respectively.
 
 ### Keccak-f
 
-We are testing 1,365 Keccak permutations (matching `plonky3` benchmark):
+We are testing 1,365 Keccak permutations (matching `Plonky3` benchmark):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
