@@ -1,14 +1,41 @@
-import { defineConfig } from 'vocs'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
+import { defineConfig } from "vocs";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
-  title: 'binius.xyz',
+  title: "binius.xyz",
+  globalStyles: "docs/styles.css",
+  frontmatter: {
+    content: {
+      width: "70ch", // Default is 70ch, increase to make content wider
+    },
+  },
+  vite: {
+    plugins: [
+      {
+        name: "disable-llms",
+        enforce: "pre",
+        configResolved(config) {
+          // Filter out the llms plugin to avoid build errors
+          const filteredPlugins = config.plugins.filter(
+            (p) => p.name !== "llms",
+          );
+          // @ts-ignore - we need to override readonly property
+          config.plugins = filteredPlugins;
+        },
+      },
+    ],
+  },
   head() {
     return (
       <>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"></link>
-        <script dangerouslySetInnerHTML={{ __html: `
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+        ></link>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           if (location.pathname !== '/') {
             document.documentElement.style.opacity = '0';
             document.addEventListener('DOMContentLoaded', () => {
@@ -16,53 +43,66 @@ export default defineConfig({
               document.documentElement.style.transition = 'opacity 0.1s';
             });
           }
-        `}} />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TV9S6QP84Y"></script>
-        <script dangerouslySetInnerHTML={{ __html: `
+        `,
+          }}
+        />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-TV9S6QP84Y"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
           gtag('config', 'G-TV9S6QP84Y');
-        `}} />
-        <link href="/favicon-light.png" rel="icon" media="(prefers-color-scheme: light)" />
-        <link href="/favicon-dark.png" rel="icon" media="(prefers-color-scheme: dark)" />
+        `,
+          }}
+        />
+        <link
+          href="/favicon-light.png"
+          rel="icon"
+          media="(prefers-color-scheme: light)"
+        />
+        <link
+          href="/favicon-dark.png"
+          rel="icon"
+          media="(prefers-color-scheme: dark)"
+        />
       </>
-    )
+    );
   },
   logoUrl: {
-    light: '/logo-light.svg',
-    dark: '/logo-dark.svg',
+    light: "/logo-light.svg",
+    dark: "/logo-dark.svg",
   },
-  ogImageUrl: 'https://www.binius.xyz/x-logo.png',
+  ogImageUrl: "https://www.binius.xyz/x-logo.png",
   markdown: {
-    remarkPlugins: [
-      remarkMath,
-    ],
-    rehypePlugins: [
-      rehypeKatex,
-    ]
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
   topNav: [
     {
-      text: 'Basics',
-      link: '/basics',
-      match: '/basics'
+      text: "Basics",
+      link: "/basics",
+      match: "/basics",
     },
     {
-      text: 'Building',
-      link: '/building',
-      match: '/building'
+      text: "Building",
+      link: "/building",
+      match: "/building",
     },
     {
-      text: 'Blueprint',
-      link: '/blueprint',
-      match: '/blueprint'
+      text: "Blueprint",
+      link: "/blueprint",
+      match: "/blueprint",
     },
     {
-      text: 'Benchmarks',
-      link: '/benchmarks',
-      match: '/benchmarks'
+      text: "Benchmarks",
+      link: "/benchmarks",
+      match: "/benchmarks",
     },
   ],
   sidebar: {
@@ -76,17 +116,17 @@ export default defineConfig({
         link: "/basics/overview",
       },
       {
-        text: 'Binius\'s Arithmetization',
+        text: "Binius's Arithmetization",
         collapsed: false,
-        link: '/basics/arithmetization/',
+        link: "/basics/arithmetization/",
         items: [
           {
             text: "Background",
-            link: "/basics/arithmetization/background"
+            link: "/basics/arithmetization/background",
           },
           {
             text: "Data Types",
-            link: "/basics/arithmetization/types"
+            link: "/basics/arithmetization/types",
           },
           {
             text: "Multi-Multiset Matching",
@@ -95,21 +135,21 @@ export default defineConfig({
             items: [
               {
                 text: "A Toy Example",
-                link: "/basics/arithmetization/m3/example"
+                link: "/basics/arithmetization/m3/example",
               },
               {
                 text: "Definition of M3",
-                link: "/basics/arithmetization/m3/definition"
+                link: "/basics/arithmetization/m3/definition",
               },
               {
                 text: "Proving Collatz Orbits",
-                link: "/basics/arithmetization/m3/collatz"
+                link: "/basics/arithmetization/m3/collatz",
               },
               {
                 text: "Lasso Lookup",
-                link: "/basics/arithmetization/m3/lasso"
+                link: "/basics/arithmetization/m3/lasso",
               },
-            ]
+            ],
           },
           {
             text: "Merkle–Patricia Inclusion",
@@ -118,21 +158,21 @@ export default defineConfig({
             items: [
               {
                 text: "Review of MPT Task",
-                link: "/basics/arithmetization/mpt/review"
+                link: "/basics/arithmetization/mpt/review",
               },
               {
                 text: "Informal Explanation",
-                link: "/basics/arithmetization/mpt/sketch"
+                link: "/basics/arithmetization/mpt/sketch",
               },
               {
                 text: "Our MPT Construction",
-                link: "/basics/arithmetization/mpt/construction"
+                link: "/basics/arithmetization/mpt/construction",
               },
               {
                 text: "State Forking",
-                link: "/basics/arithmetization/mpt/forking"
+                link: "/basics/arithmetization/mpt/forking",
               },
-            ]
+            ],
           },
         ],
       },
@@ -152,9 +192,9 @@ export default defineConfig({
           {
             text: "External Resources",
             link: "/basics/resources/external",
-          },    
-        ]
-      }
+          },
+        ],
+      },
     ],
     "/building": [
       {
@@ -240,7 +280,7 @@ export default defineConfig({
           },
           {
             text: "Multilinear Polynomials",
-            link: "/blueprint/math/multilinears"
+            link: "/blueprint/math/multilinears",
           },
           {
             text: "The Sumcheck",
@@ -259,19 +299,19 @@ export default defineConfig({
         items: [
           {
             text: "Introduction",
-            link: "/blueprint/constraints/introduction"
+            link: "/blueprint/constraints/introduction",
           },
           {
             text: "Shifted Value Indices",
-            link: "/blueprint/constraints/indices"
+            link: "/blueprint/constraints/indices",
           },
           {
             text: "AND Constraints",
-            link: "/blueprint/constraints/ands"
+            link: "/blueprint/constraints/ands",
           },
           {
             text: "MUL Constraints",
-            link: "/blueprint/constraints/muls"
+            link: "/blueprint/constraints/muls",
           },
         ],
       },
@@ -297,12 +337,12 @@ export default defineConfig({
                 text: "Arithmetic Shifts",
                 link: "/blueprint/backend/shifts/arithmetic"
               },
-            ]
+            ],
           },
           {
             text: "Mathematizing Constraint Arrays",
             link: "/blueprint/backend/mathematizing"
-          },    
+          },
           {
             text: "The AND Reduction",
             link: "/blueprint/backend/ands",
@@ -347,15 +387,15 @@ export default defineConfig({
             ]
       },
       {
-        text: 'Polynomial Commitment',
-        link: '/blueprint/commitment/',
+        text: "Polynomial Commitment",
+        link: "/blueprint/commitment/",
       },
     ],
     "/benchmarks": [
       {
         text: "Benchmarks",
         link: "/benchmarks",
-      }
-    ]
+      },
+    ],
   },
-})
+});
