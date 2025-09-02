@@ -3,7 +3,7 @@
 We report benchmark results times below in the following form:
 * `aws_instance` (e.g. `C7i.16xlarge`, `C8g.16xlarge`, `G6.2xlarge`)
 * `arch` (e.g. `GPU/x86/aarch64`)
-** Note: For `x86/aarch64` we report `ST/MT` to indicate single- vs multi-threaded operation
+  ** Note: For `x86/aarch64` we report `ST/MT` to indicate single- vs multi-threaded operation
 * `Witness generation time [ms]`
 * `Proof generation time [ms]`
 * `Proof verification time [ms]`
@@ -24,7 +24,7 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 | Binius64 | C8g.16xlarge | aarch64-mt   | 12.77                   | 323.85                | 41.75                   | 261.19           |
 | Binius64 | C8g.16xlarge | aarch64-st   | 11.55                   | 421.15                | 35.13                   | 261.19           |
 | SP1      | G6.2xlarge   | GPU          | 79.60                   | 1,997.70              | 1,092.00                | 48.00            |
-| Risc0    | G6.2xlarge   | GPU          | 15.69                   | 1,802.14              | 11.24                   | 217.45           |
+| R0VM     | G6.2xlarge   | GPU          | 15.69                   | 1,802.14              | 11.24                   | 217.45           |
 
 ### Git Information
 
@@ -82,6 +82,11 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 | Stwo     | C7i.16xlarge | x86-st       | 1,154.40                | 1,688.40              | 2.50                    | 92.50            |
 | Stwo     | C8g.16xlarge | aarch64-mt   | 1,760.80                | 532.10                | 3.30                    | 92.50            |
 | Stwo     | C8g.16xlarge | aarch64-st   | 2,428.10                | 3,182.50              | 3.20                    | 92.50            |
+
+**Stwo**
+* Repository: https://github.com/starkware-libs/stwo.git
+* Branch: `dev`
+* Commit: `d9176e6e22319370a8501f799829b920c0db2eac`
 
 ## Integer Operations
 
