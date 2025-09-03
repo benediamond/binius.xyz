@@ -327,7 +327,7 @@ export default defineConfig({
           {
             text: "The Shift Indicators",
             link: "/blueprint/backend/shifts",
-            collapsed: true,
+            collapsed: false,
             items: [
               {
                 text: "Shifted Witness Polynomials",
