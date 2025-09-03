@@ -1,0 +1,43 @@
+# Boolean Representation [MSB-bool convention]
+
+This section explains how boolean values are represented and manipulated in Binius64 circuits.
+
+## MSB-Bool Convention
+
+Binius64 represents boolean values using the Most Significant Bit (MSB) of a 64-bit word:
+
+- **True**: MSB = 1 (wire & 0x8000000000000000 != 0)
+- **False**: MSB = 0 (wire & 0x8000000000000000 == 0)
+- **Lower 63 bits**: Undefined/ignored
+
+## Operations Returning MSB-Bools
+
+```rust
+// Comparisons return MSB-bool results
+let is_equal = builder.icmp_eq(a, b);      // MSB = 1 if a == b
+let is_less = builder.icmp_ult(a, b);      // MSB = 1 if a < b
+
+// Conditional operations use MSB-bool conditions
+let result = builder.select(cond, t, f);    // Returns t if MSB(cond) = 1
+builder.assert_eq_cond("check", a, b, cond); // Assert only if MSB(cond) = 1
+```
+
+## Arithmetic Shift Technique
+
+The arithmetic right shift by 63 broadcasts the MSB to all bits:
+- If MSB = 1: `sar(x, 63)` produces 0xFFFFFFFFFFFFFFFF (all ones)
+- If MSB = 0: `sar(x, 63)` produces 0x0000000000000000 (all zeros)
+
+This creates a mask for conditional operations without branching:
+
+```rust
+// Select implementation: out = f ⊕ ((cond >> 63) ∧ (t ⊕ f))
+// The sar(cond, 63) creates a mask that selects between t and f
+```
+
+## Cost Analysis
+
+- Comparison operations (`icmp_eq`, `icmp_ult`): 1-2 AND constraints
+- Conditional select: 1 AND constraint
+- Boolean assertions (`assert_true`, `assert_false`): 1 AND constraint
+- Arithmetic shift to create mask: Free (part of constraint operands)
