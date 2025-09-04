@@ -64,7 +64,7 @@ We fix an initial evaluation claim $\widetilde{W}(r^{(0)}) \stackrel{?}= s^{(0)}
     \begin{equation*}s^{(i)}_\text{end} \stackrel{?}= \widetilde{\texttt{eq}}(r^{(i)}, r^{(i + 1)}) \cdot \left[ \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k + 1)}_{2i}}(r^{(i + 1)}) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(r^{(i + 1)}) \right],\end{equation*}
     $$
     where $r^{(i + 1)}$ is a further $\ell_\text{mul}$-dimensional challenge sampled during the sumcheck.
-  - **for** each $i \in \{0, \ldots, 2^{k + 1} - 1\}$ **do**: the prover sends the _claimez_ evaluation $s^{(k + 1)}_i = \widetilde{W^{(k + 1)}_i}(r^{(i + 1)})$.
+  - **for** each $i \in \{0, \ldots, 2^{k + 1} - 1\}$ **do**: the prover sends the _claimed_ evaluation $s^{(k + 1)}_i = \widetilde{W^{(k + 1)}_i}(r^{(i + 1)})$.
   - using the prover's claims $s^{(k + 1)}_i$, the verifier explicitly checks the equation just above.
 - output the reduced evaluation point $r^{(6)}$ and the reduced claims $s^{(6)}_i$, for $i \in \{0, \ldots , 63\}$.
 
