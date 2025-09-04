@@ -17,7 +17,7 @@ What happens if we put both $w$ and $\textsf{shift}_{\text{op}}(w)(y, s)$ throug
 At this point, we assume that $n_\text{words} = 2^{\ell_\text{words}}$ is a power of 2. Let's review what multilinearization means, in this context. Going back to our original array $w$, we can identify $w$ with a $6 + \ell_\text{words}$-variate multilinear over $\mathbb{F}_2$:
 
 $$
-\begin{equation*}\widetilde{w}(J_0, \ldots , J_5, Y_0, \ldots , Y_{\ell_\text{words}}).\end{equation*}
+\begin{equation*}\widetilde{w}(J_0, \ldots , J_5, Y_0, \ldots , Y_{\ell_\text{words} - 1}).\end{equation*}
 $$
 
 The indeterminates $J_0, \ldots , J_5$ control the "bit within the word"; the indeterminates $Y_0, \ldots , Y_{\ell_\text{words} - 1}$ control the "word index". In other words, for each word index $y \in \mathcal{B}_{\ell_\text{words}}$ and each bit index $j \in \mathcal{B}_6$, $\widetilde{w}(j, y) = w[y]_j$ (i.e., the "$j$<sup>th</sup> bit" of the latter).
