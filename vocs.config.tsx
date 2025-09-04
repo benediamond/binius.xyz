@@ -177,6 +177,14 @@ export default defineConfig({
         ],
       },
       {
+        text: "Roadmap",
+        link: "/basics/roadmap",
+      },
+      {
+        text: "Licensing",
+        link: "/basics/licensing",
+      },
+      {
         text: "Further Resources",
         link: "/basics/resources",
         collapsed: false,
