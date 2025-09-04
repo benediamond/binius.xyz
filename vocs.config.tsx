@@ -296,7 +296,7 @@ export default defineConfig({
           },
           {
             text: "Oblong-Multilinearization",
-            link: "/blueprint/math/oblong"
+            link: "/blueprint/math/oblong",
           },
         ],
       },
@@ -328,8 +328,8 @@ export default defineConfig({
         ],
       },
       {
-        text: 'The Backend',
-        link: '/blueprint/backend/',
+        text: "The Backend",
+        link: "/blueprint/backend/",
         collapsed: false,
         items: [
           {
@@ -339,15 +339,15 @@ export default defineConfig({
             items: [
               {
                 text: "Shifted Witness Polynomials",
-                link: "/blueprint/backend/shifts/polynomials"
+                link: "/blueprint/backend/shifts/polynomials",
               },
               {
                 text: "Logical Shifts",
-                link: "/blueprint/backend/shifts/logical"
+                link: "/blueprint/backend/shifts/logical",
               },
               {
                 text: "Arithmetic Shifts",
-                link: "/blueprint/backend/shifts/arithmetic"
+                link: "/blueprint/backend/shifts/arithmetic",
               },
             ],
           },
@@ -358,36 +358,36 @@ export default defineConfig({
             items: [
               {
                 text: "The Rijndael Field",
-                link: "/blueprint/backend/ands/rijndael"
+                link: "/blueprint/backend/ands/rijndael",
               },
               {
                 text: "The Univariate Skip",
-                link: "/blueprint/backend/ands/univariate"
+                link: "/blueprint/backend/ands/univariate",
               },
               {
                 text: "The Rijndael Zerocheck",
-                link: "/blueprint/backend/ands/implementation"
+                link: "/blueprint/backend/ands/implementation",
               },
             ],
           },
           {
-            text: 'The MUL Reduction',
-            link: '/blueprint/backend/muls',
+            text: "The MUL Reduction",
+            link: "/blueprint/backend/muls",
             collapsed: false,
             items: [
               {
                 text: "Multiplying in the Exponent",
-                link: "/blueprint/backend/muls/multiplying"
+                link: "/blueprint/backend/muls/multiplying",
               },
               {
                 text: "Exponentiating Multilinears",
-                link: "/blueprint/backend/muls/exponentiating"
+                link: "/blueprint/backend/muls/exponentiating",
               },
               {
                 text: "Combined Protocol",
-                link: "/blueprint/backend/muls/combined"
-              }
-            ]
+                link: "/blueprint/backend/muls/combined",
+              },
+            ],
           },
           {
             text: "The Shift Reduction",
@@ -396,19 +396,19 @@ export default defineConfig({
             items: [
               {
                 text: "Mathematizing Constraint Arrays",
-                link: "/blueprint/backend/reduction/mathematizing"
+                link: "/blueprint/backend/reduction/mathematizing",
               },
               {
                 text: "The Sumchecks",
-                link: "/blueprint/backend/reduction/sumchecks"
+                link: "/blueprint/backend/reduction/sumchecks",
               },
               {
                 text: "Prover Implementation",
-                link: "/blueprint/backend/reduction/implementation"
-              }
-            ]
+                link: "/blueprint/backend/reduction/implementation",
+              },
+            ],
           },
-            ]
+        ],
       },
       {
         text: "Polynomial Commitment",
@@ -419,6 +419,10 @@ export default defineConfig({
       {
         text: "Benchmarks",
         link: "/benchmarks",
+      },
+      {
+        text: "AWS Guide",
+        link: "/benchmarks/aws_guide",
       },
     ],
   },

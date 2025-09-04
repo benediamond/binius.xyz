@@ -1,8 +1,8 @@
-# AWS Benchmarks Guide [How to Reproduce Binius Benchmark Results in AWS]
+# AWS Benchmarks Guide [How to reproduce Binius64 benchmark results in AWS]
 
 ## Getting Started with AWS EC2
 
-Follow this [AWS tutorial](https://aws.amazon.com/ec2/instance-types/) to launch an EC2 instance - ensure you are running Linux OS, e.g. `Ubuntu Server 24.04 LTS`. We recommend running `c7i.16xlarge` (x86, Intel) and `c8g.16xlarge` (arm, Graviton) instances.
+Follow this [AWS tutorial](https://aws.amazon.com/ec2/instance-types/) to launch an EC2 instance - ensure you are running Linux OS, e.g. `Ubuntu Server 24.04 LTS`. We recommend running `c7i.16xlarge` (`x86`, Intel) and `c8g.16xlarge` (`aarch64`, Graviton) instances.
 
 ## Running Binius Examples on AWS EC2 Instances
 
@@ -20,10 +20,9 @@ sudo apt install build-essential
 sudo apt install rustup
 rustup default stable
 export RUSTFLAGS="-C target-cpu=native"
-rustc --print cfg -C target-cpu=native | grep gfni
 ```
 
-This is a good time for a sanity checkpoint, prior to running the benchmars:
+Tip: This is a good time for a sanity checkpoint, prior to running the benchmars:
 
 ```bash
 rustc --version && cargo --version
@@ -36,58 +35,52 @@ rustc 1.89.0 (29483883e 2025-08-04)
 cargo 1.89.0 (c24e10642 2025-06-23)
 ```
 
-Now it's time to clone the Binius repo:
+Now it's time to clone the Binius64 repo:
 
 ```bash
-git clone https://github.com/IrreducibleOSS/binius.git
+git clone https://github.com/IrreducibleOSS/binius64.git
+cd binius64
 ```
 
-Head to the `examples` folder:
-
-```bash
-cd binius/crates/examples/examples
-```
-
-Tip: Folder `/crates` contains `README.md` file which explains our cuircit philosophy.
-
-We are going to run the `ethsign` example, feel free to try them all out.
+We are going to run the `ethsign` benchmark, feel free to try out [all.](https://github.com/IrreducibleOSS/binius64/tree/main/crates/examples/benches)
 
 ```bash
 cargo run --release --example ethsign --package binius-examples -- prove
+cargo bench --bench ethsign
 ```
-
-Tip: Note that adding `--no-default-features` turns off the multithreading. We report all our benchmarks for boths single- and multi-threaded performance.
 
 You should get something like this:
 
 ```bash
-Building circuit [ 305.33ms | 100.00% ]
+EthSign Benchmark Parameters:
+  Signatures: 1
+  Max message length: 67 bytes
+=========================================
 
-Setup [ 461.98ms | 100.00% ] { log_inv_rate = 1 }
-Generating witness [ 20.52ms | 100.00% ]
-└── Circuit evaluation [ 19.71ms | 96.03% ]
+ethsign_witness_generation/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [10.029 ms 10.034 ms 10.039 ms]
+                        thrpt:  [99.609  elem/s 99.661  elem/s 99.711  elem/s]
+
+Benchmarking ethsign_proof_generation/sig_1_msg_67_mt_x86_gfni_avx512: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 37.9s, or reduce sample count to 10.
+ethsign_proof_generation/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [371.77 ms 373.78 ms 376.04 ms]
+                        thrpt:  [2.6593  elem/s 2.6754  elem/s 2.6899  elem/s]
+Found 4 outliers among 100 measurements (4.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking ethsign_proof_verification/sig_1_msg_67_mt_x86_gfni_avx512: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 5.9s, or reduce sample count to 80.
+ethsign_proof_verification/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [57.962 ms 58.413 ms 58.872 ms]
+                        thrpt:  [16.986  elem/s 17.119  elem/s 17.253  elem/s]
 
 
-prove [ 661.46ms | 100.00% ] { operation = prove, perfetto_category = operation, n_witness_words = 1048576, n_bitand = 1048576, n_intmul = 65536 }
-├── [phase] Witness Commit [ 7.91ms | 1.20% ] { phase = witness_commit, perfetto_category = phase }
-│  └── FRI Commit [ 7.90ms | 1.19% ] { log_batch_size = 4, log_dim = 15, log_inv_rate = 1, field_bits = 128 }
-├── [phase] BitAnd Reduction [ 31.97ms | 4.83% ] { phase = bitand_reduction, perfetto_category = phase, n_constraints = 1048576 }
-│  ├── Fold univariate round [ 8.05ms | 1.22% ]
-│  └── MLE-check remaining rounds [ 16.16ms | 2.44% ]
-├── [phase] IntMul Reduction [ 422.85ms | 63.93% ] { phase = intmul_reduction, perfetto_category = phase, n_constraints = 65536 }
-├── [phase] Shift Reduction [ 171.09ms | 25.87% ] { phase = shift_reduction, perfetto_category = phase }
-│  ├── Expand tensor queries [ 7.94ms | 1.20% ]
-│  ├── prover_phase_1 [ 138.45ms | 20.93% ]
-│  │  ├── build_g_triplet [ 125.26ms | 18.94% ]
-│  │  ├── [...] [ 59.47µs | 0.01% ]
-│  │  └── run_sumcheck [ 13.05ms | 1.97% ]
-│  └── prove_phase_2 [ 24.68ms | 3.73% ]
-│     └── run_sumcheck [ 19.51ms | 2.95% ]
-└── [phase] PCS Opening [ 24.76ms | 3.74% ] { phase = pcs_opening, perfetto_category = phase }
-   └── Basefold [ 19.52ms | 2.95% ]
-
-verify [ 118.26ms | 100.00% ] { operation = verify, perfetto_category = operation }
-├── [phase] Verify Shift Reduction [ 112.08ms | 94.77% ] { phase = verify_shift_reduction, perfetto_category = phase }
-├── [phase] Verify Public Input [ 1.51ms | 1.28% ] { phase = verify_public_input, perfetto_category = phase }
-└── [phase] Verify PCS Opening [ 4.23ms | 3.57% ] { phase = verify_pcs_opening, perfetto_category = phase }
+EthSign proof size for 1 signatures, 67 max bytes: 267456 bytes
 ```
+
+Tip: Note that adding `--no-default-features` turns off the multithreading. We report all our benchmarks for boths single- and multi-threaded performance.
+
+Tip: What if you're getting poor performance? You likely did not set the CPU flags correctly. Check out the benchmark logs and ensure that `Used & Enabled` list is not empty.
