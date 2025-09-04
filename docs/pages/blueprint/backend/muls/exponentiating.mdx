@@ -94,7 +94,7 @@ for $i \in \{0, \ldots , 63\}$.
 
 We could again _in theory_ run sumcheck here, since the right-hand expression above is fully algebraic in $\widetilde{V}(X)$ and $\widehat{z}(\widehat{I}, X)$. On the other hand, the relevant multivariate would be of enormous degree: on the order of $2^i$. Instead, we use a trick, based on the [Frobenius endomorphism](/blueprint/math/fields#algebraic-properties) $\varphi$.
 
-Indeed, for each $i \in \{0, \ldots , 63\}$, applying $\varphi^{-i}$ to both sides of the above equality, we the equivalent claim:
+Indeed, for each $i \in \{0, \ldots , 63\}$, applying $\varphi^{-i}$ to both sides of the above equality, we get the equivalent claim:
 
 $$
 \begin{equation*}\varphi^{-i}\left( s^{(6)}_i \right) \stackrel{?}= \sum_{x \in \mathcal{B}_{\ell_\text{mul}}} \widetilde{\texttt{eq}}\left(\varphi^{-i} \left( r_x \right), x \right) \cdot \left( 1 + z_i(x) \cdot \left( \widetilde{V}(x) - 1 \right) \right).\end{equation*}
