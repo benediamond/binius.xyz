@@ -8,7 +8,7 @@ $$
 
 for $x \in \{0, \ldots , n_\text{cons} - 1\}$. Here, $n_\text{cons}$ is the total number of constraints (either AND or MUL), and each $L^z_x$ is a list of [shifted value indices](/blueprint/constraints/indices). We recall that, by definition, each shifted value index $(y, \text{op}, s) \in L^z_x$ is an element of the set $\{0, \ldots , n_\text{words} - 1\} \times \{ \mathsf{sll}, \mathsf{srl}, \mathsf{sra}\} \times \{0, \ldots , 63\}$.
 
-Both our [AND](/blueprint/backend/ands) and [MUL](/blueprint/backend/muls) reductions closed out by ouputting evaluation claims on the _[oblong-multilinearizations](/blueprint/math/oblong)_ of these constraint arrays. In order to assess validity of these claims, we need to connect them mathematically to the witness.
+Both our [AND](/blueprint/backend/ands) and [MUL](/blueprint/backend/muls) reductions closed out by ouputting evaluation claims on the [oblong-multilinearizations](/blueprint/math/oblong) of these constraint arrays. In order to assess validity of these claims, we need to connect them mathematically to the witness.
 
 By definition, the oblong-multilinearization of the array $z$ above is a polynomial
 
@@ -20,7 +20,7 @@ for which
 $$
 \begin{equation*}\widehat{z}(\widehat{i}, x) = z[x]_i.\end{equation*}
 $$
-holds for each $i \in \mathcal{B}_6$ and each $x \in \mathcal{B}_{\ell_\text{cons}}$. Our task now is to express this oblong-multilinearization $\widehat{z}(\widehat{I}, X)$ as a polynomial in terms of $\widehat{W}(J, Y)$, the [multilinearization of the prover's witness](/blueprint/backend/shifts/polynomials#as-polynomials). The initial definition of $z[x]$ above suggests that this should be possible; on the other hand, making everything algebraic is hard. We will have to put our [shifted witness polynomials](/blueprint/backend/shifts/polynomials) to use.
+holds for each $i \in \mathcal{B}_6$ and each $x \in \mathcal{B}_{\ell_\text{cons}}$. Our task now is to express this oblong-multilinearization $\widehat{z}(\widehat{I}, X)$ as a polynomial in terms of $\widetilde{w}(J, Y)$, the [multilinearization of the prover's witness](/blueprint/backend/shifts/polynomials#as-polynomials). The initial definition of $z[x]$ above suggests that this should be possible; on the other hand, making everything algebraic is hard. We will have to put our [shifted witness polynomials](/blueprint/backend/shifts/polynomials) to use.
 
 [Later](/blueprint/backend/reduction/sumchecks), we will undertake the actual task of reducing a claim on $\widehat{z}(\widehat{I}, X)$ to one on $\widehat{W}(J, Y)$.
 
