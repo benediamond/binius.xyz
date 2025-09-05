@@ -23,34 +23,27 @@ let message: Vec<Wire> = (0..FIXED_SIZE)  // Size must be known at construction
 ### Solution: Expose Witness Wires
 
 ```rust
-fn circuit_check_concat(
+fn circuit_check_aligned_concat(
     builder: &CircuitBuilder,
     data_a: [Wire; 4],
     data_b: [Wire; 4],
-    message: Vec<Wire>,
-    len_bytes: Wire,
+    message: [Wire; 8],
 ) {
-    // Educational example - the frontend provides Concat circuit for this
-    // In practice: Concat::new(builder, len_bytes, message, terms);
+    // Educational example for word-aligned (32-byte) data concatenation
+    // For general variable-length concatenation use
+    // Concat::new(builder, len_bytes, message, terms) in the frontend crate.
 
-    let mut offset = builder.add_constant(Word::ZERO);
-
-    // Check data_a appears at offset 0
+    // Check data_a appears at words 0-3 of message
     for (i, &data_wire) in data_a.iter().enumerate() {
         let message_wire = message[i];
         builder.assert_eq(format!("data_a[{i}]"), message_wire, data_wire);
     }
-    offset = builder.iadd_32(offset, builder.add_constant_64(32));
 
-    // Check data_b appears at offset 32
+    // Check data_b appears at words 4-7 of message
     for (i, &data_wire) in data_b.iter().enumerate() {
         let message_wire = message[i + 4];
         builder.assert_eq(format!("data_b[{i}]"), message_wire, data_wire);
     }
-    offset = builder.iadd_32(offset, builder.add_constant_64(32));
-
-    // Check total length is 64
-    builder.assert_eq("total_length", len_bytes, offset);
 }
 
 fn circuit_build_example(
@@ -61,11 +54,10 @@ fn circuit_build_example(
     let computed_b = circuit_compute_something_else(builder, input);
 
     // Need witness wires for the concatenated message
-    let message: Vec<Wire> = (0..8).map(|_| builder.add_witness()).collect();
-    let len_bytes = builder.add_witness();
+    let message: [Wire; 8] = std::array::from_fn(|_| builder.add_witness());
 
     // Check that message contains computed_a || computed_b
-    circuit_check_concat(builder, computed_a, computed_b, message, len_bytes);
+    circuit_check_aligned_concat(builder, computed_a, computed_b, message);
 
     // Use the message in further computation
     circuit_use_message(builder, &message)
@@ -74,7 +66,6 @@ fn circuit_build_example(
 fn populate_example_witness(
     witness: &mut WitnessFiller,
     message_wires: &[Wire],
-    len_wire: Wire,
     data_a_bytes: &[u8],
     data_b_bytes: &[u8],
 ) {
@@ -82,7 +73,6 @@ fn populate_example_witness(
     message_bytes.extend_from_slice(data_a_bytes);
     message_bytes.extend_from_slice(data_b_bytes);
 
-    witness[len_wire] = Word::from_u64(message_bytes.len() as u64);
     pack_bytes_into_wires_le(witness, message_wires, &message_bytes);
 }
 ```
