@@ -26,14 +26,12 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 | SP1      | G6.2xlarge   | GPU          | 79.60                   | 1,997.70              | 1,092.00                | 48.00            |
 | R0VM     | G6.2xlarge   | GPU          | 15.69                   | 1,802.14              | 11.24                   | 217.45           |
 
-### Git Information
-
-**SP1**
+**Git info: SP1**
 * Repository: https://github.com/succinctlabs/sp1.git
 * Branch: `dev`
 * Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
 
-**Risc0**
+**Git info: RiscZero**
 * Repository: https://github.com/risc0/risc0.git
 * Branch: `main`
 * Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
@@ -61,9 +59,7 @@ We are testing 1,365 Keccak permutations (matching `Plonky3` benchmark):
 | Plonky3  | C8g.16xlarge | aarch64-mt   | 15.36                   | 259.80                | 38.23                   | 1,861.25         |
 | Plonky3  | C8g.16xlarge | aarch64-st   | 115.20                  | 6,134.00              | 34.92                   | 1,861.08         |
 
-### Git Information
-
-**Plonky3**
+**Git info: Plonky3**
 * Repository: https://github.com/Plonky3/Plonky3.git
 * Branch: `main`
 * Commit: `80803612ff4b6634519e12fa4bf075f679afcc1c`
@@ -83,9 +79,15 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 | Stwo     | C8g.16xlarge | aarch64-mt   | 1,760.80                | 532.10                | 3.30                    | 92.50            |
 | Stwo     | C8g.16xlarge | aarch64-st   | 2,428.10                | 3,182.50              | 3.20                    | 92.50            |
 
-### Git Information
-
-**Stwo**
+**Git info: Stwo**
 * Repository: https://github.com/starkware-libs/stwo.git
 * Branch: `dev`
 * Commit: `d9176e6e22319370a8501f799829b920c0db2eac`
+
+### Hashing Throughput Comparison
+
+We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput. Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `keccak-f` and `blake2s` hashers.
+
+![Hashing Throughput Comparison (ST)](/hashing_throughput_st.png)
+
+![Hashing Throughput Comparison (MT)](/hashing_throughput_mt.png)
