@@ -1,44 +1,167 @@
 # Circuit Composition [Building modular circuits]
 
-**TODO: This section is under development**
+This section covers conventions for building reusable circuit components. These conventions provide modularity and clear interfaces between circuit components, allowing you to build applications from circuits.
 
-Circuit composition allows building complex circuits from smaller, reusable components.
+## Naming and Structure
 
-## Planned Topics
+Circuit building functions follow these conventions:
 
-- Managing witness data flow between circuits
-- The subcircuit pattern for organization  
-- Wire management across circuit boundaries
-- Reusing circuit components
-- Best practices for modular circuit design
-
-## Basic Principles
-
-When composing circuits:
-
-1. **Wire References**: Pass wire references between circuit functions
-2. **Builder Sharing**: Use the same CircuitBuilder instance across components
-3. **Clear Interfaces**: Define clear input/output wire contracts
-4. **Documentation**: Document wire meanings and constraints
-
-## Example Pattern
+- Name: `circuit_build_<operation>`
+- No return value
+- Parameters in specific order
+- Don't populate witness values
 
 ```rust
-// Component circuit that can be reused
-fn hash_circuit(builder: &CircuitBuilder, input: Wire) -> Wire {
-    // ... implement hash logic ...
-    output_wire
+fn circuit_build_<operation>(
+    builder: &CircuitBuilder,
+    config_params...,    // Lengths, sizes, constants
+    input_wires...,      // Wires caller provides
+    output_wires...,     // Wires caller reads
+) {
+    // Internal wires created here
+    let internal_state = builder.add_internal();
+    // Build constraints only - no witness population
+}
+```
+
+## Wire Management
+
+### Parameter Wires
+Pass wires that the caller needs to interact with:
+- Input values to provide
+- Output values to read
+- Connections to other circuits
+
+The function doesn't populate these wires - the caller is responsible for setting witness values.
+
+### Internal Wires
+Create computation wires inside the function for intermediate values. The caller doesn't see these.
+
+### Circuit Composition
+Functions can compose other `circuit_build_` functions internally. Wire interfaces are propagated through parameter passing - intermediate wires from composed circuits are only exposed if needed by the caller.
+
+```rust
+fn circuit_build_hash_twice(
+    builder: &CircuitBuilder,
+    input: Wire,
+    output: Wire,
+) {
+    // Internal intermediate wire - not exposed to caller
+    let intermediate = builder.add_internal();
+    
+    // Compose two hash circuits
+    circuit_build_hash(builder, input, intermediate);
+    circuit_build_hash(builder, intermediate, output);
 }
 
-// Main circuit composing components
-fn main_circuit(builder: &CircuitBuilder) {
-    let input = builder.add_witness();
+fn circuit_build_hash_chain(
+    builder: &CircuitBuilder,
+    input: Wire,
+    intermediate: Wire,  // Caller wants access to intermediate value
+    output: Wire,
+) {
+    // Intermediate wire exposed through interface
+    circuit_build_hash(builder, input, intermediate);
+    circuit_build_hash(builder, intermediate, output);
+}
+```
+
+## Parameter Order
+
+1. Builder reference
+2. Configuration (sizes, lengths)
+3. Input wires
+4. Output wires
+5. Working space (if needed)
+
+Example from the codebase:
+
+```rust
+pub fn circuit_build_tweaked_keccak(
+    builder: &CircuitBuilder,
+    domain_param_len: usize,         // Config
+    tweak_byte: u8,                   // Config
+    total_message_len: usize,         // Config
+    domain_param_wires: Vec<Wire>,    // Input
+    additional_terms: Vec<Term>,      // Input
+    digest: [Wire; 4],                // Output
+    message_le: &[Wire],              // Working space
+    padded_message: &[Wire],          // Working space
+)
+```
+
+## Documenting Invariants
+
+Express preconditions and invariants in function documentation:
+
+```rust
+/// Builds Keccak circuit constraints.
+///
+/// # Preconditions
+/// - `message_le` and `padded_message` must have consistent values:
+///   padded_message contains message_le with proper Keccak padding applied
+/// - `message_le` capacity must be at least `total_message_len / 8`
+/// - `padded_message` must have capacity for full Keccak blocks
+///
+/// The circuit doesn't verify these relationships - the witness populator
+/// is responsible for maintaining consistency. See `populate_keccak` helper.
+fn circuit_build_keccak(
+    builder: &CircuitBuilder,
+    total_message_len: usize,
+    message_le: &[Wire],
+    padded_message: &[Wire],
+    digest: [Wire; 4],
+) {
+    // Assumes preconditions are met
+    // Build constraints using the provided wires
+}
+```
+
+## Witness Population Helpers
+
+For complex witness population logic, provide a separate `populate_` helper:
+
+```rust
+/// Helper to populate Keccak witness values.
+/// 
+/// Handles the complex relationship between message_le and padded_message,
+/// ensuring proper padding and consistency.
+fn populate_keccak(
+    witness: &mut WitnessFiller,
+    message_bytes: &[u8],
+    message_le_wires: &[Wire],
+    padded_message_wires: &[Wire],
+    digest_wires: [Wire; 4],
+) {
+    // Pack message bytes into LE words
+    // Apply Keccak padding
+    // Ensure message_le and padded_message are consistent
+    // Compute digest
+}
+```
+
+## Hierarchical Composition
+
+```rust
+fn circuit_build_merkle_node(
+    builder: &CircuitBuilder,
+    left: [Wire; 4],
+    right: [Wire; 4],
+    parent: [Wire; 4],
+) {
+    // Internal concatenation buffer
+    let concat: Vec<Wire> = (0..8)
+        .map(|_| builder.add_internal())
+        .collect();
     
-    // Compose: use hash circuit as component
-    let hash1 = hash_circuit(builder, input);
-    let hash2 = hash_circuit(builder, hash1);
+    // Copy children to concatenation buffer
+    for i in 0..4 {
+        builder.assert_eq(format!("left_{}", i), left[i], concat[i]);
+        builder.assert_eq(format!("right_{}", i), right[i], concat[i + 4]);
+    }
     
-    // Continue with main logic...
+    // Delegate to hash circuit
+    circuit_build_hash(builder, &concat, parent);
 }
 ```
 
