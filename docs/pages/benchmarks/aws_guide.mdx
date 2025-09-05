@@ -1,3 +1,5 @@
+import { Callout } from 'vocs/components';
+
 # AWS Benchmarks Guide [How to reproduce Binius64 benchmark results in AWS]
 
 ## Getting Started with AWS EC2
@@ -22,7 +24,9 @@ rustup default stable
 export RUSTFLAGS="-C target-cpu=native"
 ```
 
-Tip: This is a good time for a sanity checkpoint, prior to running the benchmars:
+<Callout type="tip">
+  Tip: This is a good time for a sanity checkpoint, prior to running the benchmars:
+</Callout>
 
 ```bash
 rustc --version && cargo --version
@@ -81,6 +85,10 @@ ethsign_proof_verification/sig_1_msg_67_mt_x86_gfni_avx512
 EthSign proof size for 1 signatures, 67 max bytes: 267456 bytes
 ```
 
-Tip: Note that adding `--no-default-features` turns off the multithreading. We report all our benchmarks for boths single- and multi-threaded performance.
+<Callout type="tip">
+  Tip: Note that adding `--no-default-features` turns off the multithreading. We report all our benchmarks for boths single- and multi-threaded performance.
+</Callout>
 
-Tip: What if you're getting poor performance? You likely did not set the CPU flags correctly. Check out the benchmark logs and ensure that `Used & Enabled` list is not empty.
+<Callout type="tip">
+  Tip: What if you're getting poor performance? You likely did not set the CPU flags correctly. Check out the benchmark logs and ensure that `Used & Enabled` list is not empty.
+</Callout>
