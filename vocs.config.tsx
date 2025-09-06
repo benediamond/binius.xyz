@@ -112,8 +112,8 @@ export default defineConfig({
         link: "/basics",
       },
       {
-        text: "Overview",
-        link: "/basics/overview",
+        text: "Concepts",
+        link: "/basics/concepts",
       },
       {
         text: "Roadmap",
