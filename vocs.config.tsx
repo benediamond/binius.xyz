@@ -116,6 +116,10 @@ export default defineConfig({
         link: "/basics/concepts",
       },
       {
+        text: "Binius64 vs V0",
+        link: "/basics/binius-v0",
+      },
+      {
         text: "Roadmap",
         link: "/basics/roadmap",
       },
