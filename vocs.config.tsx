@@ -108,7 +108,7 @@ export default defineConfig({
   sidebar: {
     "/basics": [
       {
-        text: "Basics",
+        text: "Overview",
         link: "/basics",
       },
       {
