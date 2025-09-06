@@ -1,0 +1,34 @@
+# Concepts [Overview of the core concepts of verifiable computing]
+
+## What is a SNARK?
+
+Roughly, a _SNARK_ (a _succinct, noninteractive argument of knowledge_) is a proof of a computation. Let's say you're interested in learning the output of some costly, long-running computation, for example, a query on a large authenticated database. Instead of forcing you to run the computation yourself, I, the prover, just declare the output to you and additionally give to you a short _proof_. You can think of the proof like an barcode on an event ticket: when you scan it you get a "good" result (one beep) or a "bad" one (two beeps).
+
+If this system is designed well, it should satisfy two properties:
+
+- **Soundness.** Checking the proof should alert you if my claimed output is wrong. If I try to trick you with a false output, then it should become impossible for me to create a proof (barcode) which causes your checker to accept (beep once). Put differently, if your proof does accept, then you should be as good as convinced that I was honest.
+- **Succinctness.** The proof should be much smaller than the full size of the input data would have been. In this way, I can save in how much data I have to transmit to you. It should also be much more efficient to check it than to run the full-blown program.
+
+Taking these two attributes together, we see that SNARKs are a great tradeoff for you, the verifier. The amount of work you have to do is much less: you just check my small barcode, instead of running the full computation. On the other hand, the assuredness you get at the end of the day is essentially as good as if you had run the computation yourself.
+
+Now, we haven't said anything yet about how to actually construct this barcode, what it actually consists in, how your scanner is supposed to work, or why it is a good proxy for my honesty. In fact, this is where the whole science begins, and leads to a [massive rabbit hole](/blueprint) of elegance and complexity.
+
+## Binary Fields
+
+Our fundamental datatypes are _binary strings of power-of-2 width_. This makes Binius actually a lot more like standard physical computers, and a lot less like the SNARKs you've worked with before. Indeed, fixed-width binary strings—like single bits, 32-bit words, and 8-bit bytes—have been the fundamental units of computers since their early days.
+
+Why did SNARKs ever use anything else? The short answer is that, for technical reasons, we have to work with a mathematical object called a _field_—essentially a number system where we can add, multiply and divide. The standard unsigned integer datatypes are actually _not_ fields. We can of course add with no problem—we all know that if I add `0xFFFFFFFF` plus `0x00000001`, I'll get `0x00000000`, with an overflow modulo $2^{32}$. On the other hand, I can't always divide. Why not? To see this, note that there does not exist an integer $x$ such that $x \cdot 2 \equiv 1 \pmod{2^{32}}$ holds. (Whatever I multiply 2 by, the result will be even, and will remain so even after we reduce modulo $2^{32}$.)
+
+For this reason, SNARKs have largely used _prime fields_, the next-simplest thing. Here, we take a prime number $p$, like the _Baby Bear prime_ $2^{31} - 2^{27} + 1$. The set of integers $\{0, \ldots , p - 1\}$ _is_ a field, provided that we understand all addition and multiplication with wraparound modulo $p$. It is a [fact of basic algebra](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) that sets of this form are fields. All production-oriented SNARKs in use today, like [Plonky3](https://github.com/Plonky3/Plonky3) and [Stwo](https://github.com/starkware-libs/stwo), use prime fields of roughly 32 bits.
+
+In Binius, we use _binary fields_, fields that look a lot more like classical fixed-width binary registers. The tricky part is that when we multiply two 32-bit elements, we can't just do integer multiplication modulo $2^{32}$—we have to do something [more complicated](#TODO). On the other hand, these fields give us huge efficiency dividends.
+
+To see why, we need to talk about arithmetization. As we will explain at length shortly, _arithmetization_ is how we capture real-life statements in SNARK design. Let's start with a computational task—like "prove that this Ethereum block is valid". We can't feed this task directly into a SNARK—whether binary or otherwise. Rather, we need to express it in the language of the "frontend" that the SNARK exposes.
+
+In prime-field SNARKs, these front-ends all work modulo $p$. This is like putting a round peg into a square hole: while the computation we care about (say, the Keccak-256 hash function) has nothing to do with prime fields, we must express it in a language which only recognizes prime fields. This entails a sort of efficiency loss.
+
+## Multilinear Polynomials
+
+Why don't other SNARKs use binary fields? [Some in the past](https://eprint.iacr.org/2018/046) have. On the other hand, binary fields don't work compatibly with the technique central to those production-oriented SNARKs in common use today: the [DEEP-ALI](https://eprint.iacr.org/2019/336.pdf) paradigm. In short, this paradigm only works with fields whose multiplicative groups have high [two-adicity](https://www.cryptologie.net/article/559/whats-two-adicity/). Binary fields have none at all! Thus, univariate techniques won't work for us.
+
+Instead, we revisit a much-older stream of research: based on the multivariate _sumcheck_ protocol of Lund, Fortnow, Karloff, and Nisan [[LFKN92](https://dl.acm.org/doi/10.1145/146585.146605)]. To make this work, we have to introduce a lot of new techniques, including for the _[commitment](#TODO)_ of multilinears over binary fields. In the process, we lean on a number of existing works, including Ligero [[AHIV23](https://link.springer.com/article/10.1007/s10623-023-01222-8)], HyperPlonk [[CBBZ23](https://www.iacr.org/cryptodb/data/paper.php?pubkey=32920)] and BaseFold [[ZCF24](https://dl.acm.org/doi/10.1007/978-3-031-68403-6_5)]. We describe the techniques of our cryptographic backend in the [blueprint](/blueprint) area of this site. Academic expositions of our techniques appear in the works [[DP23](https://eprint.iacr.org/2024/1038.pdf)] and [[DP24](https://eprint.iacr.org/2024/504.pdf)].
