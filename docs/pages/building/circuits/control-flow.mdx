@@ -1,0 +1,129 @@
+# Control Flow
+
+Implementing conditional logic in circuits without runtime branching.
+
+Circuits execute all paths deterministically. There's no branching - both paths execute and the result gets selected via masking. Dynamic loops don't exist since all loops unroll at compile time. Arrays have fixed sizes and dynamic indexing requires multiplexing to select elements.
+
+## Conditional Selection
+
+Predicated execution with arithmetic masking. Both branches compute in parallel, then a single AND constraint selects the result based on the condition's MSB. This transforms control dependencies into data dependencies.
+
+```rust
+// Both computations execute, result selected
+let result_a = compute_path_a(builder);
+let result_b = compute_path_b(builder);
+
+// select(cond, t, f) returns t if MSB(cond)=1, f if MSB(cond)=0
+let result = builder.select(condition, result_a, result_b);
+```
+
+**MSB-Bool Convention**:
+- MSB = 1 (e.g., 0x8000000000000000): selects first argument (t)
+- MSB = 0 (e.g., 0x0000000000000000): selects second argument (f)
+- Lower 63 bits are ignored
+
+Comparison operations return MSB-bool values:
+```rust
+let is_equal = builder.icmp_eq(a, b);   // Returns MSB=1 if equal
+let is_less = builder.icmp_ult(a, b);   // Returns MSB=1 if a < b
+```
+
+### Dynamic Index
+
+Dynamic array indexing becomes a multiplexer tree. The index bits drive a cascade of 2-to-1 selectors - each bit halves the candidates until one remains. This binary decision tree evaluates all paths in parallel, achieving logarithmic depth with linear gate count.
+
+```rust
+use binius_frontend::circuits::multiplexer::single_wire_multiplex;
+
+// Runtime index - builds binary decision tree
+let values = [wire_a, wire_b, wire_c, wire_d];
+let selected = single_wire_multiplex(builder, &values, index);
+```
+
+The multiplexer decomposes the index into bits, using each bit to select between pairs at successive levels:
+- Bit 0 selects between even/odd pairs
+- Bit 1 selects between halves
+- Continue until single element remains
+
+Selecting entire data structures rather than individual wires uses the same multiplexer approach with groups of wires.
+```rust
+use binius_frontend::circuits::multiplexer::multi_wire_multiplex;
+
+// Select entire structures atomically
+let red = &[r_val, r_intensity];
+let green = &[g_val, g_intensity];
+let blue = &[b_val, b_intensity];
+
+let colors = vec![red, green, blue];
+let selected_color = multi_wire_multiplex(builder, &colors, selector);
+```
+
+### Loop Iteration
+
+Loops unroll into straight-line code at compile time. Each iteration becomes a sequence of constraints with no backward edges. For early termination, a sticky flag tracks the exit condition - once set, it masks subsequent iterations to zero, simulating break statements arithmetically.
+```rust
+// Unrolls to 8 sequential additions
+fn sum_array(builder: &CircuitBuilder, data: &[Wire; 8]) -> Wire {
+    let mut sum = builder.add_constant(Word::ZERO);
+    let zero = builder.add_constant(Word::ZERO);
+
+    for i in 0..8 {
+        let (new_sum, _) = builder.iadd_cin_cout(sum, data[i], zero);
+        sum = new_sum;
+    }
+
+    sum
+}
+```
+
+**Early Exit:**
+A sticky flag simulates early loop exit. This boolean wire starts false and stays true once the exit condition triggers. Each iteration checks the flag and processes either the real value or zero. All iterations execute, but those after the exit point process zeros instead of data.
+
+```rust
+// Sum until encountering zero
+fn sum_until_zero(builder: &CircuitBuilder, data: &[Wire; 8]) -> Wire {
+    let mut sum = builder.add_constant(Word::ZERO);
+    let mut found_zero = builder.add_constant(Word::ZERO);
+    let zero = builder.add_constant(Word::ZERO);
+
+    for value in data {
+        let is_zero = builder.icmp_eq(*value, zero);
+
+        // Conditional accumulation via masking
+        let to_add = builder.select(found_zero, zero, *value);
+        let (new_sum, _) = builder.iadd_cin_cout(sum, to_add, zero);
+        sum = new_sum;
+
+        // Monotonic flag - once true, stays true
+        found_zero = builder.bor(found_zero, is_zero);
+    }
+
+    sum
+}
+```
+
+## Variable-Length Data
+
+Variable-length data uses bounded allocation with masking. Allocate for the maximum size, then compare each index against the actual length. Elements within bounds get processed normally; those beyond get masked to zero. The circuit processes a fixed-size array but respects the runtime length.
+
+```rust
+use binius_frontend::circuits::fixed_byte_vec::FixedByteVec;
+
+// Pre-allocate maximum capacity
+fn hash_variable_input(
+    builder: &CircuitBuilder,
+    max_len: usize,
+) -> FixedByteVec {
+    // Static allocation for worst case
+    let data_wires: Vec<Wire> = (0..max_len)
+        .map(|_| builder.add_witness())
+        .collect();
+
+    // Runtime length parameter in bytes
+    let len_bytes = builder.add_witness();
+
+    // Container tracks valid range
+    FixedByteVec::new(data_wires, len_bytes)
+}
+```
+

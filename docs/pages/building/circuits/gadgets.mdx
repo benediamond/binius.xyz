@@ -1,0 +1,83 @@
+# Gadgets
+
+Gadgets are reusable functions that compose multiple gates into higher-level operations. They bridge the gap between individual gates and complete circuits by implementing common algorithms that require multiple gates working together. These are functions in `crates/frontend/src/circuits/` that encapsulate patterns like bit manipulation, arithmetic operations, and cryptographic primitives.
+
+Gates are single operations on the CircuitBuilder:
+```rust
+// Single operations that map to opcodes
+let sum = builder.iadd_32(a, b);        // Gate: maps to Opcode::Iadd32
+let product = builder.imul(x, y);       // Gate: maps to Opcode::Imul
+let cmp = builder.icmp_ult(p, q);       // Gate: maps to Opcode::IcmpUlt
+```
+
+Gadgets are standalone functions for multi-gate operations:
+```rust
+// Multi-gate operations for complex tasks
+let swapped = swap_bytes_32(builder, x);           // Gadget: ~8 gates
+let count = popcount(builder, x);                  // Gadget: ~20 gates
+```
+
+The framework provides gadgets for common operations that would be tedious to implement from scratch using individual gates.
+
+### Byte Operations
+
+```rust
+use binius_frontend::circuits::bytes::{swap_bytes_32, swap_bytes};
+
+// Swap bytes within 32-bit halves (uses ~8 gates)
+let swapped = swap_bytes_32(builder, input);
+
+// Full 64-bit byte reversal (uses ~12 gates)  
+let reversed = swap_bytes(builder, input);
+```
+
+### Bit Counting
+
+```rust
+use binius_frontend::circuits::popcount::popcount;
+
+// Count number of 1-bits in a word (SWAR algorithm)
+let count = popcount(builder, input);  // Uses ~20 gates
+```
+
+### Cryptographic Building Blocks
+
+```rust
+use binius_frontend::circuits::hmac::HmacSha256;
+use binius_frontend::circuits::base64::Base64UrlSafe;
+
+// HMAC-SHA256 authentication
+let hmac = HmacSha256::new(builder, key, message);
+
+// Base64 encoding verification  
+let base64 = Base64UrlSafe::new(builder, decoded, encoded, len_bytes);
+```
+
+## Implementation Example
+
+Understanding how gadgets work internally helps when building custom operations. This example shows how the byte swapping algorithm decomposes into individual gate operations with carefully designed bit masks:
+
+```rust
+pub fn swap_bytes_32(builder: &CircuitBuilder, input: Wire) -> Wire {
+    // Create masks for byte manipulation
+    let mask_00ff = builder.add_constant_64(0x00FF00FF00FF00FF);
+    let mask_0000ffff = builder.add_constant_64(0x0000FFFF0000FFFF);
+    
+    // Pass 1: Swap adjacent bytes
+    let masked_bytes = builder.band(input, mask_00ff);
+    let shl_8 = builder.shl(masked_bytes, 8);
+    let shr_8 = builder.shr(input, 8);
+    let masked_shr_8 = builder.band(shr_8, mask_00ff);
+    let step1 = builder.bxor(shl_8, masked_shr_8);
+    
+    // Pass 2: Swap 16-bit units  
+    let masked_words = builder.band(step1, mask_0000ffff);
+    let shl_16 = builder.shl(masked_words, 16);
+    let shr_16 = builder.shr(step1, 16);
+    let masked_shr_16 = builder.band(shr_16, mask_0000ffff);
+    builder.bxor(shl_16, masked_shr_16)
+}
+```
+
+This gadget swaps bytes within 32-bit halves using ~8 gates total through a two-pass algorithm.
+

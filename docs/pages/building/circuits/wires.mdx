@@ -1,0 +1,46 @@
+# Wires
+
+Gates consume inputs and produce outputs through wires - indices into a statically-allocated witness array. During circuit construction, each wire receives a unique index. During proving, the prover populates this array with concrete values, and gates read their inputs and write their outputs at these predetermined positions.
+
+## Wire Types
+
+**Public Wires** define the circuit's external interface. Both parties observe these values - the prover supplies them as inputs and outputs, while the verifier includes them in the proof transcript to bind the proof to specific public parameters.
+
+```rust
+let input = builder.add_inout();     // Public input from caller
+let output = builder.add_inout();    // Public output to verify
+```
+
+**Private Wires** encapsulate the prover's private knowledge. The verifier observes only cryptographic commitments to these values, never the values themselves. These wires carry secret inputs, intermediate computations, and any data requiring privacy while maintaining verifiability.
+
+```rust
+let secret_key = builder.add_witness();      // Prover's secret
+let intermediate = builder.add_witness();    // Private computation
+```
+
+**Constant Wires**
+Constants embed compile-time values directly into the constraint system. The compiler maintains a constant pool with automatic deduplication - identical constant requests return the same wire index. This transparent optimization exploits the frequent reuse of masks, offsets, and sentinel values in typical circuits.
+
+```rust
+let mask = builder.add_constant_64(0xFF00FF00);  // Creates wire if new
+let zero = builder.add_constant_64(0);           // Returns existing wire
+let mask2 = builder.add_constant_64(0xFF00FF00); // Same wire as 'mask'
+```
+
+### Gate Output Wires
+Gates allocate output wires internally during circuit construction. Each gate operation returns wire references to its computed results. The gate's opcode determines output arity: most gates produce one output, while `imul` produces two (high and low words).
+
+```rust
+let xor_result = builder.bxor(a, b);        // Gate creates 1 output wire
+let (high, low) = builder.imul(x, y);       // Gate creates 2 output wires
+let sum = builder.iadd_32(p, q);            // Gate creates 1 output wire
+```
+
+## Wires and Compiler Optimizations
+
+The compiler transforms the witness array layout and constraint structure while preserving circuit semantics. These passes reduce both witness size and constraint count transparently:
+
+- **Wire reordering**: Segregates wires by visibility (constants, public, private) and aligns each section to power-of-two boundaries for cache-efficient access
+- **Gate fusion**: Substitutes intermediate XOR expressions directly into consuming constraints, eliminating temporary wire allocations
+- **Constant propagation**: Evaluates compile-time expressions and replaces wire references with computed constants
+- **Dead code elimination**: Prunes constraints whose outputs become unused after fusion passes

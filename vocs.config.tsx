@@ -153,64 +153,60 @@ export default defineConfig({
         link: "/building",
       },
       {
-        text: "Theory and Foundations",
-        link: "/building/theory",
-      },
-      {
-        text: "Constraints and Shifted Indices",
-        link: "/building/constraints",
-      },
-      {
-        text: "Non-Deterministic Witnesses",
-        link: "/building/nondeterministic",
-      },
-      {
-        text: "Control Flow Patterns",
-        link: "/building/control-flow",
-      },
-      {
-        text: "Practical Tutorial",
-        link: "/building/tutorial",
+        text: "Getting Started",
+        link: "/building/getting-started",
         collapsed: false,
         items: [
           {
-            text: "Building First Circuits",
-            link: "/building/tutorial",
+            text: "Basics",
+            link: "/building/getting-started/basics",
           },
           {
-            text: "Common Operations",
-            link: "/building/tutorial/operations",
+            text: "Installation",
+            link: "/building/getting-started/installation",
           },
           {
-            text: "Proving and Verifying",
-            link: "/building/tutorial/proving",
+            text: "First Circuit",
+            link: "/building/getting-started/first-circuit",
           },
           {
-            text: "Circuit Composition",
-            link: "/building/tutorial/composition",
+            text: "Proving Workflow",
+            link: "/building/getting-started/proving",
+          },
+          {
+            text: "CLI Framework",
+            link: "/building/getting-started/cli",
           },
         ],
       },
       {
-        text: "Appendix",
-        link: "/building/appendix",
+        text: "Circuits",
+        link: "/building/circuits",
         collapsed: false,
         items: [
           {
-            text: "Addition Implementation",
-            link: "/building/appendix/addition",
+            text: "Gadgets",
+            link: "/building/circuits/gadgets",
           },
           {
-            text: "Equality Check",
-            link: "/building/appendix/equality",
+            text: "Wires",
+            link: "/building/circuits/wires",
           },
           {
-            text: "Bit Extraction",
-            link: "/building/appendix/bit-extraction",
+            text: "Control Flow",
+            link: "/building/circuits/control-flow",
           },
           {
-            text: "SHA-256 Sigma",
-            link: "/building/appendix/sha256-sigma",
+            text: "Data Structures",
+            link: "/building/circuits/data-structures",
+          },
+          {
+            text: "Circuit Composition",
+            link: "/building/circuits/composition",
+          },
+          {
+            text: "Performance",
+            link: "/building/circuits/performance",
           },
         ],
       },

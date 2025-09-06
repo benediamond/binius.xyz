@@ -1,0 +1,19 @@
+# Performance
+
+## Compiler-Driven Optimization
+
+Circuit performance optimization occurs primarily through compiler passes rather than manual tuning. The optimization pipeline includes gate fusion (combining XOR operations into single constraints), constant propagation (evaluating operations on constants at compile time), and dead code elimination (removing unused gates). These passes can substantially reduce constraint counts automatically, with continued improvements as the optimization pipeline evolves.
+
+## Cost Model  
+
+Operations have approximate costs relative to AND constraints as the baseline:
+
+XOR, NOT, rotations, and constants have negligible cost because they're encoded as shifted value indices within existing constraints. AND, OR, and select operations each require one constraint. Addition and comparison operations typically require one to two constraints. Multiplication is expensive at roughly one hundred constraints per operation.
+
+These ratios change as gate implementations improve and new optimization techniques emerge. Constraint counts provide rough complexity estimates, but actual proving performance depends on circuit structure, parallelization opportunities, and hardware characteristics.
+
+## Performance Analysis
+
+Circuit snapshots provide detailed constraint counts, gate counts, and witness statistics after compilation. These `.snap` files in `crates/examples/snapshots/` show the actual performance characteristics of production circuits.
+
+Examine snapshots for orientation on typical constraint counts of circuits like SHA256 and Keccak included with the framework. Actual proving performance varies significantly across different hardware architectures and workload characteristics. For concrete proving times and throughput comparisons, see the [benchmarks section](/benchmarks).
