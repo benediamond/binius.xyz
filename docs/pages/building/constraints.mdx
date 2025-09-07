@@ -23,6 +23,7 @@ Binius64 has exactly two types of constraints:
 
 Where each term (A_0, B_0, etc.) can be:
 - A wire reference: `v_i` (value at index i in the witness vector)
+- A shifted wire reference: `v_i << n`, `v_i >> n`, or `v_i ~>> n` (logical left, logical right, or arithmetic right shift)
 - A constant: any 64-bit value
 
 Each operand is a XOR combination of these terms. Since XOR is addition in GF(2^64), these combinations are "free" - they don't require additional constraints. This flexibility becomes more useful when terms are extended to include shifted values.
@@ -182,7 +183,7 @@ Most circuits work with integers and bit patterns:
 let (sum, carry) = builder.iadd_cin_cout(a, b, cin);    // Treats as integers
 let (hi, lo) = builder.imul(x, y);                      // Integer multiplication
 
-// Bit pattern operations  
+// Bit pattern operations
 let masked = builder.band(value, mask);                 // Treats as bit patterns
 let shifted = builder.shl(value, 5);                    // Bit manipulation
 let rotated = builder.rotl(value, 13);                  // Bit rearrangement

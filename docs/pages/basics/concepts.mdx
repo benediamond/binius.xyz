@@ -1,0 +1,26 @@
+# Concepts [Overview of the core concepts of verifiable computing]
+
+## What is a SNARK?
+
+Roughly, a _SNARK_ (a _succinct, noninteractive argument of knowledge_) is a proof of a computation. Let's say you're interested in learning the output of some costly, long-running computation, for example, a query on a large authenticated database. Instead of forcing you to run the computation yourself, I, the prover, just declare the output to you and additionally give to you a short _proof_. You can think of the proof like an barcode on an event ticket: when you scan it you get a "good" result (one beep) or a "bad" one (two beeps).
+
+If this system is designed well, it should satisfy two properties:
+
+- **Soundness.** Checking the proof should alert you if my claimed output is wrong. If I try to trick you with a false output, then it should become impossible for me to create a proof (barcode) which causes your checker to accept (beep once). Put differently, if your proof does accept, then you should be as good as convinced that I was honest.
+- **Succinctness.** The proof should be much smaller than the full size of the input data would have been. In this way, I can save in how much data I have to transmit to you. It should also be much more efficient to check it than to run the full-blown program.
+
+Taking these two attributes together, we see that SNARKs are a great tradeoff for you, the verifier. The amount of work you have to do is much less: you just check my small barcode, instead of running the full computation. On the other hand, the assuredness you get at the end of the day is essentially as good as if you had run the computation yourself. Better yet, a SNARK proof can be checked by anyone: you can pass the proof to your friends, who will be equally convinced that the computed result is correct.
+
+SNARKs are a powerful cryptographic tool that unlocks [_verifiable computing_](https://en.wikipedia.org/wiki/Verifiable_computing), a paradigm best summarized by this quote from [[BFLS91](https://dl.acm.org/doi/10.1145/103418.103428)]:
+
+> In this setup, a single reliable PC can monitor the operation of a herd of supercomputers working with possibly extremely powerful but unreliable software and untested hardware.
+>
+> —Babai, Fortnow, Levin, Szegedy, 1991
+
+## What makes Binius different?
+
+Binius is far from the only SNARK construction, but most others struggle to efficiently prove bitwise operations. Bitwise operations are a key bottleneck in proving classical hash functions, which is an especially important use case for SNARKs. Binius is able to prove bitwise operations much more efficiently than competing approaches by combining two crucial design features: [_binary fields_](/blueprint/math/fields) and the [_sumcheck_](/blueprint/math/sumcheck) protocol.
+
+Binary fields have several important properties that we make good use of. Firstly, all binary fields, by definition, contain a 1-bit subfield known as GF(2), which is of course the smallest field. Second, binary field addition corresponds directly with bitwise XOR, which is a common operation. And binary fields are used widely in classic symmetric cryptography primitives, notably in the AES encryption cipher and GMAC algebraic message authentication code. For this reason, modern processors have dedicated instructions, like `CLMUL` on x86-64 and `PMULL` on ARM64, for accelerating binary field arithmetic for cryptographic applications.
+
+The benefits of binary fields are amplified in combination with the sumcheck protocol, which dates back to [[LFKN92](https://dl.acm.org/doi/10.1145/146585.146605)]. Using the sumcheck protocol, we are able to encode individual bits very efficiently using techniques we developed in [[DP24](https://eprint.iacr.org/2024/504.pdf)]. The sumcheck protocol furthermore unlocks efficient protocols for checking [bitwise AND constraints](/blueprint/backend/ands) and [bitwise shifts](/blueprint/backend/reduction).

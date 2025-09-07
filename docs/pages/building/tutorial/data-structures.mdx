@@ -1,0 +1,153 @@
+# Data Structures [Dealing with Data Structures]
+
+This section covers how to handle data structures and dynamic allocation patterns in circuit design.
+
+## Circuit Allocation Constraints
+
+Circuits cannot create dynamic data structures. All wire allocations happen during circuit construction - the constraint system cannot resize vectors, append elements, or create new wires during witness population.
+
+```rust
+// This doesn't exist in circuits:
+let mut message = Vec::new();     // Can't create dynamic containers
+message.push(byte);               // Can't append at runtime
+message.extend(data);             // Can't concatenate dynamically
+
+// What circuits actually have:
+let message: Vec<Wire> = (0..FIXED_SIZE)  // Size must be known at construction
+    .map(|_| builder.add_witness())
+    .collect();
+```
+
+## Witness Interface Pattern
+
+### Solution: Expose Witness Wires
+
+```rust
+fn circuit_check_aligned_concat(
+    builder: &CircuitBuilder,
+    data_a: [Wire; 4],
+    data_b: [Wire; 4],
+    message: [Wire; 8],
+) {
+    // Educational example for word-aligned (32-byte) data concatenation
+    // For general variable-length concatenation use
+    // Concat::new(builder, len_bytes, message, terms) in the frontend crate.
+
+    // Check data_a appears at words 0-3 of message
+    for (i, &data_wire) in data_a.iter().enumerate() {
+        let message_wire = message[i];
+        builder.assert_eq(format!("data_a[{i}]"), message_wire, data_wire);
+    }
+
+    // Check data_b appears at words 4-7 of message
+    for (i, &data_wire) in data_b.iter().enumerate() {
+        let message_wire = message[i + 4];
+        builder.assert_eq(format!("data_b[{i}]"), message_wire, data_wire);
+    }
+}
+
+fn circuit_build_example(
+    builder: &CircuitBuilder,
+    input: [Wire; 4],
+) -> [Wire; 4] {
+    let computed_a = circuit_compute_something(builder, input);
+    let computed_b = circuit_compute_something_else(builder, input);
+
+    // Need witness wires for the concatenated message
+    let message: [Wire; 8] = std::array::from_fn(|_| builder.add_witness());
+
+    // Check that message contains computed_a || computed_b
+    circuit_check_aligned_concat(builder, computed_a, computed_b, message);
+
+    // Use the message in further computation
+    circuit_use_message(builder, &message)
+}
+
+fn populate_example_witness(
+    witness: &mut WitnessFiller,
+    message_wires: &[Wire],
+    data_a_bytes: &[u8],
+    data_b_bytes: &[u8],
+) {
+    let mut message_bytes = Vec::new();
+    message_bytes.extend_from_slice(data_a_bytes);
+    message_bytes.extend_from_slice(data_b_bytes);
+
+    pack_bytes_into_wires_le(witness, message_wires, &message_bytes);
+}
+```
+
+## Design Patterns
+
+### Pre-allocated Buffers
+Allocate maximum required space during circuit construction:
+
+```rust
+fn circuit_build_variable_hash(
+    builder: &CircuitBuilder,
+    max_message_len: usize,
+    actual_len: Wire,
+    message: &[Wire],  // Pre-allocated to max_message_len
+    digest: [Wire; 4],
+) {
+    // Circuit handles variable length up to maximum
+    let hash_circuit = Keccak::new(builder, actual_len, digest, message.to_vec());
+    // Internal padding and length handling
+}
+```
+
+### Fixed-Size Arrays
+Use compile-time known sizes for structured data:
+
+```rust
+struct MerkleNode {
+    left: [Wire; 4],
+    right: [Wire; 4],
+    parent: [Wire; 4],
+}
+
+fn circuit_build_merkle_tree(
+    builder: &CircuitBuilder,
+    leaves: &[[Wire; 4]],  // Fixed number of leaves
+) -> [Wire; 4] {
+    // Tree structure known at compile time
+    let mut level = leaves.to_vec();
+    while level.len() > 1 {
+        level = level.chunks(2)
+            .map(|pair| circuit_build_merkle_node(builder, pair[0], pair[1]))
+            .collect();
+    }
+    level[0]
+}
+```
+
+### Length Encoding
+Include length information in the witness:
+
+```rust
+fn circuit_build_variable_data(
+    builder: &CircuitBuilder,
+    max_items: usize,
+    actual_count: Wire,
+    items: &[Wire],  // Pre-allocated to max_items
+) {
+    // Use actual_count to mask unused items
+    for i in 0..max_items {
+        let item_used = builder.icmp_ult(
+            builder.add_constant_64(i as u64),
+            actual_count
+        );
+        // Apply masking based on item_used
+        let masked_item = builder.select(item_used, items[i], builder.add_constant(Word::ZERO));
+        // Process masked_item
+    }
+}
+```
+
+## Best Practices
+
+- Plan maximum sizes during circuit design
+- Use length wires to handle variable data
+- Expose intermediate wire collections through function parameters
+- Separate constraint logic from witness population
+- Document wire capacity requirements in function comments

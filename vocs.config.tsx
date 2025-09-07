@@ -108,73 +108,16 @@ export default defineConfig({
   sidebar: {
     "/basics": [
       {
-        text: "Basics",
+        text: "Overview",
         link: "/basics",
       },
       {
-        text: "Overview",
-        link: "/basics/overview",
+        text: "Concepts",
+        link: "/basics/concepts",
       },
       {
-        text: "Binius's Arithmetization",
-        collapsed: false,
-        link: "/basics/arithmetization/",
-        items: [
-          {
-            text: "Background",
-            link: "/basics/arithmetization/background",
-          },
-          {
-            text: "Data Types",
-            link: "/basics/arithmetization/types",
-          },
-          {
-            text: "Multi-Multiset Matching",
-            link: "/basics/arithmetization/m3",
-            collapsed: true,
-            items: [
-              {
-                text: "A Toy Example",
-                link: "/basics/arithmetization/m3/example",
-              },
-              {
-                text: "Definition of M3",
-                link: "/basics/arithmetization/m3/definition",
-              },
-              {
-                text: "Proving Collatz Orbits",
-                link: "/basics/arithmetization/m3/collatz",
-              },
-              {
-                text: "Lasso Lookup",
-                link: "/basics/arithmetization/m3/lasso",
-              },
-            ],
-          },
-          {
-            text: "Merkle–Patricia Inclusion",
-            link: "/basics/arithmetization/mpt",
-            collapsed: true,
-            items: [
-              {
-                text: "Review of MPT Task",
-                link: "/basics/arithmetization/mpt/review",
-              },
-              {
-                text: "Informal Explanation",
-                link: "/basics/arithmetization/mpt/sketch",
-              },
-              {
-                text: "Our MPT Construction",
-                link: "/basics/arithmetization/mpt/construction",
-              },
-              {
-                text: "State Forking",
-                link: "/basics/arithmetization/mpt/forking",
-              },
-            ],
-          },
-        ],
+        text: "Binius64 vs V0",
+        link: "/basics/binius-v0",
       },
       {
         text: "Roadmap",
