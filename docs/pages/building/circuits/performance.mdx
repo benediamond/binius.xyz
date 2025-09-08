@@ -8,7 +8,7 @@ Circuit performance optimization occurs primarily through compiler passes rather
 
 Operations have approximate costs relative to AND constraints as the baseline:
 
-XOR, NOT, rotations, and constants have negligible cost because they're encoded as shifted value indices within existing constraints. AND, OR, and select operations each require one constraint. Addition and comparison operations typically require one to two constraints. Multiplication is expensive at roughly one hundred constraints per operation.
+XOR, NOT, rotations, and constants have negligible cost because they're encoded as shifted value indices within existing constraints. AND, OR, and select operations each require one constraint. Addition and comparison operations typically require one to two constraints. Multiplication is expensive at roughly 4 or 5 constraints per operation.
 
 These ratios change as gate implementations improve and new optimization techniques emerge. Constraint counts provide rough complexity estimates, but actual proving performance depends on circuit structure, parallelization opportunities, and hardware characteristics.
 
