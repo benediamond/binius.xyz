@@ -23,11 +23,11 @@ let circuit = builder.build();
 
 // 2. Setup prover and verifier
 let cs = circuit.constraint_system().clone();
-let log_inv_rate = 1; // Security parameter (higher = more secure but larger proofs)
+let log_inv_rate = 1; // Controls proof size vs. security tradeoff
 
 let verifier = Verifier::<StdDigest, _>::setup(
-    cs.clone(), 
-    log_inv_rate, 
+    cs.clone(),
+    log_inv_rate,
     StdCompression::default()
 )?;
 let prover = Prover::<OptimalPackedB128, _, StdDigest>::setup(

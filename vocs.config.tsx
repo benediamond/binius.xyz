@@ -166,8 +166,8 @@ export default defineConfig({
             link: "/building/getting-started/installation",
           },
           {
-            text: "First Circuit",
-            link: "/building/getting-started/first-circuit",
+            text: "First Circuits",
+            link: "/building/getting-started/first-circuits",
           },
           {
             text: "Proving Workflow",

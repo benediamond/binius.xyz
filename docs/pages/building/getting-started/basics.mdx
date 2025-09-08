@@ -15,9 +15,8 @@ Complex verification tasks like hash preimages or digital signatures require tho
 
 Binius64 organizes verification logic through a five-level hierarchy:
 
-- **Applications**: Complete protocols (identity verification, private computation)
-- **Circuits**: Cryptographic functions (SHA256, ECDSA, Keccak)
-- **Gadgets**: Complex operations (32-bit arithmetic, comparisons, multi-limb division)
+- **Circuits**: Complete applications (identity verification, private computation)
+- **Gadgets**: Reusable computation units (from simple 32-bit arithmetic to complex functions like SHA256, ECDSA, Keccak)
 - **Gates**: Word-level operations (iadd_cin_cout, imul, icmp_ult, rotr_32)
 - **Constraints**: The underlying AND and MUL equations
 
@@ -27,7 +26,7 @@ These constraints transform the verification problem into circuit satisfiability
 
 The SHA256 circuit in `crates/circuits/src/sha256` demonstrates this hierarchy. At the proof system level, you might prove knowledge of a preimage. The circuit implements the complete SHA-256 algorithm through:
 - Message scheduling using `ror32` and `shr32` gadgets for bit manipulation
-- Compression function using `iadd32` for modular addition and `select` for choice operations  
+- Compression function using `iadd32` for modular addition and `select` for choice operations
 - Sigma functions combining multiple rotations and XORs
 
 Gadgets decompose to gates, which generate constraints. The complete SHA256 circuit requires thousands of constraints, abstracted behind: `Sha256::new(builder, len, digest, message)`.
@@ -82,7 +81,7 @@ const MESSAGE_LEN_WORDS: usize = MESSAGE_LEN_BYTES / 8;
 let len_bytes = builder.add_constant_64(MESSAGE_LEN_BYTES as u64);
 
 // Private input: the preimage (message + nonce combined)
-let message_words: Vec<_> = (0..MESSAGE_LEN_WORDS)
+let message: Vec<_> = (0..MESSAGE_LEN_WORDS)
     .map(|_| builder.add_witness())
     .collect();
 
@@ -90,18 +89,18 @@ let message_words: Vec<_> = (0..MESSAGE_LEN_WORDS)
 let expected_digest: [_; 4] = core::array::from_fn(|_| builder.add_inout());
 
 // Create SHA256 circuit that verifies the hash
-let sha256 = Sha256::new(&builder, len_bytes, expected_digest, message_words.clone());
+let sha256 = Sha256::new(&builder, len_bytes, expected_digest, message.clone());
 ```
 
 The SHA256 circuit internally implements the complete algorithm through message scheduling, compression functions, and digest finalization.
 
 During witness generation:
 ```rust
-// Populate the 64-byte preimage
-sha256.populate_message(&mut witness_filler, &preimage_bytes);
+// Populate the 64-byte message
+sha256.populate_message(&mut witness_filler, &message_bytes);
 
-// Populate the expected 32-byte hash
-sha256.populate_digest(&mut witness_filler, hash_bytes);
+// Populate the expected 32-byte digest
+sha256.populate_digest(&mut witness_filler, digest_bytes);
 ```
 
 ## Example 1: Basic Constraints and Private Witnesses
@@ -150,11 +149,11 @@ let boolean = builder.icmp_eq(p, q);        // Boolean comparison
 let pattern = builder.band(v, mask);        // Bit manipulation
 ```
 
-**Boolean Representation**: Comparisons like `icmp_eq` and `icmp_ult` use the MSB (Most Significant Bit) to encode boolean values. When MSB = 1, the condition is true; when MSB = 0, it's false. The lower 63 bits are undefined. This MSB-bool convention enables branchless conditional operations - the `select` gate uses the MSB to choose between two values without runtime branching.
+**Boolean Representation**: Comparisons like `icmp_eq` and `icmp_ult` use the MSB (Most Significant Bit) to encode boolean values. The MSB conveniently happens to be the sign bit In two's complement. When MSB = 1, the condition is true; when MSB = 0, it's false. The lower 63 bits are undefined. This MSB-bool convention enables branchless conditional operations - the `select` gate uses the MSB to choose between two values without runtime branching.
 
-While all values are 64-bit words at the constraint level, gates encode type semantics - `iadd` treats inputs as unsigned integers with carry chains, `bxor` performs field addition, comparison operations produce MSB-bool results. The compiler optimizes each gate's decomposition to constraints, minimizing total cost while preserving correctness.
+While all values are 64-bit words at the constraint level, gates encode type semantics - `iadd` treats inputs as unsigned integers with carry chains, `bxor` performs field addition, comparison operations produce MSB-bool results.
 
-## Example 3: Non-Deterministic Auxiliary Values  
+## Example 3: Non-Deterministic Auxiliary Values
 
 Consider modular arithmetic verification. The operation `a = b mod c` requires proving the existence of a quotient `q` such that `a = c × q + b`. The hint system handles `q`: the prover computes it outside the circuit and supplies it as a witness. The circuit verifies only that the relationship holds.
 
@@ -189,7 +188,7 @@ Consider computing the XOR of multiple values. The naive approach chains individ
 ```rust
 // Naive: 3 separate XOR gates, 3 constraints
 let temp1 = builder.bxor(a, b);        // Constraint 1
-let temp2 = builder.bxor(temp1, c);    // Constraint 2  
+let temp2 = builder.bxor(temp1, c);    // Constraint 2
 let result = builder.bxor(temp2, d);   // Constraint 3
 ```
 
