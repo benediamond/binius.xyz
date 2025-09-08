@@ -1,90 +1,15 @@
-import Collapsible from '../../components/Collapsible';
-import { Callout } from 'vocs/components';
-
 # Building with Binius64 [Tutorial on building ZK applications]
 
-Tutorial on the building of ZK applications using Binius64.
+This guide covers core concepts through building applications in Binius64.
 
-## Overview
+**[Getting Started](getting-started)** - Covers the fundamentals of zero-knowledge circuits including verification concepts, building your first circuit, generating proofs, and creating command-line applications. Shows how constraint systems work through practical examples.
 
-This section provides a comprehensive guide to building zero-knowledge circuits using the Binius64 framework. Binius64 is a simplified SNARK protocol that leverages binary field arithmetic to efficiently prove computations on 64-bit words.
+**[Circuits](circuits)** - Explores practical patterns for building complex circuits including reusable gadgets, control flow without branches, circuit composition techniques, and performance analysis tools. These enable building production-ready cryptographic functions.
 
-### What You'll Learn
+Production applications rely on complex cryptographic circuits for real-world use cases. The framework includes production implementations of:
+- **Hash functions**: SHA256, SHA512, Blake2, Keccak, RIPEMD
+- **Signatures**: ECDSA, secp256k1, RSA
+- **Encoding**: Base64, JWT claims parsing
+- **Arithmetic**: BigNum operations, floating point
 
-- **Circuit Foundations**. Why ZK systems require circuits and how they differ from traditional digital circuits.
-- **Constraint Systems**. How to express computations using AND and MUL constraints.
-- **Shifted Value Indices**. How Binius64 enables efficient bit manipulation.
-- **Circuit Building**. Practical examples using the CircuitBuilder API.
-- **Control Flow**. Patterns for handling conditionals and loops in circuits.
-- **Proving and Verification**. The complete flow from circuit to proof.
-
-### Binius64 Characteristics
-
-1. **Word-Level Operations**. Works directly with 64-bit words instead of individual bits.
-2. **CPU Alignment**. Maps to modern processor instructions.
-3. **Two Constraint Types**. AND and MUL constraints.
-4. **Zero-Cost Operations**. Shifts and XORs through shifted value indices.
-
-### Prerequisites
-
-- Basic understanding of zero-knowledge proofs concepts
-- Familiarity with Rust programming
-- Understanding of Boolean logic and basic arithmetic
-
-### Site Directory
-
-The building section is organized as follows:
-
-<Callout type="note">
-<Collapsible>
-[**Theory and Foundations.**](/building/theory) Why circuits are needed in ZK systems.
-
-This section explains why zero-knowledge proofs require circuits rather than imperative code, how circuits differ from traditional digital logic, and introduces the three phases of zero-knowledge circuits: constraint generation, witness generation, and constraint satisfaction.
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**Constraints and Shifted Indices.**](/building/constraints) The Binius64 constraint system.
-
-Learn about the two constraint types (AND and MUL), how shifted value indices enable free bit manipulation, and the dramatic efficiency gains compared to bit-level circuits. This section covers the core innovation that makes Binius64 practical.
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**Non-Deterministic Witnesses.**](/building/nondeterministic) Efficient constraint patterns.
-
-Understand how to use non-deterministic witnesses to minimize constraints by having the prover compute expensive operations outside the circuit. Includes practical patterns for optimizing common operations.
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**Control Flow Patterns.**](/building/control-flow) Handling conditionals and loops.
-
-Learn techniques for implementing control flow in circuits including masking for conditionals, loop unrolling, and multiplexing patterns for dynamic selection.
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**Practical Tutorial.**](/building/tutorial) Complete examples with code.
-
-Hands-on examples using the CircuitBuilder API, from simple equality checks to complete proof generation and verification flows. Includes a comprehensive operations reference.
-</Collapsible>
-</Callout>
-
-<Callout type="note">
-<Collapsible>
-[**Appendix.**](/building/appendix) Advanced implementation details.
-
-Deep dives into specific implementations including addition in GF(2), equality checking, bit extraction, and the SHA-256 sigma function using Binius64 constraints.
-</Collapsible>
-</Callout>
-
-## Getting Started
-
-Start with [Theory and Foundations](/building/theory) to understand why ZK systems require circuits, then proceed through the sections in order. The [Practical Tutorial](/building/tutorial) provides hands-on examples you can run and modify.
-
-For working code examples, check the [Binius circuits directory](https://github.com/IrreducibleOSS/binius/tree/main/crates/circuits/src) and [examples](https://github.com/IrreducibleOSS/binius/tree/main/examples).
+For cryptographic and mathematical details, see the [Blueprint](/blueprint) section.

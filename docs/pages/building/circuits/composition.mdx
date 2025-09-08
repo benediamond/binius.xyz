@@ -1,0 +1,113 @@
+# Circuit Composition
+
+Circuit building functions compose smaller components into larger applications. To enable clean composition, circuit building functions follow consistent patterns to compose smaller operations into larger ones.
+
+**Function Naming** - Circuit building functions use descriptive names:
+```rust
+pub fn circuit_<operation_name>(
+    builder: &CircuitBuilder,
+    config_params...,     // Lengths, sizes, constants
+    input_wires...,       // Caller provides values
+) -> OutputWires {        // Returns output wires
+    // Create internal wires
+    let internal = builder.add_witness();
+    
+    // Build constraints
+    // ...
+    
+    // Return output wires
+    output_wires
+}
+```
+
+**Parameter Order Convention**:
+1. `builder: &CircuitBuilder`
+2. Configuration parameters (sizes, constants)  
+3. Input wires
+4. (Return output wires)
+
+**Wire Ownership** - Circuit building functions establish clear responsibilities for wire management between callers and the functions they invoke. This separation ensures proper witness population and prevents confusion about which code handles which wires:
+
+The caller creates and populates input wires, then reads output wires from the return value. The function creates any internal wires needed, builds constraints between wires, and returns output wires.
+
+```rust
+// Caller creates inputs
+let input_a = builder.add_witness();
+let input_b = builder.add_witness();
+
+// Function returns output
+let result = some_operation(builder, input_a, input_b);
+
+// Caller populates witness
+witness[input_a] = Word(0x12345678);
+witness[input_b] = Word(0x9ABCDEF0);
+
+// After evaluation, read output
+let output_value = witness[result];
+```
+
+Document wire relationships and preconditions:
+
+```rust
+/// Combines two 32-bit values into 64-bit.
+///
+/// # Returns
+/// Wire containing `(high << 32) | low`
+fn combine_u32(
+    builder: &CircuitBuilder,
+    high: Wire,
+    low: Wire,
+) -> Wire {
+    // Mask low to 32 bits
+    let low_masked = builder.band(low, builder.add_constant_64(0xFFFFFFFF));
+    
+    // Shift high and combine
+    let high_shifted = builder.shl(high, 32);
+    builder.bor(high_shifted, low_masked)
+}
+```
+
+## Subcircuits
+
+For complex circuits with many components, the `subcircuit` method creates named hierarchical sections that organize constraints into logical groups. This helps with debugging and provides clearer statistics when analyzing circuit performance:
+
+```rust
+pub fn process_blocks(
+    builder: &CircuitBuilder, 
+    blocks: &[BlockData],
+) -> Vec<Wire> {
+    let mut results = Vec::new();
+    
+    for (i, block) in blocks.iter().enumerate() {
+        // Create named subcircuit for debugging
+        let sub = builder.subcircuit(format!("block[{i}]"));
+        
+        // Build within subcircuit context
+        let processed = process_single_block(&sub, block);
+        results.push(processed);
+    }
+    
+    results
+}
+```
+
+Subcircuits appear in debug output and circuit statistics, aiding debugging and analysis.
+
+## Composition Example
+
+Circuit composition chains operations by passing output wires from one function as input wires to another. This creates a pipeline where data flows through multiple transformations:
+
+```rust
+use binius_frontend::circuits::bytes::{swap_bytes, swap_bytes_32};
+
+fn double_swap(
+    builder: &CircuitBuilder,
+    input: Wire,
+) -> Wire {
+    // First operation
+    let swapped_32 = swap_bytes_32(builder, input);
+    
+    // Second operation uses first output
+    swap_bytes(builder, swapped_32)
+}
+```
