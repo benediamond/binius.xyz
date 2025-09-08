@@ -17,12 +17,12 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
-| Binius64 | C7i.16xlarge | x86-mt       | 10.00                   | 387.89                | 64.02                   | 261.19           |
-| Binius64 | C7i.16xlarge | x86-st       | 8.90                    | 302.20                | 46.92                   | 261.19           |
-| Binius64 | C8g.16xlarge | aarch64-mt   | 12.77                   | 323.85                | 41.75                   | 261.19           |
-| Binius64 | C8g.16xlarge | aarch64-st   | 11.55                   | 421.15                | 35.13                   | 261.19           |
-| SP1      | G6.2xlarge   | GPU          | 79.60                   | 1,997.70              | 1,092.00                | 48.00            |
-| R0VM     | G6.2xlarge   | GPU          | 15.69                   | 1,802.14              | 11.24                   | 217.45           |
+| Binius64 | C7i.16xlarge | x86-mt        |                     9.78 |                 290.29 |                    17.69 |           230.64 |
+| Binius64 | C7i.16xlarge | x86-st        |                     8.72 |                 254.69 |                    27.24 |           230.64 |
+| Binius64 | C8g.16xlarge | aarch64-mt    |                    12.90 |                 299.86 |                    15.48 |           230.64 |
+| Binius64 | C8g.16xlarge | aarch64-st    |                    11.58 |                 361.26 |                    34.41 |           230.64 |
+| SP1      | G6.2xlarge   | GPU           |                    78.55 |                2016.20 |                  1088.35 |            48.00 |
+| R0VM     | G6.2xlarge   | GPU           |                    15.69 |                1802.14 |                    11.24 |           217.45 |
 
 **Git info: SP1**
 * Repository: https://github.com/succinctlabs/sp1.git
@@ -44,16 +44,16 @@ Configuration parameters:
 - XMSS tree height: 13 (8,192 signature capacity)
 - WOTS paramters: 4-bit digit resolution and target sum 297
 
-| Prover | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
-|--------|--------------|--------------|-------------------------|----------------------|-------------------------|------------------|
-| Binius64 | C7i.16xlarge | x86-mt | 473.94 | 2545.70 | 4117.50 | 528.38 |
-| Binius64 | C7i.16xlarge | x86-st | 462.67 | 17296.00 | 4537.50 | 528.38 |
-| Binius64 | C8g.16xlarge | aarch64-mt | 486.47 | 1844.70 | 2088.20 | 528.38 |
-| Binius64 | C8g.16xlarge | aarch64-st | 479.54 | 22747.00 | 2501.00 | 528.38 |
+| Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
+|:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.16xlarge | x86-mt | 464.13 | 959.81 | 327.12 | 458.22 |
+| Binius64 | C7i.16xlarge | x86-st | 457.78 | 11923.00 | 4361.50 | 458.22 |
+| Binius64 | C8g.16xlarge | aarch64-mt | 488.32 | 598.31 | 175.93 | 458.22 |
+| Binius64 | C8g.16xlarge | aarch64-st | 480.30 | 14927.00 | 2986.90 | 458.22 |
 | Risc0 | G6.2xlarge | GPU | 408.15 | 67834.00 | 11.13 | 217.45 |
 | SP1 | G6.2xlarge | GPU | 0.06 | 67153.00 | 6057.30 | 48.00 |
 
-We implement hash-based signature aggregation using Risc Zero's and SP1's stack with Keccak precompiles to compare against Binius64 implementation.
+ hash-based signature aggregation using Risc Zero's and SP1's stack with Keccak precompiles to compare against Binius64 implementation.
 
 **Git info: SP1**
 * Repository: https://github.com/succinctlabs/sp1.git
@@ -75,14 +75,14 @@ We are testing 1,365 Keccak permutations (matching `Plonky3` benchmark):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
-| Binius64 | C7i.16xlarge | x86-mt       | 41.96                   | 572.82                | 561.89                  | 398.27           |
-| Binius64 | C7i.16xlarge | x86-st       | 42.22                   | 2,043.80              | 560.31                  | 398.27           |
-| Binius64 | C8g.16xlarge | aarch64-mt   | 47.18                   | 340.75                | 282.31                  | 398.27           |
-| Binius64 | C8g.16xlarge | aarch64-st   | 47.19                   | 2,700.70              | 319.71                  | 398.27           |
-| Plonky3  | C7i.16xlarge | x86-mt       | 16.56                   | 261.20                | 16.77                   | 1,861.32         |
-| Plonky3  | C7i.16xlarge | x86-st       | 118.50                  | 3,779.00              | 15.39                   | 1,861.08         |
-| Plonky3  | C8g.16xlarge | aarch64-mt   | 15.36                   | 259.80                | 38.23                   | 1,861.25         |
-| Plonky3  | C8g.16xlarge | aarch64-st   | 115.20                  | 6,134.00              | 34.92                   | 1,861.08         |
+| Binius64 | C7i.16xlarge | x86-mt        |                    29.31 |                 190.04 |                    40.27 |           304.75 |
+| Binius64 | C7i.16xlarge | x86-st        |                    28.39 |                1301.50 |                   423.73 |           304.75 |
+| Binius64 | C8g.16xlarge | aarch64-mt    |                    41.01 |                 131.66 |                    25.80 |           304.75 |
+| Binius64 | C8g.16xlarge | aarch64-st    |                    41.01 |                1627.70 |                   296.49 |           304.75 |
+| Plonky3  | C7i.16xlarge | x86-mt        |                    16.70 |                 265.00 |                    15.80 |          1861.32 |
+| Plonky3  | C7i.16xlarge | x86-st        |                   111.00 |                3920.00 |                    15.10 |          1861.08 |
+| Plonky3  | C8g.16xlarge | aarch64-mt    |                    17.70 |                 261.00 |                    39.40 |          1861.32 |
+| Plonky3  | C8g.16xlarge | aarch64-st    |                   108.00 |                6550.00 |                    35.70 |          1861.08 |
 
 **Git info: Plonky3**
 * Repository: https://github.com/Plonky3/Plonky3.git
@@ -95,14 +95,14 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
-| Binius64 | C7i.16xlarge | x86-mt       | 27.93                   | 530.32                | 549.58                  | 398.23           |
-| Binius64 | C7i.16xlarge | x86-st       | 29.41                   | 1,610.90              | 541.35                  | 398.23           |
-| Binius64 | C8g.16xlarge | aarch64-mt   | 34.63                   | 298.16                | 246.28                  | 398.23           |
-| Binius64 | C8g.16xlarge | aarch64-st   | 34.61                   | 2,219.10              | 268.57                  | 398.23           |
-| Stwo     | C7i.16xlarge | x86-mt       | 910.60                  | 422.20                | 2.70                    | 92.50            |
-| Stwo     | C7i.16xlarge | x86-st       | 1,154.40                | 1,688.40              | 2.50                    | 92.50            |
-| Stwo     | C8g.16xlarge | aarch64-mt   | 1,760.80                | 532.10                | 3.30                    | 92.50            |
-| Stwo     | C8g.16xlarge | aarch64-st   | 2,428.10                | 3,182.50              | 3.20                    | 92.50            |
+| Binius64 | C7i.16xlarge | x86-mt        |                    19.10 |                 221.18 |                    70.24 |           360.47 |
+| Binius64 | C7i.16xlarge | x86-st        |                    19.00 |                1043.60 |                   476.72 |           360.47 |
+| Binius64 | C8g.16xlarge | aarch64-mt    |                    26.24 |                 170.70 |                    46.62 |           360.47 |
+| Binius64 | C8g.16xlarge | aarch64-st    |                    26.26 |                1471.20 |                   248.51 |           360.47 |
+| Stwo     | C7i.16xlarge | x86-mt        |                   925.80 |                 442.30 |                     2.50 |            92.50 |
+| Stwo     | C7i.16xlarge | x86-st        |                  1163.30 |                1676.50 |                     2.60 |            92.50 |
+| Stwo     | C8g.16xlarge | aarch64-mt    |                  1755.50 |                 541.30 |                     3.30 |            92.50 |
+| Stwo     | C8g.16xlarge | aarch64-st    |                  2404.10 |                3183.40 |                     3.30 |            92.50 |
 
 **Git info: Stwo**
 * Repository: https://github.com/starkware-libs/stwo.git
@@ -113,6 +113,6 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 
 We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput. Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `keccak-f` and `blake2s` hashers.
 
-![Hashing Throughput Comparison (ST)](/hashing_throughput_st.png)
+![Hashing Throughput Comparison (ST)](/benchmarks/hashing_throughput_st.svg)
 
-![Hashing Throughput Comparison (MT)](/hashing_throughput_mt.png)
+![Hashing Throughput Comparison (MT)](/benchmarks/hashing_throughput_mt.svg)
