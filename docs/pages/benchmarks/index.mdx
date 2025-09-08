@@ -3,7 +3,7 @@
 We report benchmark results times below in the following form:
 * `aws_instance` (e.g. `C7i.16xlarge`, `C8g.16xlarge`, `G6.2xlarge`)
 * `arch` (e.g. `GPU/x86/aarch64`)
-  * Note: For `x86/aarch64` we report `ST/MT` to indicate single- vs multi-threaded operation
+  * Note: For `x86/aarch64` we report `st/mt` to indicate single- vs multi-threaded operation
 * `Witness generation time [ms]`
 * `Proof generation time [ms]`
 * `Proof verification time [ms]`
@@ -111,8 +111,8 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 
 ### Hashing Throughput Comparison
 
-We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput. Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `keccak-f` and `blake2s` hashers.
+We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput. Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
 
-![Hashing Throughput Comparison (ST)](/benchmarks/hashing_throughput_st.svg)
+![Hashing Throughput Comparison (ST)](/benchmarks/hashing_throughput_st.png)
 
-![Hashing Throughput Comparison (MT)](/benchmarks/hashing_throughput_mt.svg)
+![Hashing Throughput Comparison (MT)](/benchmarks/hashing_throughput_mt.png)
