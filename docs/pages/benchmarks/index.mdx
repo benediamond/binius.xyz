@@ -67,11 +67,11 @@ Configuration parameters:
 
 ## Hashing
 
-We compare our `keccak-f` and `blake2s` performance against Polygon Zero's `Plonky3` and StarkWare's `Stwo` provers, respectively.
+We compare our `Keccak-256` and `Blake2s` performance against Polygon Zero's `Plonky3` and StarkWare's `Stwo` provers, respectively.
 
-### Keccak-f
+### Keccak-256
 
-We are testing 1,365 Keccak permutations (matching `Plonky3` benchmark):
+We are testing 1,365 `keccak-f` permutations (matching `Plonky3` benchmark):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
@@ -111,7 +111,8 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 
 ### Hashing Throughput Comparison
 
-We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput. Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
+We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput.
+Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
 
 ![Hashing Throughput Comparison (ST)](/benchmarks/hashing_throughput_st.png)
 
