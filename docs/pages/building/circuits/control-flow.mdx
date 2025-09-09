@@ -41,7 +41,7 @@ let is_less = builder.icmp_ult(a, b);   // Returns MSB=1 if a < b
 When you need to access an array element with a runtime index, the circuit builds a multiplexer tree. Here's how it works: the index bits drive a cascade of 2-to-1 selectors, where each bit halves the candidates until one remains. This creates a binary decision tree that evaluates all paths in parallel, achieving logarithmic depth with linear gate count.
 
 ```rust
-use binius_frontend::circuits::multiplexer::single_wire_multiplex;
+use binius_circuits::multiplexer::single_wire_multiplex;
 
 // Runtime index - builds binary decision tree
 let values = [wire_a, wire_b, wire_c, wire_d];
@@ -55,7 +55,7 @@ The multiplexer decomposes the index into bits, using each bit to select between
 
 You can also select entire data structures rather than individual wires. The same multiplexer approach works with groups of wires:
 ```rust
-use binius_frontend::circuits::multiplexer::multi_wire_multiplex;
+use binius_circuits::multiplexer::multi_wire_multiplex;
 
 // Select entire structures atomically
 let red = &[r_val, r_intensity];
@@ -117,7 +117,7 @@ fn sum_until_zero(builder: &CircuitBuilder, data: &[Wire; 8]) -> Wire {
 Variable-length data uses bounded allocation with masking. Allocate for the maximum size, then compare each index against the actual length. Elements within bounds get processed normally; those beyond get masked to zero. The circuit processes a fixed-size array but respects the runtime length.
 
 ```rust
-use binius_frontend::circuits::fixed_byte_vec::FixedByteVec;
+use binius_circuits::fixed_byte_vec::FixedByteVec;
 
 // Pre-allocate maximum capacity
 fn hash_variable_input(

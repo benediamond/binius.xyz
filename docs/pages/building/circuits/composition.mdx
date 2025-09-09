@@ -100,7 +100,7 @@ Subcircuits appear in debug output and circuit statistics, aiding debugging and 
 Circuit composition chains operations by passing output wires from one function as input wires to another. This creates a pipeline where data flows through multiple transformations:
 
 ```rust
-use binius_frontend::circuits::bytes::{swap_bytes, swap_bytes_32};
+use binius_circuits::bytes::{swap_bytes, swap_bytes_32};
 
 fn double_swap(
     builder: &CircuitBuilder,
