@@ -8,7 +8,7 @@ Our protocol targets modern 64-bit CPUs with SIMD instructions, making it practi
 
 ## Introduction
 
-A fundamental tradeoff—between expressiveness and efficiency—besets modern cryptographic proof systems. While general-purpose SNARKs can treat arbitrary programs, many face steep overheads upon being applied to programs that deal extensively with machine words. This site presents _Binius64_, a specialized SNARK that achieves excellent proving performance in practice, by exploiting a natural alignment between binary field arithmetic and 64-bit word operations.
+Modern cryptographic proof systems face a fundamental trade-off between expressiveness and efficiency. While general-purpose SNARKs can handle arbitrary computations, they often incur significant overheads when applied to programs that operate naturally on machine words. Traditional arithmetization frameworks such as R1CS express computations with arithmetic constraints over finite fields, but expressing standard CPU operations typically requires inefficient techniques like binary decomposition and sophisticated lookups arguments. Binius64 addresses this gap with a specialized protocol that exploits the natural alignment between binary field arithmetic and 64-bit word operations to achieve practical proving performance.
 
 The original Binius framework [[DP25](https://eprint.iacr.org/2023/1784)] pioneered the use of binary tower fields for efficient polynomial commitments. However, its reliance on AIR tables and multi-field arithmetization introduced complexity that hindered both implementation and analysis. Binius64 takes a different approach: we design a constraint system specifically for 64-bit word operations, drawing inspiration from the _customizable constraint systems_ of SuperSpartan [[STW23](https://eprint.iacr.org/2023/552)].
 
@@ -22,11 +22,13 @@ A natural starting point for a multilinear SNARK over binary fields would be to 
 
 However, this approach suffers from a critical efficiency bottleneck in the wiring check. The R1CS matrices $A$, $B$, and $C$ would contain $O(n)$ entries for $n$ witness bits. During the proving protocol, computing partially evaluated matrices would require $O(n)$ multiplications between elements of a large extension field and $\mathbb{F}_2$, resulting in $O(\lambda \cdot n)$ bit operations, where $\lambda \approx 128$ is the security parameter. Additionally, proving the sparse matrix openings would incur another $O(\lambda n)$ factor.
 
-Binius64 addresses this bottleneck using word-level parallelism. By operating on 64-bit words rather than individual bits, we reduce the number of constraint matrix entries by up to 64-fold. Even though the word size is a constant (namely 64), if we model it as proportional to the security parameter (i.e., as $O(\lambda)$), then our approach transforms the prover complexity from $O(\lambda n)$ to $O(n)$ bit operations, achieving the desired scaling goal.
+Binius64 addresses this bottleneck using word-level parallelism. By operating on 64-bit words rather than individual bits, we reduce the number of constraint matrix entries by up to 64-fold. Even though the word size is a constant (namely 64), if we model it as proportional to the security parameter (i.e., as $O(\lambda)$), then our approach reduces the number of constraint matrix entries from $O(\lambda n)$ to $O(n)$. Though the asymptotic prover complexity remains $O(\lambda n)$ for the shift reduction protocol, this representation significantly impacts concrete proving costs.
 
-## Shifted Value Indices
+## Constraint System
 
-We explain [shifted value indices](/blueprint/constraints/indices) more thoroughly in the body of this site. For now, we record a helpful diagram.
+The Binius64 constraint builds on R1CS and CCS [[STW23](https://eprint.iacr.org/2023/552)], with several adaptations to efficiently model natural CPU operations. Witness values are represented as 64-bit words rather than finite field elements. Linear relations over words are expressed using bitwise XOR, while the fundamental non-linear constraint encodes bitwise AND. Operands can also incorporate shifts directly on witness words, with native support for logical-left, logical-right, and arithmetic-right shifts. In addition, the system introduces a second non-linear constraint for 64-bit unsigned integer multiplication, avoiding the high cost of emulating this operation using only bitwise constraints.
+
+The diagram below depicts how the AND and MUL constraints apply to the XOR-accumulations of [shifted value indices](/blueprint/constraints/indices):
 
 <img src="/diagram.svg" alt="Shifted value indices diagram" style={{ width: "100%", height: "auto" }} />
 
@@ -43,3 +45,4 @@ exactly captures the relationship whereby, bitwise, `cout` is 1 precisely when a
 z ≔ x ⊕ y ⊕ cin,
 ```
 or in other words the unsigned addition of `x` and `y`.
+
