@@ -34,6 +34,8 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 * Branch: `main`
 * Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
 
+![Ethereum ECDSA Signature Verification Benchmarks](/ethsign_comparison.png)
+
 ## Hash-based Signature Aggregation
 
 We benchmarks a post-quantum hash-based signature aggregation scheme that combines _XMSS_ (eXtended Merkle Signature Scheme) with _Winternitz one-time signatures_ (WOTS), using Keccak-256 for all cryptographic operations (i.e., so suitable for Ethereum).
@@ -63,6 +65,8 @@ Above, we cross-compare our hash-based signature aggregator against RISC Zero's 
 * Repository: https://github.com/risc0/risc0.git
 * Branch: `main`
 * Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
+
+![Hash-based Signature Aggregation Benchmarks](/hashsign_comparison.png)
 
 ## Hashing
 
