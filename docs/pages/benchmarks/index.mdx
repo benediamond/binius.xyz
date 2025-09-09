@@ -1,6 +1,6 @@
 # Benchmarks [How Binius measures up in key real-world tasks]
 
-We report benchmark results times below in the following form:
+We report benchmark results below in the following form:
 * `aws_instance` (e.g. `C7i.16xlarge`, `C8g.16xlarge`, `G6.2xlarge`)
 * `arch` (e.g. `GPU/x86/aarch64`)
   * Note: For `x86/aarch64` we report `st/mt` to indicate single- vs multi-threaded operation
@@ -9,11 +9,11 @@ We report benchmark results times below in the following form:
 * `Proof verification time [ms]`
 * `Proof size [KiB]`
 
-In order to reproduce our benchmarks in AWS, you can check out this [user guide](/benchmarks/aws_guide.mdx)
+In order to reproduce our benchmarks in AWS, you can check out our [user guide](/benchmarks/aws_guide.mdx).
 
 ## Ethereum ECDSA Signature Aggregation
 
-We compare our `ethsign` (one signature, 67-byte message) performance against Succinct's `SP1` and RiscZero's `R0VM` zkVMs running with the GPU acceleration:
+We compare our `ethsign` (one signature, 67-byte message) performance against Succinct's `SP1` and RISC Zero's `R0VM` zkVMs running with GPU acceleration:
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
@@ -29,15 +29,14 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 * Branch: `dev`
 * Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
 
-**Git info: RiscZero**
+**Git info: RISC Zero**
 * Repository: https://github.com/risc0/risc0.git
 * Branch: `main`
 * Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
 
 ## Hash-based Signature Aggregation
 
-We benchmarks a post-quantum hash-based signature aggregation scheme that combines XMSS (eXtended Merkle Signature Scheme) with Winternitz
-one-time signatures (WOTS), using Keccak-256 for all cryptographic operations -- suitable for Ethereum.
+We benchmarks a post-quantum hash-based signature aggregation scheme that combines _XMSS_ (eXtended Merkle Signature Scheme) with _Winternitz one-time signatures_ (WOTS), using Keccak-256 for all cryptographic operations (i.e., so suitable for Ethereum).
 
 Configuration parameters:
 - Validators: 16 concurrent signers
@@ -53,14 +52,14 @@ Configuration parameters:
 | Risc0 | G6.2xlarge | GPU | 408.15 | 67834.00 | 11.13 | 217.45 |
 | SP1 | G6.2xlarge | GPU | 0.06 | 67153.00 | 6057.30 | 48.00 |
 
- hash-based signature aggregation using Risc Zero's and SP1's stack with Keccak precompiles to compare against Binius64 implementation.
+Above, we cross-compare our hash-based signature aggregator against RISC Zero's and SP1's stacks, using Keccak precompiles throughout.
 
 **Git info: SP1**
 * Repository: https://github.com/succinctlabs/sp1.git
 * Branch: `dev`
 * Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
 
-**Git info: RiscZero**
+**Git info: RISC Zero**
 * Repository: https://github.com/risc0/risc0.git
 * Branch: `main`
 * Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
@@ -71,7 +70,7 @@ We compare our `Keccak-256` and `Blake2s` performance against Polygon Zero's `Pl
 
 ### Keccak-256
 
-We are testing 1,365 `keccak-f` permutations (matching `Plonky3` benchmark):
+In each benchmark, we prove 1,365 `keccak-f` permutations (matching the benchmark `Plonky3` runs):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
@@ -91,7 +90,7 @@ We are testing 1,365 `keccak-f` permutations (matching `Plonky3` benchmark):
 
 ### Blake2s
 
-We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
+Here, we test 2,048 Blake2s compressions (matching what `Stwo`'s benchmark does):
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
@@ -111,8 +110,7 @@ We are testing 2,048 Blake2s compressions (matching `Stwo` benchmark):
 
 ### Hashing Throughput Comparison
 
-We believe that a fair way to compare various hashers is by their ability to consume the input data in the unit of time - which is defined as the hashing throughput.
-Following charts compare hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
+We believe that a fair metric by which to compare hashers is _hashing throughput_, the ability of the hashers to consume input data on a per-unit-of-time basis. The following charts compare the hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
 
 ![Hashing Throughput Comparison (ST)](/hashing_throughput_st.png)
 
