@@ -48,3 +48,17 @@ z ≔ x ⊕ y ⊕ cin,
 ```
 or in other words the unsigned addition of `x` and `y`.
 
+## Protocol Overview
+
+The interactive protocol argues constraint satisfaction through a sequence of interactive reductions that ultimately reduce all checks to a single witness evaluation. The protocol proceeds in several phases:
+
+* **Oracle Commitment**: The prover sends the witness polynomial commitment to the verifier.
+* **MUL Constraint Reduction**: The prover and verifier use the [integer multiplication GKR protocol] to reduce multiplication constraints to evaluation claims on shifted witness values.
+* **AND Constraint Reduction**: The prover and verifier use the [Rijndael zerocheck] to reduce AND constraints to evalution claims on shifted witness values.
+* **Shift Reduction**: A sumcheck protocol reduces evaluation claims on shifted values (from both MUL and AND constraints) to evaluation claims on the original witness.
+* **Public Input Check**: A final sumcheck verifies that the witness correctly encodes the public constants and input/output values.
+* **Oracle Opening**: The verifier queries the witness polynomial at a single point to complete verification.
+
+This is summarized in the diagram below:
+
+<img src="/protocol.svg" alt="Protocol overview diagram" style={{ width: "100%", height: "auto" }} />
