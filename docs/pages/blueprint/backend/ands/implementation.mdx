@@ -45,7 +45,7 @@ $$
 
 Since $D' \subset \mathbb{F}_{2^{8}} \subset \mathbb{F}_{2^{128}}$ and $P(\widehat{I})$ is bit-valued on $D$, $P(\widehat{I})$'s values on $D'$ themselves live in $\mathbb{F}_{2^{8}} \subset \mathbb{F}_{2^{128}}$. I.e., the evaluations $P(\widehat{i})$ for $\widehat{i} \in D' \setminus D$ live in the image of $\iota$, and $\iota^{-1}(P(\widehat{i}))$ is well-defined. This means that each output $\text{Extrap}(p_0, \ldots , p_{63})$ is an element of $K^{64} \cong \mathbb{F}_{2^8}^{64}$.
 
-By the way, it would have been equivalent if we had defined $\text{Extrap}$ as the function that extrapolates a bit-vector $(p_0, \ldots , p_{63})$ from $\iota^{-1}(D)$ to $\iota^{-1}(D')$ in $K$. Showing the equivalence of that definition with ours is a short exercise. The way we did it turns out to be easier to work with below.
+By the way, it would have been equivalent if we had defined $\text{Extrap}$ as the function that extrapolates a bit-vector $(p_0, \ldots , p_{63})$ from $\iota^{-1}(D)$ to $\iota^{-1}(D' \setminus D)$ in $K$. Showing the equivalence of that definition with ours is a short exercise. The way we did it turns out to be easier to work with below.
 
 Since $\text{Extrap}$ is $\mathbb{F}_2$-linear, we can implement it in the following efficient way, using precomputation. We break the input $(p_0, \ldots , p_{63})$ into 8 length-8 chunks. For each chunk, we precompute a length-256 table containing all 256 evaluations of $\text{Extrap}$ on input strings that are nonzero just on that chunk. The total data size is thus $8 \cdot 256 \cdot 64 \cdot 8$ bits, or $128$ KiB. To evaluate $\text{Extrap}$ on some input $(p_0, \ldots , p_{63})$, we must do 8 lookups and 7 length-64 bytewise XORs.
 
