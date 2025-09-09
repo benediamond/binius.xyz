@@ -2,41 +2,72 @@ import Collapsible from "../../components/Collapsible";
 
 import { Callout } from "vocs/components";
 
-# Basics [An introduction to Binius]
+# Basics [Welcome to Binius!]
 
-_Binius_ is a state-of-the-art cryptographic proof system that allows fast and cheap verification of complex computations. The project comprises a high-performance, open-source [Rust implementation](https://github.com/IrreducibleOSS/binius) and a documentation suite on this very website. It builds directly on theoretical protocols published in a sequence of recent technical manuscripts [[DP23](https://eprint.iacr.org/2023/1784)] [[DP24](https://eprint.iacr.org/2024/504)]. This work is driven by [Irreducible's](https://www.irreducible.com/) research and development efforts.
+_Binius_ is a state-of-the-art cryptographic proof system that makes it possible to quickly and cheaply verify complex computations. In the world of cryptography, Binius is known as a _succinct, noninteractive argument_, or a _SNARK_, the key primitive required for _verifiable computing_. Though Binius proofs today do not guarantee privacy, we are actively extending it with _zero knowledge_ (ZK), making it a _ZK-SNARK_. Because Binius uses binary fields as a foundational primitive, we also sometimes refer to it as a _binary proof system_[^1].
 
-In the world of cryptography, Binius is known as a succinct, noninteractive argument, or _SNARK_. Though Binius proofs today do not guarantee privacy, in the future, we plan to extend the system to provide zero knowledge proofs, making it a _zk-SNARK_. Because Binius uses binary fields as a foundational primitive, we also sometimes refer to it as a _binary proof system_[^1].
+The latest version of the project is called _Binius64_. Binius64 optimizes for proving computations over 64-bit words, making it the _fastest_ proof system for proving standard hash functions like SHA2 and SHA3. Moreover, the Binius64 prover delivers top-notch performance on ARM64 and x86-64 processors, including modern mobile CPUs, making it a perfect choice for local ZK proving. The construction is itself hash-based, meaning Binius has a transparent setup, is post-quantum secure, and relies only conservative cryptographic assumptions.
 
-Binius's cryptographic protocol operates natively over _towers of binary fields_, mathematical objects that possess several remarkable properties. Binary towers efficiently arithmetize natural problems of interest, like standard hash functions, and also admit extremely efficient software and hardware implementations. The [Binius codebase](https://github.com/IrreducibleOSS/binius) contains, in addition to the core prover and verifier logic, various examples expressing computations of essential interest with Binius's [arithmetization scheme](/basics/arithmetization).
+The open source [Rust codebase](https://github.com/IrreducibleOSS/binius64) contains
 
-In this area of the site, we collect basic resources, designed to jump-start those planning to build on Binius. Here, we mainly focus on Binius's API and on the [arithmetization](/basics/arithmetization) scheme we use to capture real-life statements and problems. We defer Binius's cryptographic inner-workings to our [blueprint](/blueprint) section.
+- a high-performance CPU prover,
+- a simple and secure verifier,
+- an easy-to-use Rust API for building circuits,
+- a standard library of common circuit components,
+- lots of examples to help get started!
 
-## Getting Started
+Binius is the product of [Irreducible's](https://www.irreducible.com/) research and development efforts, and builds directly on Irreducible's cryptography research into SNARKs over towers of binary fields [[DP25](https://eprint.iacr.org/2024/1038)] [[DP24](https://eprint.iacr.org/2024/504)].
 
-For some general introductory content, start with our [overview page](/basics/overview).
+## Documentation
+
+This documentation site has four high-level sections.
+
+* This [Basics](/basics) section provides a high-level overview of what Binius is, the core concepts, and information about the project.
+* Our [Building](/building) section contains practical guides for how to build and prove applications using Binius64.
+* Our [Blueprint](/blueprint) provides a detailed description of the Binius64 cryptographic protocol. Go here for a peek under the hood.
+* Our [Benchmarks](/benchmarks) contain up-to-date performance measurements for key benchmarks on different hardware platforms.
+
+The code is available on GitHub at [IrreducibleOSS\/binius64](https://github.com/IrreducibleOSS/binius64), and the Rust docs are hosted at [docs.binius.xyz](https://docs.binius.xyz).
 
 ## Site Directory
 
-Below, we sketch this site area's sections in slightly more detail. Here, we focus on _usage_ and on basic concepts, deferring all cryptographic content to our [blueprint](/blueprint).
-
 <Callout type="note">
 <Collapsible>
-[**Binius's Arithmetization.**](arithmetization) In this section, we define abstract tools and objects which let us efficiently capture _meaningful_ real-life statements and problems.
+[**Concepts.**](/basics/concepts) Here, we explain _SNARKs_ in big-picture terms. We explain what _verifiable computing_ is, as well as concepts like _soundness_ and _succinctness_.
 
-Binius introduces a new arithmetization scheme, called _M3_ (short for _multi-multiset matching_). M3 features a plurality of _tables_, to each of which arbitrary polynomial _gate constraints_—operating row-wise—may be imposed. We moreover link and connect these tables using a new abstraction we call _channels_. Channels are abstract objects, _to_ and _from_ which tuples of data may be "pushed" and "pulled". Our arithmetization paradigm encompasses _not just_ a plurality of tables (each, again, bearing gate constraints), but moreover so-called _flushing rules_, which dictate how elements from these tables should be pushed to and pulled from channels. A channel is said to be _balanced_ when the pushes made to it exactly match the pulls made from it.
-
-As it turns out, many essential problems, like [Merkle–Patricia trie inclusion](/basics/arithmetization/mpt), can be captured as M3 instances. For more on arithmetization, start [here](/basics/arithmetization).
-
+We also sketch how Binius differs from other SNARK constructions, emphasizing its use of _binary fields_.
 </Collapsible>
 </Callout>
 
 <Callout type="note">
 <Collapsible>
-[**Further Resources.**](resources) Here, we collect various Binius-related resources from the broader internet.
+[**Binius64 vs V0.**](/basics/binius-v0) Here, we discuss the original Binius protocol—_Binius V0_—and compare it to Binius64.
 
-Indeed, we lay out separate sections for Binius-related Irreducible blog posts, talks given by Irreducible team members, and external content.
+We compare these protocols along various dimensions. We discuss their arithmetization architectures, the machines they target, the fields they use, and more.
+</Collapsible>
+</Callout>
 
+<Callout type="note">
+<Collapsible>
+[**Roadmap.**](/basics/roadmap) We've got a lot planned. Here, we discuss features that we plan to add to Binius64 in the short and intermediate term.
+
+Planned features include zero-knowledge—a feature essential in privacy-critical applications—as well as fully succinct verification, prover performance enhancements, developer-oriented improvements, and more.
+</Collapsible>
+</Callout>
+
+<Callout type="note">
+<Collapsible>
+[**Licensing.**](/basics/licensing) This page explains the open-source licenses that Binius is published under.
+
+Our prover and verifier are released under different licenses. We explain these, and what compliance with them looks like.
+</Collapsible>
+</Callout>
+
+<Callout type="note">
+<Collapsible>
+[**Further Resources.**](resources) Here, we aggregate various Binius-related resources from the broader internet.
+
+Here we lay out separate sections for Binius-related Irreducible blog posts, talks given by Irreducible team members, and external content.
 </Collapsible>
 </Callout>
 

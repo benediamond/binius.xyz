@@ -1,14 +1,41 @@
-import { defineConfig } from 'vocs'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
+import { defineConfig } from "vocs";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
-  title: 'binius.xyz',
+  title: "binius.xyz",
+  globalStyles: "docs/styles.css",
+  frontmatter: {
+    content: {
+      width: "70ch", // Default is 70ch, increase to make content wider
+    },
+  },
+  vite: {
+    plugins: [
+      {
+        name: "disable-llms",
+        enforce: "pre",
+        configResolved(config) {
+          // Filter out the llms plugin to avoid build errors
+          const filteredPlugins = config.plugins.filter(
+            (p) => p.name !== "llms",
+          );
+          // @ts-ignore - we need to override readonly property
+          config.plugins = filteredPlugins;
+        },
+      },
+    ],
+  },
   head() {
     return (
       <>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"></link>
-        <script dangerouslySetInnerHTML={{ __html: `
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+        ></link>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           if (location.pathname !== '/') {
             document.documentElement.style.opacity = '0';
             document.addEventListener('DOMContentLoaded', () => {
@@ -16,53 +43,66 @@ export default defineConfig({
               document.documentElement.style.transition = 'opacity 0.1s';
             });
           }
-        `}} />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TV9S6QP84Y"></script>
-        <script dangerouslySetInnerHTML={{ __html: `
+        `,
+          }}
+        />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-TV9S6QP84Y"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
           gtag('config', 'G-TV9S6QP84Y');
-        `}} />
-        <link href="/favicon-light.png" rel="icon" media="(prefers-color-scheme: light)" />
-        <link href="/favicon-dark.png" rel="icon" media="(prefers-color-scheme: dark)" />
+        `,
+          }}
+        />
+        <link
+          href="/favicon-light.png"
+          rel="icon"
+          media="(prefers-color-scheme: light)"
+        />
+        <link
+          href="/favicon-dark.png"
+          rel="icon"
+          media="(prefers-color-scheme: dark)"
+        />
       </>
-    )
+    );
   },
   logoUrl: {
-    light: '/logo-light.svg',
-    dark: '/logo-dark.svg',
+    light: "/logo-light.svg",
+    dark: "/logo-dark.svg",
   },
-  ogImageUrl: 'https://www.binius.xyz/x-logo.png',
+  ogImageUrl: "https://www.binius.xyz/x-logo.png",
   markdown: {
-    remarkPlugins: [
-      remarkMath,
-    ],
-    rehypePlugins: [
-      rehypeKatex,
-    ]
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
   topNav: [
     {
-      text: 'Basics',
-      link: '/basics',
-      match: '/basics'
+      text: "Basics",
+      link: "/basics",
+      match: "/basics",
     },
     {
-      text: 'Building',
-      link: '/building',
-      match: '/building'
+      text: "Building",
+      link: "/building",
+      match: "/building",
     },
     {
-      text: 'Blueprint',
-      link: '/blueprint',
-      match: '/blueprint'
+      text: "Blueprint",
+      link: "/blueprint",
+      match: "/blueprint",
     },
     {
-      text: 'Benchmarks',
-      link: '/benchmarks',
-      match: '/benchmarks'
+      text: "Benchmarks",
+      link: "/benchmarks",
+      match: "/benchmarks",
     },
   ],
   sidebar: {
@@ -72,69 +112,20 @@ export default defineConfig({
         link: "/basics",
       },
       {
-        text: "Overview",
-        link: "/basics/overview",
+        text: "Concepts",
+        link: "/basics/concepts",
       },
       {
-        text: 'Binius\'s Arithmetization',
-        collapsed: false,
-        link: '/basics/arithmetization/',
-        items: [
-          {
-            text: "Background",
-            link: "/basics/arithmetization/background"
-          },
-          {
-            text: "Data Types",
-            link: "/basics/arithmetization/types"
-          },
-          {
-            text: "Multi-Multiset Matching",
-            link: "/basics/arithmetization/m3",
-            collapsed: true,
-            items: [
-              {
-                text: "A Toy Example",
-                link: "/basics/arithmetization/m3/example"
-              },
-              {
-                text: "Definition of M3",
-                link: "/basics/arithmetization/m3/definition"
-              },
-              {
-                text: "Proving Collatz Orbits",
-                link: "/basics/arithmetization/m3/collatz"
-              },
-              {
-                text: "Lasso Lookup",
-                link: "/basics/arithmetization/m3/lasso"
-              },
-            ]
-          },
-          {
-            text: "Merkle–Patricia Inclusion",
-            link: "/basics/arithmetization/mpt",
-            collapsed: true,
-            items: [
-              {
-                text: "Review of MPT Task",
-                link: "/basics/arithmetization/mpt/review"
-              },
-              {
-                text: "Informal Explanation",
-                link: "/basics/arithmetization/mpt/sketch"
-              },
-              {
-                text: "Our MPT Construction",
-                link: "/basics/arithmetization/mpt/construction"
-              },
-              {
-                text: "State Forking",
-                link: "/basics/arithmetization/mpt/forking"
-              },
-            ]
-          },
-        ],
+        text: "Binius64 vs. V0",
+        link: "/basics/binius-v0",
+      },
+      {
+        text: "Roadmap",
+        link: "/basics/roadmap",
+      },
+      {
+        text: "Licensing",
+        link: "/basics/licensing",
       },
       {
         text: "Further Resources",
@@ -152,9 +143,9 @@ export default defineConfig({
           {
             text: "External Resources",
             link: "/basics/resources/external",
-          },    
-        ]
-      }
+          },
+        ],
+      },
     ],
     "/building": [
       {
@@ -162,59 +153,63 @@ export default defineConfig({
         link: "/building",
       },
       {
-        text: "Constraint Systems",
-        link: "/building/constraints",
-      },
-      {
-        text: "Bitwise Constraints",
-        link: "/building/bitwise",
-      },
-      {
-        text: "The Basic Pattern",
-        link: "/building/pattern",
+        text: "End-to-End Example",
+        link: "/building/example",
         collapsed: false,
         items: [
           {
-            text: "Declaring Columns",
-            link: "/building/pattern/declaring",
+            text: "Writing a Circuit",
+            link: "/building/example/circuit",
           },
           {
-            text: "Populating Columns",
-            link: "/building/pattern/populating",
+            text: "Proving and Verifying",
+            link: "/building/example/proofs",
           },
           {
-            text: "Constraining Columns",
-            link: "/building/pattern/constraining",
+            text: "Runnable Project",
+            link: "/building/example/runnable",
           },
         ],
       },
       {
-        text: "A Lookup Construction",
-        link: "/building/lookup",
+        text: "Circuits",
+        link: "/building/circuits",
         collapsed: false,
         items: [
           {
-            text: "Gadget Design",
-            link: "/building/lookup/gadget",
+            text: "Introduction",
+            link: "/building/circuits/introduction",
           },
           {
-            text: "Creating Components",
-            link: "/building/lookup/components",
+            text: "Gadgets",
+            link: "/building/circuits/gadgets",
           },
           {
-            text: "Example Application",
-            link: "/building/lookup/application",
+            text: "Wires",
+            link: "/building/circuits/wires",
+          },
+          {
+            text: "Control Flow",
+            link: "/building/circuits/control-flow",
+          },
+          {
+            text: "Data Structures",
+            link: "/building/circuits/data-structures",
+          },
+          {
+            text: "Circuit Composition",
+            link: "/building/circuits/composition",
+          },
+          {
+            text: "Performance",
+            link: "/building/circuits/performance",
           },
         ],
       },
       {
-        text: "Making Transparents",
-        link: "/building/transparents",
-      },
-      {
-        text: "Collatz in Practice",
-        link: "/building/collatz",
-      },
+        text: "Tutorials",
+        link: "/building/tutorials",
+      }
     ],
     "/blueprint": [
       {
@@ -226,171 +221,156 @@ export default defineConfig({
         link: "/blueprint/overview",
       },
       {
-        text: "Mathematizing M3 Instances",
-        link: "/blueprint/mathematizing",
-      },
-      {
-        text: "Mathematical Background",
-        link: "/blueprint/background",
+        text: "Math Background",
+        link: "/blueprint/math",
         collapsed: false,
         items: [
           {
-            text: "Binary Towers",
-            link: "/blueprint/background/towers",
+            text: "Binary Fields",
+            link: "/blueprint/math/fields",
           },
           {
             text: "Multilinear Polynomials",
-            link: "/blueprint/background/multilinears"
-          },
-          {
-            text: "The PIOP and IOP Models",
-            link: "/blueprint/background/models"
+            link: "/blueprint/math/multilinears",
           },
           {
             text: "The Sumcheck",
-            link: "/blueprint/background/sumcheck",
+            link: "/blueprint/math/sumcheck",
+          },
+          {
+            text: "Oblong-Multilinearization",
+            link: "/blueprint/math/oblong",
+          },
+        ],
+      },
+      {
+        text: "Constraint Systems",
+        link: "/blueprint/constraints",
+        collapsed: false,
+        items: [
+          {
+            text: "Introduction",
+            link: "/blueprint/constraints/introduction",
+          },
+          {
+            text: "Shifted Value Indices",
+            link: "/blueprint/constraints/indices",
+          },
+          {
+            text: "Constraint Arrays",
+            link: "/blueprint/constraints/arrays",
+          },
+          {
+            text: "AND Constraints",
+            link: "/blueprint/constraints/ands",
+          },
+          {
+            text: "MUL Constraints",
+            link: "/blueprint/constraints/muls",
+          },
+        ],
+      },
+      {
+        text: "The Backend",
+        link: "/blueprint/backend/",
+        collapsed: false,
+        items: [
+          {
+            text: "The Shift Indicators",
+            link: "/blueprint/backend/shifts",
+            collapsed: true,
+            items: [
+              {
+                text: "Shifted Witness Polynomials",
+                link: "/blueprint/backend/shifts/polynomials",
+              },
+              {
+                text: "Logical Shifts",
+                link: "/blueprint/backend/shifts/logical",
+              },
+              {
+                text: "Arithmetic Shifts",
+                link: "/blueprint/backend/shifts/arithmetic",
+              },
+            ],
+          },
+          {
+            text: "The AND Reduction",
+            link: "/blueprint/backend/ands",
+            collapsed: true,
+            items: [
+              {
+                text: "The Rijndael Field",
+                link: "/blueprint/backend/ands/rijndael",
+              },
+              {
+                text: "The Univariate Skip",
+                link: "/blueprint/backend/ands/univariate",
+              },
+              {
+                text: "The Rijndael Zerocheck",
+                link: "/blueprint/backend/ands/implementation",
+              },
+            ],
+          },
+          {
+            text: "The MUL Reduction",
+            link: "/blueprint/backend/muls",
+            collapsed: true,
+            items: [
+              {
+                text: "Multiplying in the Exponent",
+                link: "/blueprint/backend/muls/multiplying",
+              },
+              {
+                text: "Exponentiating Multilinears",
+                link: "/blueprint/backend/muls/exponentiating",
+              },
+              {
+                text: "Combined Protocol",
+                link: "/blueprint/backend/muls/combined",
+              },
+            ],
+          },
+          {
+            text: "The Shift Reduction",
+            link: "/blueprint/backend/reduction",
+            collapsed: true,
+            items: [
+              {
+                text: "Mathematizing Constraint Arrays",
+                link: "/blueprint/backend/reduction/mathematizing",
+              },
+              {
+                text: "The Sumchecks",
+                link: "/blueprint/backend/reduction/sumchecks",
+              },
+              {
+                text: "Prover Implementation",
+                link: "/blueprint/backend/reduction/implementation",
+              },
+            ],
+          },
+          {
+            text: "Public Input Check",
+            link: "/blueprint/backend/public",
           }
         ],
       },
       {
-        text: "The Reductions",
-        link: "/blueprint/reductions/",
-        collapsed: false,
-        items: [
-          {
-            text: "Background",
-            link: "/blueprint/reductions/background",
-          },
-          {
-            text: "Virtual Polynomials",
-            link: "/blueprint/reductions/virtual",
-            collapsed: true,
-            items: [
-              {
-                text: "Merging",
-                link: "/blueprint/reductions/virtual/merge",
-              },
-              {
-                text: "Shifting",
-                link: "/blueprint/reductions/virtual/shift",
-              }
-            ]
-          },
-          {
-            text: "Zerocheck",
-            link: "/blueprint/reductions/zerocheck",
-            collapsed: true,
-            items: [
-              {
-                text: "Review",
-                link: "/blueprint/reductions/zerocheck/review"
-              },
-              {
-                text: "Univariate Skip",
-                link: "/blueprint/reductions/zerocheck/univariate"
-              },
-              {
-                text: "The Rest",
-                link: "/blueprint/reductions/zerocheck/rest"
-              }
-            ]
-          },
-          {
-            text: "Multiset Check",
-            link: "/blueprint/reductions/multiset",
-          },
-          {
-            text: "Grand Product Argument",
-            link: "/blueprint/reductions/gpa",
-          },
-          {
-            text: "Evalcheck",
-            link: "/blueprint/reductions/evalcheck",
-          }
-        ],
-      },
-      {
-        text: 'The Cryptographic Layer',
-        collapsed: false,
-        link: '/blueprint/cryptography/',
-        items: [
-          {
-            text: "Commitment",
-            link: "/blueprint/cryptography/commitment",
-            collapsed: true,
-            items: [
-              {
-                text: "Error-Correcting Codes",
-                link: "/blueprint/cryptography/commitment/codes"
-              },
-              {
-                text: "The Additive NTT",
-                link: "/blueprint/cryptography/commitment/additive"
-              },
-              {
-                text: "The Procedure",
-                link: "/blueprint/cryptography/commitment/procedure"
-              },
-              {
-                text: "Batched Commitment",
-                link: "/blueprint/cryptography/commitment/batched"
-              },
-            ]
-          },
-          {
-            text: "Ring-Switching",
-            link: "/blueprint/cryptography/switching",
-            collapsed: true,
-            items: [
-              {
-                text: "The Refinement Polynomial",
-                link: "/blueprint/cryptography/switching/refinement"
-              },
-              {
-                text: "The Tensor Algebra",
-                link: "/blueprint/cryptography/switching/tensor"
-              },
-              {
-                text: "Motivational Remarks",
-                link: "/blueprint/cryptography/switching/motivation"
-              },
-              {
-                text: "The Procedure",
-                link: "/blueprint/cryptography/switching/procedure"
-              },
-            ]
-          },
-          {
-            text: "Batch Evaluation",
-            link: "/blueprint/cryptography/evaluation",
-            collapsed: true,
-            items: [
-              {
-                text: "Review of FRI",
-                link: "/blueprint/cryptography/evaluation/fri"
-              },
-              {
-                text: "Front-Loaded Sumcheck",
-                link: "/blueprint/cryptography/evaluation/frontloaded",
-              },
-              {
-                text: "Evaluating Piecewise Multilinears",
-                link: "/blueprint/cryptography/evaluation/piecewise",
-              },
-              {
-                text: "The Procedure",
-                link: "/blueprint/cryptography/evaluation/procedure"
-              },
-            ]
-          },
-        ]
+        text: "Polynomial Commitment",
+        link: "/blueprint/commitment/",
       },
     ],
     "/benchmarks": [
       {
         text: "Benchmarks",
         link: "/benchmarks",
-      }
-    ]
+      },
+      {
+        text: "AWS Guide",
+        link: "/benchmarks/aws_guide",
+      },
+    ],
   },
-})
+});

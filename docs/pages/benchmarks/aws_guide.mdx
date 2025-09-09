@@ -1,0 +1,92 @@
+import { Callout } from 'vocs/components';
+
+# AWS Benchmarks Guide [How to reproduce Binius64 benchmark results in AWS]
+
+## Getting Started with AWS EC2
+
+Follow this [AWS tutorial](https://aws.amazon.com/ec2/instance-types/) to launch an EC2 instance - ensure you are running Linux OS, e.g. `Ubuntu Server 24.04 LTS`. We recommend running `c7i.16xlarge` (`x86`, Intel) and `c8g.16xlarge` (`aarch64`, Graviton) instances.
+
+## Running Binius Examples on AWS EC2 Instances
+
+Once done with setting up the AWS instance, update linux kerel:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo reboot
+```
+
+You will have to `ssh` to your AWS instance again. Next step is to install the `rust` toolchain and to configure env variables:
+
+```bash
+sudo apt install build-essential
+sudo apt install rustup
+rustup default stable
+export RUSTFLAGS="-C target-cpu=native"
+```
+
+It's is a good time for a sanity checkpoint, prior to running the benchmars:
+
+```bash
+rustc --version && cargo --version
+```
+
+If you get something like this, that means that you've done all the steps correctly so far:
+
+```bash
+rustc 1.89.0 (29483883e 2025-08-04)
+cargo 1.89.0 (c24e10642 2025-06-23)
+```
+
+Now it's time to clone the Binius64 repo:
+
+```bash
+git clone https://github.com/IrreducibleOSS/binius64.git
+cd binius64
+```
+
+We are going to run the `ethsign` benchmark, feel free to try out [all.](https://github.com/IrreducibleOSS/binius64/tree/main/crates/examples/benches)
+
+```bash
+cargo run --release --example ethsign --package binius-examples -- prove
+cargo bench --bench ethsign
+```
+
+You should get something like this:
+
+```bash
+EthSign Benchmark Parameters:
+  Signatures: 1
+  Max message length: 67 bytes
+=========================================
+
+ethsign_witness_generation/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [10.029 ms 10.034 ms 10.039 ms]
+                        thrpt:  [99.609  elem/s 99.661  elem/s 99.711  elem/s]
+
+Benchmarking ethsign_proof_generation/sig_1_msg_67_mt_x86_gfni_avx512: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 37.9s, or reduce sample count to 10.
+ethsign_proof_generation/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [371.77 ms 373.78 ms 376.04 ms]
+                        thrpt:  [2.6593  elem/s 2.6754  elem/s 2.6899  elem/s]
+Found 4 outliers among 100 measurements (4.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking ethsign_proof_verification/sig_1_msg_67_mt_x86_gfni_avx512: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 5.9s, or reduce sample count to 80.
+ethsign_proof_verification/sig_1_msg_67_mt_x86_gfni_avx512
+                        time:   [57.962 ms 58.413 ms 58.872 ms]
+                        thrpt:  [16.986  elem/s 17.119  elem/s 17.253  elem/s]
+
+
+EthSign proof size for 1 signatures, 67 max bytes: 267456 bytes
+```
+
+<Callout type="tip">
+  Tip: Note that adding `--no-default-features` turns off the multithreading. We report all our benchmarks for boths single- and multi-threaded performance.
+</Callout>
+
+<Callout type="tip">
+  Tip: What if you're getting poor performance? You likely did not set the CPU flags correctly. Check out the benchmark logs and ensure that `Used & Enabled` list is not empty.
+</Callout>

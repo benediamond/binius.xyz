@@ -1,29 +1,121 @@
-import BenchmarkTable from "../../components/BenchmarkTable";
-
 # Benchmarks [How Binius measures up in key real-world tasks]
 
-Below we record benchmarks for common operations. Each benchmark verifies its operations in a single-table constraint system. All executions are parameterized for 100 bits of security using proven—not conjectured—proximity gap results. We use a Reed–Solomon rate of $\frac{1}{2}$.
+We report benchmark results below in the following form:
+* `aws_instance` (e.g. `C7i.16xlarge`, `C8g.16xlarge`, `G6.2xlarge`)
+* `arch` (e.g. `GPU/x86/aarch64`)
+  * Note: For `x86/aarch64` we report `st/mt` to indicate single- vs multi-threaded operation
+* `Witness generation time [ms]`
+* `Proof generation time [ms]`
+* `Proof verification time [ms]`
+* `Proof size [KiB]`
 
-We report proving times below in the form `<TRACE GEN TIME> + <PROVE TIME>`, the sum of the witness-generation time and the SNARK-proving time. We report these times separately because, in many cases, we have not yet parallelized the trace generation.
+In order to reproduce our benchmarks in AWS, you can check out our [user guide](/benchmarks/aws_guide.mdx).
 
-All performance numbers are collected on an AWS `c7a.2xlarge` machine, which has an AMD EPYC 4th generation processor with 8 virtual CPU cores and 16 GiB RAM. All binaries are compiled and run in release mode, with the environment variable `RUSTFLAGS="-C target-cpu=native"`.
+## Ethereum ECDSA Signature Aggregation
 
-For continuous monitoring of our benchmark performance, you can visit our [dashboard](https://bencher.dev/console/projects/binius/perf).
+We compare our `ethsign` (one signature, 67-byte message) performance against Succinct's `SP1` and RISC Zero's `R0VM` zkVMs running with GPU acceleration:
 
+| Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
+|:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.16xlarge | x86-mt       |                    9.76 |                294.30 |                   17.35 |           187.75 |
+| Binius64 | C7i.16xlarge | x86-st       |                    8.63 |                258.45 |                   26.33 |           187.75 |
+| Binius64 | C8g.16xlarge | aarch64-mt   |                   12.78 |                293.93 |                   15.19 |           187.75 |
+| Binius64 | C8g.16xlarge | aarch64-st   |                   11.53 |                402.68 |                   34.66 |           187.75 |
+| SP1      | G6.2xlarge   | cuda         |                   78.55 |              2,016.20 |                1,088.35 |            48.00 |
+| R0VM     | G6.2xlarge   | cuda         |                   15.69 |              1,802.14 |                   11.24 |           217.45 |
+
+![Ethereum ECDSA Signature Verification Benchmarks](/ethsign_comparison.png)
+
+**Git info: SP1**
+* Repository: https://github.com/succinctlabs/sp1.git
+* Branch: `dev`
+* Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
+
+**Git info: RISC Zero**
+* Repository: https://github.com/risc0/risc0.git
+* Branch: `main`
+* Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
+
+## Hash-based Signature Aggregation
+
+We benchmarks a post-quantum hash-based signature aggregation scheme that combines _XMSS_ (eXtended Merkle Signature Scheme) with _Winternitz one-time signatures_ (WOTS), using Keccak-256 for all cryptographic operations (i.e., so suitable for Ethereum).
+
+Configuration parameters:
+- Validators: 16 concurrent signers
+- XMSS tree height: 13 (8,192 signature capacity)
+- WOTS paramters: 4-bit digit resolution and target sum 297
+
+| Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
+|:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.16xlarge | x86-mt       |                  317.51 |                845.92 |                  241.48 |           322.11 |
+| Binius64 | C7i.16xlarge | x86-st       |                  317.49 |              5,553.50 |                1,690.20 |           322.11 |
+| Binius64 | C8g.16xlarge | aarch64-mt   |                  337.79 |                627.53 |                  135.34 |           322.11 |
+| Binius64 | C8g.16xlarge | aarch64-st   |                  332.91 |              8,698.40 |                1,027.60 |           322.11 |
+| Risc0    | G6.2xlarge   | cuda         |                  408.15 |             67,834.00 |                   11.13 |           217.45 |
+| SP1      | G6.2xlarge   | cuda         |                    0.06 |             67,153.00 |                6,057.30 |            48.00 |
+
+Above, we cross-compare our hash-based signature aggregator against RISC Zero's and SP1's stacks, using Keccak precompiles throughout.
+
+![Hash-based Signature Aggregation Benchmarks](/hashsign_comparison.png)
+
+**Git info: SP1**
+* Repository: https://github.com/succinctlabs/sp1.git
+* Branch: `dev`
+* Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
+
+**Git info: RISC Zero**
+* Repository: https://github.com/risc0/risc0.git
+* Branch: `main`
+* Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
 
 ## Hashing
 
-In each hashing-based benchmark, we run enough operations to hash at least 1 MiB of data[^1].
+We compare our `Keccak-256` and `Blake2s` performance against Polygon Zero's `Plonky3` and StarkWare's `Stwo` provers, respectively.
 
-<BenchmarkTable benchmarksExpected={['Keccak-f', 'Grøstl-256', 'Vision Mark-32', 'SHA-256']} />
+### Keccak-256
 
-[Vision Mark-32]: <https://eprint.iacr.org/2024/633>
+In each benchmark, we prove 1,365 `keccak-f` permutations (matching the benchmark `Plonky3` runs):
 
-## Integer Operations
+| Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
+|:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.16xlarge | x86-mt       |                   28.42 |                142.27 |                   29.18 |           304.45 |
+| Binius64 | C7i.16xlarge | x86-st       |                   29.18 |                499.26 |                  154.66 |           304.45 |
+| Binius64 | C8g.16xlarge | aarch64-mt   |                   41.00 |                111.82 |                   21.74 |           304.45 |
+| Binius64 | C8g.16xlarge | aarch64-st   |                   41.01 |                711.94 |                  111.26 |           304.45 |
+| Plonky3  | C7i.16xlarge | x86-mt       |                   16.70 |                265.00 |                   15.80 |         1,861.32 |
+| Plonky3  | C7i.16xlarge | x86-st       |                  111.00 |              3,920.00 |                   15.10 |         1,861.08 |
+| Plonky3  | C8g.16xlarge | aarch64-mt   |                   17.70 |                261.00 |                   39.40 |         1,861.32 |
+| Plonky3  | C8g.16xlarge | aarch64-st   |                  108.00 |              6,550.00 |                   35.70 |         1,861.08 |
 
-For u32 multiplication, we use a decomposition into 8-bit limbs and Lasso lookups for 8-bit multiplications. We are working on implementing a better multiplication technique explained in [this post](https://www.irreducible.com/posts/integer-multiplication-in-binius).
+**Git info: Plonky3**
+* Repository: https://github.com/Plonky3/Plonky3.git
+* Branch: `main`
+* Commit: `80803612ff4b6634519e12fa4bf075f679afcc1c`
 
-<BenchmarkTable benchmarksExpected={['BinaryField32b mul', 'u32 add', 'u32 mul', 'XOR (32-bit)', 'AND (32-bit)', 'OR (32-bit)']} />
+### Blake2s
 
+Here, we test 2,048 Blake2s compressions (matching what `Stwo`'s benchmark does):
 
-[^1]: The procedure by which we determine the number of operations required to hash 1 MiB of data varies depending on the structure of the hash function. Keccak and Vision use a sponge construction, meaning that each Keccak-$f$ or Vision permutation absorbs a number of bytes equal to the sponge function's _rate_. For SHA-3 and Keccak-256, used in Ethereum, the rate is 136 bytes, meaning one Keccak-$f$ permutation absorbs 136 bytes of input data. SHA2 and Grøstl use Merkle–Damgård and (closely related) wide-pipe constructions, respectively, based on underlying _compression_ functions. In both hash functions, each compression function processes one 64-byte message block. In the case of Grøstl, we've actually only implemented that hash function's $P$ permutation thus far. To process a 64-byte block of input data, that hash function must apply $P$ exactly once and $Q$ exactly once. We thus fudge slightly, by acting as if we were doing both $P$s and $Q$s, even though we are actually doing doubly many $P$s. Thus, we count 64 bytes "hashed" for every _two_ executions of the $P$ permutation. In each Keccak-$f$ benchmark, we run $2^{13}$ permutations; in each of the others, we run $2^{14}$.
+| Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
+|:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.16xlarge | x86-mt       |                   17.81 |                222.81 |                   71.60 |           360.14 |
+| Binius64 | C7i.16xlarge | x86-st       |                   17.84 |              1,030.10 |                  478.36 |           360.14 |
+| Binius64 | C8g.16xlarge | aarch64-mt   |                   26.23 |                166.15 |                   45.45 |           360.14 |
+| Binius64 | C8g.16xlarge | aarch64-st   |                   26.23 |              1,537.70 |                  249.99 |           360.14 |
+| Stwo     | C7i.16xlarge | x86-mt       |                  925.80 |                442.30 |                    2.50 |            92.50 |
+| Stwo     | C7i.16xlarge | x86-st       |                1,163.30 |              1,676.50 |                    2.60 |            92.50 |
+| Stwo     | C8g.16xlarge | aarch64-mt   |                1,755.50 |                541.30 |                    3.30 |            92.50 |
+| Stwo     | C8g.16xlarge | aarch64-st   |                2,404.10 |              3,183.40 |                    3.30 |            92.50 |
+
+**Git info: Stwo**
+* Repository: https://github.com/starkware-libs/stwo.git
+* Branch: `dev`
+* Commit: `d9176e6e22319370a8501f799829b920c0db2eac`
+
+### Hashing Throughput Comparison
+
+We believe that a fair metric by which to compare hashers is _hashing throughput_, the ability of the hashers to consume input data on a per-unit-of-time basis. The following charts compare the hashing throughputs of `Binius64`, `Plonky3` and `Stwo` provers running `Keccak-256` and `Blake2s` hashers.
+
+![Hashing Throughput Comparison (ST)](/hashing_throughput_st.png)
+
+![Hashing Throughput Comparison (MT)](/hashing_throughput_mt.png)

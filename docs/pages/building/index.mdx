@@ -2,38 +2,43 @@ import Collapsible from '../../components/Collapsible';
 
 import { Callout } from 'vocs/components';
 
-# Building [Guidance on the building Binius constraint systems]
+# Building [Everything you need to know to build end-to-end ZK applications with Binius64]
 
-Binius is a proof system framework that can be found and downloaded [here](https://github.com/IrreducibleOSS/binius). To build on Binius you must build a constraint system. The following pages of documentation are intended as guidance for building Binius constraint systems, and connecting them with Binius [`prove`](https://docs.binius.xyz/binius_core/constraint_system/fn.prove.html) and [`verify`](https://docs.binius.xyz/binius_core/constraint_system/fn.verify.html) functions for a complete proof system.
+In this site area, we explain how to build real applications in Binius64.
 
-## Introductory Content
+Run our SHA-256 example by pasting the below code:
 
-In our page about [constraint systems](/building/constraints), we outline the creation of a constraint system, and its interaction with Binius's `prove` and `verify` functions. We moreover present a simple example exhibiting a [bitwise constraint](/building/bitwise).
+```bash
+git clone https://github.com/IrreducibleOSS/binius64
+cd binius64
 
-## Site Directory
+RUSTFLAGS="-C target-cpu=native" cargo run --release --example sha256
+```
 
-Below, we sketch this site area's sections in slightly more detail.
+We've broken up this guide into two main sections.
 
 <Callout type="note">
 <Collapsible>
-[**The Basic Pattern.**](pattern) Here, we explain our fundamental constraint-building recipe: the _gadget pattern_.
+[**End-to-End Example.**](example) Here, we explain the overall, end-to-end flow of a Binius64 application, from setting up a project, to building a circuit, to generating and verifying proofs about it.
 
-Indeed, anyone building constraints on Binius must ultimately use this gadget pattern repeatedly. Our gadget pattern involves three main steps: [declaring](pattern/declaring) columns, [populating](pattern/populating) them with values, and finally [constraining](pattern/constraining) them. We explain each of these steps in detail, clarifying which steps must be performed by _which_ among the two parties, and how to achieve them in code.
+We moreover show how each of these steps gets carried out in code, by dumping runnable snippets. Throughout, we focus on a classic, important cryptographic task (proving _knowledge-of-opening_ with respect to a simple, SHA-256-based commitment scheme).
 </Collapsible>
 </Callout>
 
 <Callout type="note">
 <Collapsible>
-[**A Lookup Construction.**](lookup) Here, we undertake an extended, worked example, based on a simple _lookup_ protocol.
+[**Circuits.**](circuits) Here, we dive more deeply into actually writing circuit code. We explain various tips and motifs that show up repeatedly in real applications.
 
-Indeed, lookups are key and important. In this site area, we build a lookup from scratch, using a simple technique. The technique we pursue here is _simpler_ than the [Lasso-based approach](/basics/arithmetization/m3/lasso) we pursue in this site's _basics_ area. It's less efficient for the verifier, but is powerful enough to showcase some key ideas.
+We focus on recurring patterns like [branchless control flow](/building/circuits/control-flow) and [circuit composition](/building/circuits/composition). We also describe some [practical considerations](/building/circuits/performance) around performance.
 </Collapsible>
 </Callout>
 
-## Further Content
+<Callout type="note">
+<Collapsible>
+[**Tutorials.**](tutorials) Many code snippets in this guide have corresponding runnable examples in the repository. Throughout this site area, we occasionally link to these in blocks marked with the header **Try It.**
 
-We close off this site area by dropping a few further miscellaneous pages. In _[making transparents](transparents)_, we discuss _explicit transparent_ columns, columns made up exclusively of ad-hoc, verifier-supplied concrete values. These constructions are important in more advanced lookup protocols, like [Lasso](/basics/arithmetization/m3/lasso).
+These are all hosted in our repository, itself at [https://github.com/IrreducibleOSS/binius64](https://github.com/IrreducibleOSS/binius64). The [`prover/examples/examples/tutorials/`](https://github.com/IrreducibleOSS/binius64/tree/main/prover/examples/examples) directory of that repository contains examples that go beyond those covered here. We go into a bit more detail in this page.
+</Collapsible>
+</Callout>
 
-Finally, in our [Collatz page](/building/collatz), we take a practice-oriented tour back through our [Collatz arithmetization](/basics/arithmetization/m3/collatz), already developed in our _basics_ site area. This example gives us a concrete look at channels and flushing rules, key concepts in our [M3 arithmetization schema](/basics/arithmetization/m3).
-
-Beyond these simple guiding examples, many more examples of Binius constraint systems can be found in our [Binius circuits](https://github.com/IrreducibleOSS/binius/tree/main/crates/circuits/src) directory. For examples involving full prove and verify functionality, we recommend our [Binius examples](https://github.com/IrreducibleOSS/binius/tree/main/examples).
+For cryptographic and mathematical details, see the [Blueprint](/blueprint) section.
