@@ -21,7 +21,7 @@ cargo add rand@0.9 --no-default-features --features std,std_rn
 
 Now, in `src/main.rs`, begin by importing
 ```rust
-use binius_frontend::compiler::CircuitBuilder;
+use binius_frontend::CircuitBuilder;
 use binius_circuits::sha256::Sha256;
 use binius_core::{word::Word, verify::verify_constraints};
 use sha2::{Digest, Sha256 as StdSha256};
