@@ -1,8 +1,8 @@
 # Control Flow
 
-Circuits implement conditional logic without runtime branching.
+Here, we explore how circuits handle conditional logic. Unlike traditional programming, circuits can't branch at runtime—instead, they use specific techniques to achieve the same results.
 
-Circuits execute all paths deterministically. There's no branching - both paths execute and the result gets selected via masking. Dynamic loops don't exist since all loops unroll at compile time. Arrays have fixed sizes and dynamic indexing requires multiplexing to select elements.
+When you write conditional logic in a circuit, both paths execute simultaneously. The circuit then selects the correct result using masking. Similarly, loops must unroll at compile time, and array access requires multiplexing to select elements. Let's see how these patterns work in practice.
 
 **Try it:**
 ```bash
@@ -11,7 +11,7 @@ RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_control_
 
 ## Conditional Selection
 
-Predicated execution with arithmetic masking. Both branches compute in parallel, then a single AND constraint selects the result based on the condition's MSB. This transforms control dependencies into data dependencies.
+The fundamental pattern for conditionals uses arithmetic masking. When you need to choose between two values, the circuit computes both branches in parallel, then uses a single AND constraint to select the result based on the condition's MSB. This approach transforms control dependencies into data dependencies.
 
 ```rust
 // Both computations execute, result selected
@@ -35,7 +35,7 @@ let is_less = builder.icmp_ult(a, b);   // Returns MSB=1 if a < b
 
 ### Dynamic Index
 
-Dynamic array indexing becomes a multiplexer tree. The index bits drive a cascade of 2-to-1 selectors - each bit halves the candidates until one remains. This binary decision tree evaluates all paths in parallel, achieving logarithmic depth with linear gate count.
+When you need to access an array element with a runtime index, the circuit builds a multiplexer tree. Here's how it works: the index bits drive a cascade of 2-to-1 selectors, where each bit halves the candidates until one remains. This creates a binary decision tree that evaluates all paths in parallel, achieving logarithmic depth with linear gate count.
 
 ```rust
 use binius_frontend::circuits::multiplexer::single_wire_multiplex;
@@ -50,7 +50,7 @@ The multiplexer decomposes the index into bits, using each bit to select between
 - Bit 1 selects between halves
 - Continue until single element remains
 
-Selecting entire data structures rather than individual wires uses the same multiplexer approach with groups of wires.
+You can also select entire data structures rather than individual wires. The same multiplexer approach works with groups of wires:
 ```rust
 use binius_frontend::circuits::multiplexer::multi_wire_multiplex;
 
@@ -65,7 +65,9 @@ let selected_color = multi_wire_multiplex(builder, &colors, selector);
 
 ### Loop Iteration
 
-Loops unroll into straight-line code at compile time. Each iteration becomes a sequence of constraints with no backward edges. For early termination, a sticky flag tracks the exit condition - once set, it masks subsequent iterations to zero, simulating break statements arithmetically.
+In circuits, loops must unroll into straight-line code at compile time. Each iteration becomes a sequence of constraints with no backward edges. 
+
+To handle early termination, you can use a sticky flag that tracks the exit condition. Once this flag is set, it masks subsequent iterations to zero, effectively simulating break statements through arithmetic:
 ```rust
 // Unrolls to 8 sequential additions
 fn sum_array(builder: &CircuitBuilder, data: &[Wire; 8]) -> Wire {
@@ -82,7 +84,7 @@ fn sum_array(builder: &CircuitBuilder, data: &[Wire; 8]) -> Wire {
 ```
 
 **Early Exit:**
-A sticky flag simulates early loop exit. This boolean wire starts false and stays true once the exit condition triggers. Each iteration checks the flag and processes either the real value or zero. All iterations execute, but those after the exit point process zeros instead of data.
+To simulate early loop exit, you can use a sticky flag pattern. This boolean wire starts false and stays true once the exit condition triggers. Each iteration checks the flag and processes either the real value or zero. While all iterations still execute (remember, circuits can't actually branch), those after the exit point process zeros instead of data:
 
 ```rust
 // Sum until encountering zero

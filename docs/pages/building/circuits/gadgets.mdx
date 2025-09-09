@@ -1,6 +1,8 @@
 # Gadgets
 
-Gadgets are reusable functions that compose multiple gates into higher-level operations. They bridge the gap between individual gates and complete circuits by implementing common algorithms that require multiple gates working together. These are functions in `crates/frontend/src/circuits/` that encapsulate patterns like bit manipulation, arithmetic operations, and cryptographic primitives.
+Here, we explore gadgets—reusable functions that compose multiple gates into higher-level operations. These building blocks bridge the gap between individual gates and complete circuits.
+
+Gadgets implement common algorithms that would require multiple gates working together. You'll find them in `crates/frontend/src/circuits/`, where they encapsulate patterns like bit manipulation, arithmetic operations, and cryptographic primitives. Let's examine how gates and gadgets differ, then see some practical examples.
 
 Gates are single operations on the CircuitBuilder:
 ```rust
@@ -17,7 +19,7 @@ let swapped = swap_bytes_32(builder, x);           // Gadget: ~8 gates
 let count = popcount(builder, x);                  // Gadget: ~20 gates
 ```
 
-The framework provides gadgets for common operations that would be tedious to implement from scratch using individual gates.
+The framework provides these gadgets so you don't need to implement common operations from scratch using individual gates. Let's look at some specific gadget categories and their uses.
 
 **Try it:**
 ```bash
@@ -60,7 +62,9 @@ let base64 = Base64UrlSafe::new(builder, decoded, encoded, len_bytes);
 
 ## Implementation Example
 
-Understanding how gadgets work internally helps when building custom operations. This example shows how the byte swapping algorithm decomposes into individual gate operations with carefully designed bit masks:
+Understanding how gadgets work internally helps when building custom operations. Let's examine the byte swapping algorithm to see how it decomposes into individual gate operations.
+
+The `swap_bytes_32` gadget swaps bytes within 32-bit halves using ~8 gates total through a two-pass algorithm. First, it swaps adjacent bytes (0↔1, 2↔3, 4↔5, 6↔7) using the mask `0x00FF00FF00FF00FF` to isolate even-position bytes, then shifts and XORs. Second, it swaps 16-bit units within each 32-bit half using `0x0000FFFF0000FFFF` to complete the reversal:
 
 ```rust
 pub fn swap_bytes_32(builder: &CircuitBuilder, input: Wire) -> Wire {
@@ -83,6 +87,4 @@ pub fn swap_bytes_32(builder: &CircuitBuilder, input: Wire) -> Wire {
     builder.bxor(shl_16, masked_shr_16)
 }
 ```
-
-This gadget swaps bytes within 32-bit halves using ~8 gates total through a two-pass algorithm.
 
