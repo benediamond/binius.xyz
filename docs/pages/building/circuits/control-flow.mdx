@@ -4,6 +4,11 @@ Circuits implement conditional logic without runtime branching.
 
 Circuits execute all paths deterministically. There's no branching - both paths execute and the result gets selected via masking. Dynamic loops don't exist since all loops unroll at compile time. Arrays have fixed sizes and dynamic indexing requires multiplexing to select elements.
 
+**Try it:**
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_control_flow
+```
+
 ## Conditional Selection
 
 Predicated execution with arithmetic masking. Both branches compute in parallel, then a single AND constraint selects the result based on the condition's MSB. This transforms control dependencies into data dependencies.

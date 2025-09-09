@@ -8,6 +8,11 @@ message.push(byte);               // Can't append at runtime
 message.extend(data);             // Can't concatenate dynamically
 ```
 
+**Try it:**
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_data_structures
+```
+
 ## Example: Concatenation
 
 Since circuits can't dynamically join arrays at runtime, concatenation requires a different approach. Instead of building the result incrementally, the circuit pre-allocates space for the final combined array and uses constraints to verify that it contains the expected data. The circuit doesn't actually perform the concatenation - it just checks that the prover has provided the correct concatenated result:

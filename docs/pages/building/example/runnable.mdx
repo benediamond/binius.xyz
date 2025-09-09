@@ -1,6 +1,16 @@
+import { Callout } from 'vocs/components';
+
 # Runnable Project [A full, runnable Rust project that generates and verifies proofs]
 
 In this page, we collect in one place the project that we constructed piecemeal throughout the previous pages in this section (i.e., throughout our [circuit-building](/building/example/circuit) and [proof-related](/building/example/proofs) pages). This should give you something that you can run off the shelf.
+
+<Callout type="tip">
+**Try it now:**
+
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo run --release --example end_to_end_example
+```
+</Callout>
 
 ## Cargo Manifest
 

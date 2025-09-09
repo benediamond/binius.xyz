@@ -19,6 +19,11 @@ let count = popcount(builder, x);                  // Gadget: ~20 gates
 
 The framework provides gadgets for common operations that would be tedious to implement from scratch using individual gates.
 
+**Try it:**
+```bash
+RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_gadgets
+```
+
 ### Byte Operations
 
 ```rust
