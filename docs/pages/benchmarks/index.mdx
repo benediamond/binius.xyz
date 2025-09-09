@@ -17,10 +17,10 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
-| Binius64 | C7i.16xlarge | x86-mt        |                     9.78 |                 290.29 |                    17.69 |           230.64 |
-| Binius64 | C7i.16xlarge | x86-st        |                     8.72 |                 254.69 |                    27.24 |           230.64 |
-| Binius64 | C8g.16xlarge | aarch64-mt    |                    12.90 |                 299.86 |                    15.48 |           230.64 |
-| Binius64 | C8g.16xlarge | aarch64-st    |                    11.58 |                 361.26 |                    34.41 |           230.64 |
+| Binius64 | C7i.16xlarge | x86-mt        |                     9.76 |                 294.30 |                    17.35 |           187.75 |
+| Binius64 | C7i.16xlarge | x86-st        |                     8.63 |                 258.45 |                    26.33 |           187.75 |
+| Binius64 | C8g.16xlarge | aarch64-mt    |                    12.78 |                 293.93 |                    15.19 |           187.75 |
+| Binius64 | C8g.16xlarge | aarch64-st    |                    11.53 |                 402.68 |                    34.66 |           187.75 |
 | SP1      | G6.2xlarge   | GPU           |                    78.55 |                2016.20 |                  1088.35 |            48.00 |
 | R0VM     | G6.2xlarge   | GPU           |                    15.69 |                1802.14 |                    11.24 |           217.45 |
 
@@ -94,10 +94,10 @@ Here, we test 2,048 Blake2s compressions (matching what `Stwo`'s benchmark does)
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
-| Binius64 | C7i.16xlarge | x86-mt        |                    19.10 |                 221.18 |                    70.24 |           360.47 |
-| Binius64 | C7i.16xlarge | x86-st        |                    19.00 |                1043.60 |                   476.72 |           360.47 |
-| Binius64 | C8g.16xlarge | aarch64-mt    |                    26.24 |                 170.70 |                    46.62 |           360.47 |
-| Binius64 | C8g.16xlarge | aarch64-st    |                    26.26 |                1471.20 |                   248.51 |           360.47 |
+| Binius64 | C7i.16xlarge | x86-mt        |                    17.81 |                 222.81 |                    71.60 |           360.14 |
+| Binius64 | C7i.16xlarge | x86-st        |                    17.84 |                1030.10 |                   478.36 |           360.14 |
+| Binius64 | C8g.16xlarge | aarch64-mt    |                    26.23 |                 166.15 |                    45.45 |           360.14 |
+| Binius64 | C8g.16xlarge | aarch64-st    |                    26.23 |                1537.70 |                   249.99 |           360.14 |
 | Stwo     | C7i.16xlarge | x86-mt        |                   925.80 |                 442.30 |                     2.50 |            92.50 |
 | Stwo     | C7i.16xlarge | x86-st        |                  1163.30 |                1676.50 |                     2.60 |            92.50 |
 | Stwo     | C8g.16xlarge | aarch64-mt    |                  1755.50 |                 541.30 |                     3.30 |            92.50 |
