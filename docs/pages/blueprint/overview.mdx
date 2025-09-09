@@ -1,4 +1,6 @@
-# Abstract [Relation of Binius64 to existing works]
+# Overview [High-level summary of Binius64]
+
+## Abstract
 
 _Binius64_ is a simple SNARK designed to efficiently prove statements about 64-bit words. At a very high level, Binius64's power comes from its new constraint system language, which adapts _SuperSpartan_'s [[STW23](https://eprint.iacr.org/2023/552)]. We enrich that framework using what we call _shifted value indices_, data that combine value references with logical and arithmetic shifts. Our design yields constraint systems that are 64-fold smaller than those based on bits alone can deliver; on the other hand, we also fully exploit binary field arithmetic.
 
