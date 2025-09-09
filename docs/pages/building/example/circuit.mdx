@@ -62,7 +62,7 @@ Our next step will be to try inscribing actual values into our circuit's wires. 
     message_bytes[32..].copy_from_slice(&nonce_bytes);
     sha256.populate_message(&mut witness, &message_bytes);
 
-    let digest = StdSha256::digest(&message_bytes);
+    let digest = StdSha256::digest(message_bytes);
     let mut digest_bytes = [0u8; 32];
     digest_bytes.copy_from_slice(&digest);
     sha256.populate_digest(&mut witness, digest_bytes);
