@@ -32,7 +32,7 @@ RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_gadgets
 ### Byte Operations
 
 ```rust
-use binius_frontend::circuits::bytes::{swap_bytes_32, swap_bytes};
+use binius_circuits::bytes::{swap_bytes_32, swap_bytes};
 
 // Swap bytes within 32-bit halves (uses ~8 gates)
 let swapped = swap_bytes_32(builder, input);
@@ -44,7 +44,7 @@ let reversed = swap_bytes(builder, input);
 ### Bit Counting
 
 ```rust
-use binius_frontend::circuits::popcount::popcount;
+use binius_circuits::popcount::popcount;
 
 // Count number of 1-bits in a word (SWAR algorithm)
 let count = popcount(builder, input);  // Uses ~20 gates
@@ -53,8 +53,8 @@ let count = popcount(builder, input);  // Uses ~20 gates
 ### Cryptographic Building Blocks
 
 ```rust
-use binius_frontend::circuits::hmac::HmacSha256;
-use binius_frontend::circuits::base64::Base64UrlSafe;
+use binius_circuits::hmac::HmacSha256;
+use binius_circuits::base64::Base64UrlSafe;
 
 // HMAC-SHA256 authentication
 let hmac = HmacSha256::new(builder, key, message);
