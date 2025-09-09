@@ -1,6 +1,8 @@
 # Circuit Composition
 
-Circuit building functions compose smaller components into larger applications. To enable clean composition, circuit building functions follow consistent patterns to compose smaller operations into larger ones.
+Here, we explore how to compose circuits from smaller components—a key pattern for building complex applications.
+
+When you build larger circuits, you'll want to reuse smaller components and combine them effectively. To make this work smoothly, circuit building functions follow consistent patterns that enable clean composition. Let's examine these patterns and see how they work in practice.
 
 **Function Naming** - Circuit building functions use descriptive names:
 ```rust
@@ -26,9 +28,9 @@ pub fn circuit_<operation_name>(
 3. Input wires
 4. (Return output wires)
 
-**Wire Ownership** - Circuit building functions establish clear responsibilities for wire management between callers and the functions they invoke. This separation ensures proper witness population and prevents confusion about which code handles which wires:
+**Wire Ownership** - Understanding who manages which wires is crucial for proper circuit composition. Circuit building functions establish clear responsibilities between callers and the functions they invoke:
 
-The caller creates and populates input wires, then reads output wires from the return value. The function creates any internal wires needed, builds constraints between wires, and returns output wires.
+The pattern works like this: the caller creates and populates input wires, then reads output wires from the return value. Meanwhile, the function creates any internal wires it needs, builds constraints between wires, and returns output wires. This separation ensures proper witness population and prevents confusion about wire management.
 
 ```rust
 // Caller creates inputs

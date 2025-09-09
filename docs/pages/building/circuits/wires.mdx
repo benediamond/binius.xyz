@@ -1,6 +1,8 @@
 # Wires
 
-Gates consume inputs and produce outputs through wires - indices into a statically-allocated witness array. During circuit construction, each wire receives a unique index. During proving, the prover populates this array with concrete values, and gates read their inputs and write their outputs at these predetermined positions.
+Here, we explore wires—the fundamental connections that link gates together in your circuits.
+
+Wires are essentially indices into a statically-allocated witness array. When you construct a circuit, each wire receives a unique index. Later, during proving, the prover populates this array with concrete values, and gates read their inputs and write their outputs at these predetermined positions. Let's look at the different types of wires and how to use them effectively.
 
 ## Wire Types
 
@@ -19,7 +21,7 @@ let intermediate = builder.add_witness();    // Private computation
 ```
 
 **Constant Wires**
-Constants embed compile-time values directly into the constraint system. The compiler maintains a constant pool with automatic deduplication - identical constant requests return the same wire index. This transparent optimization exploits the frequent reuse of masks, offsets, and sentinel values in typical circuits.
+When you need compile-time values in your circuit, constant wires embed them directly into the constraint system. The compiler maintains a constant pool with automatic deduplication—if you request the same constant twice, you'll get the same wire index back. This optimization takes advantage of how frequently circuits reuse masks, offsets, and sentinel values.
 
 ```rust
 let mask = builder.add_constant_64(0xFF00FF00);  // Creates wire if new
@@ -28,7 +30,7 @@ let mask2 = builder.add_constant_64(0xFF00FF00); // Same wire as 'mask'
 ```
 
 ### Gate Output Wires
-Gates allocate output wires internally during circuit construction. Each gate operation returns wire references to its computed results. The gate's opcode determines output arity: most gates produce one output, while `imul` produces two (high and low words).
+Each gate operation automatically allocates its own output wires during circuit construction and returns references to them. The number of outputs depends on the gate's opcode: most gates produce one output, while operations like `imul` produce two (high and low words).
 
 ```rust
 let xor_result = builder.bxor(a, b);        // Gate creates 1 output wire

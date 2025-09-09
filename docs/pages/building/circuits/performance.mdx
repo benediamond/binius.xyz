@@ -1,19 +1,23 @@
 # Performance
 
+Here, we explore how to understand and optimize circuit performance in Binius64.
+
 ## Compiler-Driven Optimization
 
-Circuit performance optimization occurs primarily through compiler passes rather than manual tuning. The optimization pipeline includes gate fusion (combining XOR operations into single constraints), constant propagation (evaluating operations on constants at compile time), and dead code elimination (removing unused gates). These passes can substantially reduce constraint counts automatically, with continued improvements as the optimization pipeline evolves.
+The good news is that most performance optimization happens automatically through compiler passes—you don't need to manually tune every detail. The optimization pipeline handles several key transformations for you:
+
+The compiler performs gate fusion to combine XOR operations into single constraints, constant propagation to evaluate operations on constants at compile time, and dead code elimination to remove unused gates. These passes can substantially reduce your constraint counts automatically, and the optimization pipeline continues to improve with each release.
 
 ## Cost Model  
 
-Operations have approximate costs relative to AND constraints as the baseline:
+Understanding operation costs helps you make informed design decisions. Here's how different operations compare, using AND constraints as the baseline:
 
-XOR, NOT, rotations, and constants have negligible cost because they're encoded as shifted value indices within existing constraints. AND, OR, and select operations each require one constraint. Addition and comparison operations typically require one to two constraints. Multiplication is expensive at roughly 4 or 5 constraints per operation.
+Some operations are essentially free—XOR, NOT, rotations, and constants have negligible cost because they're encoded as shifted value indices within existing constraints. Basic logical operations like AND, OR, and select each require one constraint. Arithmetic operations vary more: addition and comparison typically require one to two constraints, while multiplication is more expensive at roughly 4 or 5 constraints per operation.
 
-These ratios change as gate implementations improve and new optimization techniques emerge. Constraint counts provide rough complexity estimates, but actual proving performance depends on circuit structure, parallelization opportunities, and hardware characteristics.
+Keep in mind that these ratios evolve as gate implementations improve and new optimization techniques emerge. While constraint counts provide useful complexity estimates, actual proving performance also depends on your circuit structure, parallelization opportunities, and hardware characteristics.
 
 ## Performance Analysis
 
-Circuit snapshots provide detailed constraint counts, gate counts, and witness statistics after compilation. These `.snap` files in `crates/examples/snapshots/` show the actual performance characteristics of production circuits.
+To understand your circuit's actual performance, you can examine the circuit snapshots generated after compilation. These `.snap` files in `crates/examples/snapshots/` provide detailed constraint counts, gate counts, and witness statistics for production circuits.
 
-Examine snapshots for orientation on typical constraint counts of circuits like SHA256 and Keccak included with the framework. Actual proving performance varies significantly across different hardware architectures and workload characteristics. For concrete proving times and throughput comparisons, see the [benchmarks section](/benchmarks).
+You can review the included snapshots for SHA256 and Keccak to get a sense of typical constraint counts for standard cryptographic operations. Remember that actual proving performance varies significantly across different hardware architectures and workload characteristics. For concrete proving times and throughput comparisons, see the [benchmarks section](/benchmarks).

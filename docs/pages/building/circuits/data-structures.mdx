@@ -1,6 +1,8 @@
 # Data Structures
 
-Circuits cannot create dynamic data structures. All allocation happens at circuit construction. Operations like creating vectors, pushing elements, or extending containers at runtime don't exist in circuits:
+Here, we explore how circuits handle data structures—a fundamental difference from traditional programming.
+
+In circuit programming, you can't create dynamic data structures. All allocation must happen at circuit construction time. This means operations like creating vectors, pushing elements, or extending containers at runtime simply don't exist. Instead, you'll need to use different patterns:
 
 ```rust
 let mut message = Vec::new();     // Can't create dynamic containers
@@ -15,7 +17,9 @@ RUSTFLAGS="-C target-cpu=native" cargo run --release --example circuits_data_str
 
 ## Example: Concatenation
 
-Since circuits can't dynamically join arrays at runtime, concatenation requires a different approach. Instead of building the result incrementally, the circuit pre-allocates space for the final combined array and uses constraints to verify that it contains the expected data. The circuit doesn't actually perform the concatenation - it just checks that the prover has provided the correct concatenated result:
+Let's see how to handle a common operation—concatenation—in this constrained environment.
+
+Since circuits can't dynamically join arrays at runtime, we need a different approach. Instead of building the result incrementally, we pre-allocate space for the final combined array and use constraints to verify that it contains the expected data. The circuit doesn't perform the concatenation itself; rather, it verifies that the prover has provided the correct concatenated result:
 
 ```rust
 let builder = CircuitBuilder::new();
