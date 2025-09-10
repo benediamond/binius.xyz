@@ -53,18 +53,18 @@ We fix an initial evaluation claim $\widetilde{W}(r^{(0)}) \stackrel{?}= s^{(0)}
   - the parties run a batched sumcheck on the claim:
     $$
     \begin{align*}
-    \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot s^{(k)}_i &\stackrel{?}= \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k)}_j}(r^{(i)}) \\
-    &= \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \left[ \sum_{x \in \mathcal{B}_{\ell_\text{mul}}} \widetilde{\texttt{eq}}(r^{(i)}, x) \cdot \widetilde{W^{(k + 1)}_{2i}}(x) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(x) \right] \\
-    &= \sum_{x \in \mathcal{B}_{\ell_\text{mul}}} \widetilde{\texttt{eq}}(r^{(i)}, x) \cdot \left[ \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k + 1)}_{2i}}(x) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(x) \right],
+    \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot s^{(k)}_i &\stackrel{?}= \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k)}_j}(r^{(k)}) \\
+    &= \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \left[ \sum_{x \in \mathcal{B}_{\ell_\text{mul}}} \widetilde{\texttt{eq}}(r^{(k)}, x) \cdot \widetilde{W^{(k + 1)}_{2i}}(x) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(x) \right] \\
+    &= \sum_{x \in \mathcal{B}_{\ell_\text{mul}}} \widetilde{\texttt{eq}}(r^{(k)}, x) \cdot \left[ \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k + 1)}_{2i}}(x) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(x) \right],
     \end{align*}
     $$
     which pertains to a composition of multilinears of degree just 2 (excluding the equality indicator).
   - in this way, after $\ell_\text{mul}$ rounds, reduce the claim above to the further claim:
     $$
-    \begin{equation*}s^{(i)}_\text{end} \stackrel{?}= \widetilde{\texttt{eq}}(r^{(i)}, r^{(i + 1)}) \cdot \left[ \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k + 1)}_{2i}}(r^{(i + 1)}) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(r^{(i + 1)}) \right],\end{equation*}
+    \begin{equation*}s^{(i)}_\text{end} \stackrel{?}= \widetilde{\texttt{eq}}(r^{(k)}, r^{(k + 1)}) \cdot \left[ \sum_{i = 0}^{2^k - 1} \beta^{(k)}_i \cdot \widetilde{W^{(k + 1)}_{2i}}(r^{(k + 1)}) \cdot \widetilde{W^{(k + 1)}_{2i + 1}}(r^{(k + 1)}) \right],\end{equation*}
     $$
-    where $r^{(i + 1)}$ is a further $\ell_\text{mul}$-dimensional challenge sampled during the sumcheck.
-  - **for** each $i \in \{0, \ldots, 2^{k + 1} - 1\}$ **do**: the prover sends the _claimed_ evaluation $s^{(k + 1)}_i = \widetilde{W^{(k + 1)}_i}(r^{(i + 1)})$.
+    where $r^{(k + 1)}$ is a further $\ell_\text{mul}$-dimensional challenge sampled during the sumcheck.
+  - **for** each $i \in \{0, \ldots, 2^{k + 1} - 1\}$ **do**: the prover sends the _claimed_ evaluation $s^{(k + 1)}_i = \widetilde{W^{(k + 1)}_i}(r^{(k + 1)})$.
   - using the prover's claims $s^{(k + 1)}_i$, the verifier explicitly checks the equation just above.
 - output the reduced evaluation point $r^{(6)}$ and the reduced claims $s^{(6)}_i$, for $i \in \{0, \ldots , 63\}$.
 
