@@ -2,7 +2,7 @@
 
 Here, we explain a fairly simple mathematical idea that underpins our multiplication technique. We fix a number $n_\text{mul}$ of MUL constraints; we recall the [constraint arrays](/blueprint/constraints/muls#the-constraint-arrays) $p$, $q$, $\text{lo}$ and $\text{hi}$. Each of these arrays is of length $n_\text{mul}$ and contains 64-bit words.
 
-For each $x \in \{0, \ldots , n_\text{mul} - 1\}$, $p[x]$ and $q[x]$ are in $\{0, \ldots , 2^{64} - 1\}$. We're interested in $p[x] \cdot q[x]$. Recall that we work throughout with binary fields. This means that we can't use typical prime-field ideas—say (like breaking our numbers into limbs so small that their products don't overflow the characteristic, using range checks, and so on).
+For each $x \in \{0, \ldots , n_\text{mul} - 1\}$, $p[x]$ and $q[x]$ are in $\{0, \ldots , 2^{64} - 1\}$. We're interested in $p[x] \cdot q[x]$. Recall that we work throughout with binary fields. This means that we can't use typical prime-field ideas (like breaking our numbers into limbs so small that their products don't overflow the characteristic, using range checks, and so on).
 
 ## The Exponentiation Identity
 
