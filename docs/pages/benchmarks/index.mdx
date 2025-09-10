@@ -24,6 +24,13 @@ We compare our `ethsign` (one signature, 67-byte message) performance against Su
 | SP1      | G6.2xlarge   | cuda         |                   78.55 |              2,016.20 |                1,088.35 |            48.00 |
 | R0VM     | G6.2xlarge   | cuda         |                   15.69 |              1,802.14 |                   11.24 |           217.45 |
 
+Reproduce Binius64 benchmarks using:
+
+```bash
+ETHSIGN_SIGNATURES=1 ETHSIGN_MSG_BYTES=67 cargo bench --no-default-features --bench ethsign # single threaded
+ETHSIGN_SIGNATURES=1 ETHSIGN_MSG_BYTES=67 cargo bench --bench ethsign # multi threaded
+```
+
 ![Ethereum ECDSA Signature Verification Benchmarks](/ethsign_comparison.png)
 
 **Git info: SP1**
@@ -55,18 +62,17 @@ Configuration parameters:
 | SP1      | G6.2xlarge   | cuda         |                    0.06 |             67,153.00 |                6,057.30 |            48.00 |
 
 Above, we cross-compare our hash-based signature aggregator against RISC Zero's and SP1's stacks, using Keccak precompiles throughout.
+We publish the benchmarks [here](https://github.com/IrreducibleOSS/leansig).
+You can use scripts to reproduce benchmarks for [RISC Zero](https://github.com/IrreducibleOSS/leansig/blob/main/benchmark-risc0-cuda.sh) and [SP1](https://github.com/IrreducibleOSS/leansig/blob/main/benchmark-sp1-cuda.sh).
+
+Reproduce Binius64 benchmarks using:
+
+```bash
+HASHSIGN_VALIDATORS=16 HASHSIGN_TREE_HEIGHT=13 HASHSIGN_SPEC=2 cargo bench --no-default-features -p binius-examples --bench hashsign # single threaded
+HASHSIGN_VALIDATORS=16 HASHSIGN_TREE_HEIGHT=13 HASHSIGN_SPEC=2 cargo bench -p binius-examples --bench hashsign # multi threaded
+```
 
 ![Hash-based Signature Aggregation Benchmarks](/hashsign_comparison.png)
-
-**Git info: SP1**
-* Repository: https://github.com/succinctlabs/sp1.git
-* Branch: `dev`
-* Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
-
-**Git info: RISC Zero**
-* Repository: https://github.com/risc0/risc0.git
-* Branch: `main`
-* Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
 
 ## Hashing
 
@@ -86,6 +92,13 @@ In each benchmark, we prove 1,365 `keccak-f` permutations (matching the benchmar
 | Plonky3  | C7i.16xlarge | x86-st       |                  111.00 |              3,920.00 |                   15.10 |         1,861.08 |
 | Plonky3  | C8g.16xlarge | aarch64-mt   |                   17.70 |                261.00 |                   39.40 |         1,861.32 |
 | Plonky3  | C8g.16xlarge | aarch64-st   |                  108.00 |              6,550.00 |                   35.70 |         1,861.08 |
+
+Reproduce Binius64 benchmarks using:
+
+```bash
+KECCAK_PERMUTATIONS=1365 cargo bench --no-default-features --bench keccak # single threaded
+KECCAK_PERMUTATIONS=1365 cargo bench --bench keccak # multi threaded
+```
 
 **Git info: Plonky3**
 * Repository: https://github.com/Plonky3/Plonky3.git
@@ -107,6 +120,13 @@ Here, we test 2,048 Blake2s compressions (matching what `Stwo`'s benchmark does)
 | Stwo     | C8g.16xlarge | aarch64-mt   |                1,755.50 |                541.30 |                    3.30 |            92.50 |
 | Stwo     | C8g.16xlarge | aarch64-st   |                2,404.10 |              3,183.40 |                    3.30 |            92.50 |
 
+Reproduce Binius64 benchmarks using:
+
+```bash
+BLAKE2S_MAX_BYTES=131072 cargo bench --no-default-features -p binius-examples --bench blake2s # single threaded
+BLAKE2S_MAX_BYTES=131072 cargo bench -p binius-examples --bench blake2s # multi threaded
+```
+
 **Git info: Stwo**
 * Repository: https://github.com/starkware-libs/stwo.git
 * Branch: `dev`
@@ -115,6 +135,19 @@ Here, we test 2,048 Blake2s compressions (matching what `Stwo`'s benchmark does)
 ### Hashing Throughput Comparison
 
 We believe that a fair metric by which to compare provers is _hashing throughput_, i.e. the amount of input data that these provers can generate a proof-of-hash about, per unit of time. The following charts compare the hashing throughputs of Binius64, Plonky3 and Stwo provers, each generating proofs about Keccak-256 and Blake2s hashes. In each benchmark, we generate a proof about exactly 1 MiB of total input data.
+
+Reproduce Binius64 benchmarks using:
+
+```bash
+KECCAK_PERMUTATIONS=8192 cargo bench --no-default-features --bench keccak # single threaded
+KECCAK_PERMUTATIONS=8192 cargo bench --bench keccak # multi threaded
+
+BLAKE2S_MAX_BYTES=1048576 cargo bench --no-default-features -p binius-examples --bench blake2s # single threaded
+BLAKE2S_MAX_BYTES=1048576 cargo bench -p binius-examples --bench blake2s # multi threaded
+
+BLAKE2B_MAX_BYTES=1048576 cargo bench --no-default-features -p binius-examples --bench blake2b # single threaded
+BLAKE2B_MAX_BYTES=1048576 cargo bench -p binius-examples --bench blake2b # multi threaded
+```
 
 ![Hashing Throughput Comparison (ST)](/hashing_throughput_st.png)
 
