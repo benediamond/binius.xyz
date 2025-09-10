@@ -13,16 +13,18 @@ In order to reproduce our benchmarks in AWS, you can check out our [user guide](
 
 ## Ethereum ECDSA Signature Aggregation
 
-We compare our `ethsign` (one signature, 67-byte message) performance against Succinct's `SP1` and RISC Zero's `R0VM` zkVMs running with GPU acceleration:
+We report our `ethsign` (ECDSA signature over a 67-byte message) performance.
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.8xlarge  | x86-mt       |                    9.57 |                557.73 |                   33.65 |           187.75 |
+| Binius64 | C7i.8xlarge  | x86-st       |                    8.40 |              3,760.90 |                  320.99 |           187.75 |
+| Binius64 | C8g.8xlarge  | aarch64-mt   |                   12.48 |                306.36 |                   17.62 |           187.75 |
+| Binius64 | C8g.8xlarge  | aarch64-st   |                   11.32 |              3,060.30 |                  243.39 |           187.75 |
 | Binius64 | C7i.16xlarge | x86-mt       |                    9.76 |                294.30 |                   17.35 |           187.75 |
 | Binius64 | C7i.16xlarge | x86-st       |                    8.63 |                258.45 |                   26.33 |           187.75 |
 | Binius64 | C8g.16xlarge | aarch64-mt   |                   12.78 |                293.93 |                   15.19 |           187.75 |
 | Binius64 | C8g.16xlarge | aarch64-st   |                   11.53 |                402.68 |                   34.66 |           187.75 |
-| SP1      | G6.2xlarge   | cuda         |                   78.55 |              2,016.20 |                1,088.35 |            48.00 |
-| R0VM     | G6.2xlarge   | cuda         |                   15.69 |              1,802.14 |                   11.24 |           217.45 |
 
 Reproduce Binius64 benchmarks using:
 
@@ -30,18 +32,6 @@ Reproduce Binius64 benchmarks using:
 ETHSIGN_SIGNATURES=1 ETHSIGN_MSG_BYTES=67 cargo bench --no-default-features --bench ethsign # single threaded
 ETHSIGN_SIGNATURES=1 ETHSIGN_MSG_BYTES=67 cargo bench --bench ethsign # multi threaded
 ```
-
-![Ethereum ECDSA Signature Verification Benchmarks](/ethsign_comparison.png)
-
-**Git info: SP1**
-* Repository: https://github.com/succinctlabs/sp1.git
-* Branch: `dev`
-* Commit: `0462e3fecdd39c687f0c8ded6fcfee4a1d9c9d83`
-
-**Git info: RISC Zero**
-* Repository: https://github.com/risc0/risc0.git
-* Branch: `main`
-* Commit: `c1ea88f36839b889a15de419e1190ae34c2e0932`
 
 ## Hash-based Signature Aggregation
 
@@ -54,16 +44,14 @@ Configuration parameters:
 
 | Prover   | AWS Instance | Architecture | Witness generation [ms] | Proof generation [ms] | Proof verification [ms] | Proof size [KiB] |
 |:--------:|:------------:|:------------:|------------------------:|----------------------:|------------------------:|-----------------:|
+| Binius64 | C7i.8xlarge  | x86-mt       |                  285.60 |              3,157.00 |                  790.28 |           322.11 |
+| Binius64 | C7i.8xlarge  | x86-st       |                  279.25 |             42,148.00 |               10,795.00 |           322.11 |
+| Binius64 | C8g.8xlarge  | aarch64-mt   |                  329.16 |              1,685.10 |                  342.12 |           322.11 |
+| Binius64 | C8g.8xlarge  | aarch64-st   |                  323.78 |              4,187.30 |                7,861.60 |           322.11 |
 | Binius64 | C7i.16xlarge | x86-mt       |                  317.51 |                845.92 |                  241.48 |           322.11 |
 | Binius64 | C7i.16xlarge | x86-st       |                  317.49 |              5,553.50 |                1,690.20 |           322.11 |
 | Binius64 | C8g.16xlarge | aarch64-mt   |                  337.79 |                627.53 |                  135.34 |           322.11 |
 | Binius64 | C8g.16xlarge | aarch64-st   |                  332.91 |              8,698.40 |                1,027.60 |           322.11 |
-| Risc0    | G6.2xlarge   | cuda         |                  408.15 |             67,834.00 |                   11.13 |           217.45 |
-| SP1      | G6.2xlarge   | cuda         |                    0.06 |             67,153.00 |                6,057.30 |            48.00 |
-
-Above, we cross-compare our hash-based signature aggregator against RISC Zero's and SP1's stacks, using Keccak precompiles throughout.
-We publish the benchmarks [here](https://github.com/IrreducibleOSS/leansig).
-You can use scripts to reproduce benchmarks for [RISC Zero](https://github.com/IrreducibleOSS/leansig/blob/main/benchmark-risc0-cuda.sh) and [SP1](https://github.com/IrreducibleOSS/leansig/blob/main/benchmark-sp1-cuda.sh).
 
 Reproduce Binius64 benchmarks using:
 
@@ -71,8 +59,6 @@ Reproduce Binius64 benchmarks using:
 HASHSIGN_VALIDATORS=16 HASHSIGN_TREE_HEIGHT=13 HASHSIGN_SPEC=2 cargo bench --no-default-features -p binius-examples --bench hashsign # single threaded
 HASHSIGN_VALIDATORS=16 HASHSIGN_TREE_HEIGHT=13 HASHSIGN_SPEC=2 cargo bench -p binius-examples --bench hashsign # multi threaded
 ```
-
-![Hash-based Signature Aggregation Benchmarks](/hashsign_comparison.png)
 
 ## Hashing
 
