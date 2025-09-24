@@ -6,7 +6,7 @@ import { Callout } from "vocs/components";
 
 _Binius_ is a state-of-the-art cryptographic proof system that makes it possible to quickly and cheaply verify complex computations. In the world of cryptography, Binius is known as a _succinct, noninteractive argument_, or a _SNARK_, the key primitive required for _verifiable computing_. Though Binius proofs today do not guarantee privacy, we are actively extending it with _zero knowledge_ (ZK), making it a _ZK-SNARK_. Because Binius uses binary fields as a foundational primitive, we also sometimes refer to it as a _binary proof system_[^1].
 
-The latest version of the project is called _Binius64_. Binius64 optimizes for proving computations over 64-bit words, making it the _fastest_ proof system for proving standard hash functions like SHA2 and SHA3. Moreover, the Binius64 prover delivers top-notch performance on ARM64 and x86-64 processors, including modern mobile CPUs, making it a perfect choice for local ZK proving. The construction is itself hash-based, meaning Binius has a transparent setup, is post-quantum secure, and relies only conservative cryptographic assumptions.
+The latest version of the project is called _Binius64_. Binius64 optimizes for proving computations over 64-bit words, making it the _fastest_ proof system for proving standard hash functions like SHA2 and SHA3. Moreover, the Binius64 prover delivers top-notch performance on ARM64 and x86-64 processors, including modern mobile CPUs, making it a perfect choice for local ZK proving. The construction is itself hash-based, meaning Binius has a transparent setup, is post-quantum secure, and only relies on conservative cryptographic assumptions.
 
 The open source [Rust codebase](https://github.com/IrreducibleOSS/binius64) contains
 
